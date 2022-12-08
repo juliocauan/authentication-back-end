@@ -1,22 +1,65 @@
-openapi: '3.0.2'
+openapi: '3.0.3'
 info:
-  title: API Title
-  version: '1.0'
+  title: Token Authentication API
+  version: '0.0.1'
 servers:
   - url: https://api.server.test/v1
+tags:
+  - name: 'auth'
+  - name: 'test'
+
 paths:
-  /test:
-    get:
+  /api/auth/signup:
+    post:
+      tags:
+        - 'auth'
+      summary: 'Signup new Account'
+      description: 'Check existing and Save User to database'
+      operationId: addUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupForm'
       responses:
         '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/aaa'
+          description: 'Registered successfully!'
 
 components:
   schemas:
-    aaa:
+    SignupForm:
       type: object
-    
+      required:
+        - 'username'
+        - 'email'
+        - 'role'
+        - 'password'
+      properties:
+        username:
+          type: string
+          description: 'Name used to refer User [UNIQUE]'
+          example: 'ForrestGump1'
+          maxLength: 128
+          minLength: 6
+        email:
+          type: string
+          format: email
+          description: 'User e-mail for contact and to redefine lost password [UNIQUE]'
+          example: 'example@example.com'
+        role:
+          $ref: '#/components/schemas/RoleType'
+        password:
+          type: string
+          format: password
+          description: 'User password to access account'
+          example: '1234567890'
+          maxLength: 255
+          minLength: 6
+    RoleType:
+      type: string
+      enum:
+        - 'ADMIN'
+        - 'COMPANY'
+        - 'CLIENT'
+      description: 'User permissions'

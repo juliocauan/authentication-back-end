@@ -30,13 +30,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--OPEN API DEPENDENCIES-->
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.4</version>
-		</dependency>
-		<!--OPEN API DEPENDENCIES-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -87,7 +80,7 @@
 								<disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
 								<documentationProvider>none</documentationProvider>
 								<interfaceOnly>true</interfaceOnly>
-								<openApiNullable>true</openApiNullable>
+								<openApiNullable>false</openApiNullable>
 								<prependFormOrBodyParameters>true</prependFormOrBodyParameters>
 								<skipDefaultInterface>true</skipDefaultInterface>
 								<generateSupportingFiles>false</generateSupportingFiles>

@@ -26,6 +26,27 @@ paths:
         '200':
           description: 'Registered successfully!'
 
+  /api/auth/signin:
+    post:
+      tags:
+        - 'auth'
+      summary: 'Login an Account'
+      description: 'Authenticate {username, password} and Create JWT string with a secret'
+      operationId: authenticateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninForm'
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTResponse'
+
 components:
   schemas:
     SignupForm:
@@ -37,25 +58,41 @@ components:
         - 'password'
       properties:
         username:
-          type: string
-          description: 'Name used to refer User [UNIQUE]'
-          example: 'ForrestGump1'
-          maxLength: 128
-          minLength: 6
+          $ref: '#/components/schemas/Username'
         email:
-          type: string
-          format: email
-          description: 'User e-mail for contact and to redefine lost password [UNIQUE]'
-          example: 'example@example.com'
+          $ref: '#/components/schemas/Email'
         role:
           $ref: '#/components/schemas/RoleType'
         password:
-          type: string
-          format: password
-          description: 'User password to access account'
-          example: '1234567890'
-          maxLength: 255
-          minLength: 6
+          $ref: '#/components/schemas/Password'
+    SigninForm:
+      type: object
+      required:
+        - 'username'
+        - 'password'
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        password:
+          $ref: '#/components/schemas/Password'
+    Email:
+      type: string
+      format: email
+      description: 'User e-mail for contact and to redefine lost password [UNIQUE]'
+      example: 'example@example.com'
+    Username:
+      type: string
+      description: 'Name used to refer User [UNIQUE]'
+      example: 'ForrestGump1'
+      maxLength: 128
+      minLength: 6
+    Password:
+      type: string
+      format: password
+      description: 'User password to access account'
+      example: '1234567890'
+      maxLength: 255
+      minLength: 6
     RoleType:
       type: string
       enum:
@@ -63,3 +100,19 @@ components:
         - 'COMPANY'
         - 'CLIENT'
       description: 'User permissions'
+    JWTResponse:
+      type: object
+      required:
+        - 'token'
+        - 'type'
+        - 'userInfo'
+        - 'authorities'
+      properties:
+        token:
+          type: string
+        type:
+          type: string
+        userInfo:
+          type: string
+        authorities:
+          type: string

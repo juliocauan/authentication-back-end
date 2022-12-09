@@ -25,6 +25,8 @@ paths:
       responses:
         '200':
           description: 'Registered successfully!'
+        '400':
+          description: 'Bad Request in form! Could not register new User!'
 
   /api/auth/signin:
     post:
@@ -46,6 +48,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JWTResponse'
+        '401':
+          description: 'Unauthorized!'
 
 components:
   schemas:

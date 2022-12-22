@@ -15,7 +15,7 @@ paths:
         - 'auth'
       summary: 'Signup new Account'
       description: 'Check existing and Save User to database'
-      operationId: addUser
+      operationId: signupUser
       requestBody:
         required: true
         content:
@@ -34,7 +34,7 @@ paths:
         - 'auth'
       summary: 'Login an Account'
       description: 'Authenticate {username, password} and Create JWT string with a secret'
-      operationId: authenticateUser
+      operationId: signinUser
       requestBody:
         required: true
         content:

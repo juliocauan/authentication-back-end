@@ -66,7 +66,7 @@ components:
         email:
           $ref: '#/components/schemas/Email'
         role:
-          $ref: '#/components/schemas/RoleType'
+          $ref: '#/components/schemas/EnumRole'
         password:
           $ref: '#/components/schemas/Password'
     SigninForm:
@@ -97,13 +97,13 @@ components:
       example: '1234567890'
       maxLength: 255
       minLength: 6
-    RoleType:
+    EnumRole:
       type: string
       enum:
-        - 'ADMIN'
-        - 'COMPANY'
-        - 'CLIENT'
-      description: 'User permissions'
+        - 'ROLE_ADMIN'
+        - 'ROLE_MODERATOR'
+        - 'ROLE_USER'
+      description: 'Client permissions'
     JWTResponse:
       type: object
       required:

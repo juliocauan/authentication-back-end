@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  datasource:
+    image: postgres:14.5-alpine
+    restart: always
+    env_file: .env
+    environment:
+      - POSTGRES_PASSWORD=${DB_ROOT_PASSWORD}
+      - POSTGRES_DB=${DB}
+      - POSTGRES_USER=${DB_USER}
+    ports:
+      - ${DB_LOCAL_PORT}:${DB_DOCKER_PORT}
+    volumes:
+      - ./docker-resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - datasource
+    ports:
+      - "9000:8080"
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
+
+volumes:
+  db:
+    name: authentication-db
+  
+networks:
+  backend:
+    driver: bridge

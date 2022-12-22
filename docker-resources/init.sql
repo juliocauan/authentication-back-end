@@ -26,5 +26,6 @@ INSERT INTO users(username, email, secret) VALUES
 INSERT INTO users(username, email, secret) VALUES
     ('Cauan', 'cauan@test.com', '$2a$10$ofEy..aODV5QleKty0kkJ.8UXdOXIdr/CeyXswcjJGBVYgxU296NK');
 
-INSERT INTO roles(name) VALUES ('ADMIN');
-INSERT INTO roles(name) VALUES ('USER');
+INSERT INTO roles(name) VALUES ('ROLE_ADMIN');
+INSERT INTO roles(name) VALUES ('ROLE_MODERATOR');
+INSERT INTO roles(name) VALUES ('ROLE_USER');

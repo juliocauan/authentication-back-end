@@ -31,7 +31,7 @@ services:
 
 volumes:
   db:
-    name: authentication-db
+    name: auth-db
   
 networks:
   backend:

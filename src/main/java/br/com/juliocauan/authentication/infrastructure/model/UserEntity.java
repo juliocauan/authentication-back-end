@@ -41,7 +41,7 @@ public final class UserEntity implements User{
 	private String email;
 
 	@NotBlank @Size(min = 8, max = 120)
-	private String secret;
+	private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "users_roles",

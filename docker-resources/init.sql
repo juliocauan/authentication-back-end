@@ -7,7 +7,7 @@ CREATE TABLE users
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(20) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
-    secret VARCHAR(120) NOT NULL
+    password VARCHAR(120) NOT NULL
 );
 CREATE TABLE roles
 (
@@ -21,9 +21,9 @@ CREATE TABLE users_roles
     PRIMARY KEY(user_id, role_id)
 );
 
-INSERT INTO users(username, email, secret) VALUES
+INSERT INTO users(username, email, password) VALUES
     ('Julio', 'julio@test.com', '$2a$10$ofEy..aODV5QleKty0kkJ.8UXdOXIdr/CeyXswcjJGBVYgxU296NK');
-INSERT INTO users(username, email, secret) VALUES
+INSERT INTO users(username, email, password) VALUES
     ('Cauan', 'cauan@test.com', '$2a$10$ofEy..aODV5QleKty0kkJ.8UXdOXIdr/CeyXswcjJGBVYgxU296NK');
 
 INSERT INTO roles(name) VALUES ('ROLE_ADMIN');

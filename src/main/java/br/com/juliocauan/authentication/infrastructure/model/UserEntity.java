@@ -31,7 +31,7 @@ import lombok.NoArgsConstructor;
 @Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class UserEntity implements User, UserDetails{
+public final class UserEntity implements User, UserDetails {
 	
 	private static final long serialVersionUID = 1L;
     

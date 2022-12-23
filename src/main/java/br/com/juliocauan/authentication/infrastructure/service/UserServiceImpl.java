@@ -7,14 +7,14 @@ import org.springframework.stereotype.Service;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.repository.UserJpaRepository;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     
     @Autowired
-	UserJpaRepository userRepository;
+	UserRepositoryImpl userRepository;
 
 	@Override
 	@Transactional

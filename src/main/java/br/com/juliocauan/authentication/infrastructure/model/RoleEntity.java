@@ -1,6 +1,7 @@
 package br.com.juliocauan.authentication.infrastructure.model;
 
 import org.openapitools.model.EnumRole;
+import org.springframework.security.core.GrantedAuthority;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import jakarta.persistence.Column;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class RoleEntity implements Role{
+public final class RoleEntity implements Role, GrantedAuthority {
     
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +31,10 @@ public final class RoleEntity implements Role{
     @Enumerated(EnumType.STRING)
 	@Column(length = 20)
     private EnumRole name;
+
+    @Override
+    public String getAuthority() {
+        return this.getName().getValue();
+    }
 
 }

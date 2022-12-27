@@ -1,17 +1,17 @@
-package br.com.juliocauan.authentication.infrastructure.service;
+package br.com.juliocauan.authentication.infrastructure.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import jakarta.transaction.Transactional;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDetailsService {
     
     @Autowired
 	UserRepositoryImpl userRepository;

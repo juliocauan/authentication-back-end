@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.security.jwt;
+package br.com.juliocauan.authentication.infrastructure.security.jwt;
 
 import java.util.Date;
 

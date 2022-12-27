@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.security.jwt;
+package br.com.juliocauan.authentication.infrastructure.security.jwt;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.security.service.UserServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

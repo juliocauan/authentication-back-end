@@ -8,7 +8,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.security.service.AuthenticationService;
+import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 public class TokenAuthFilter extends OncePerRequestFilter {
 
 	private final TokenUtils tokenUtils;
-	private final AuthenticationService authService;
+	private final UserDetailsServiceImpl authService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

@@ -9,13 +9,12 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import br.com.juliocauan.authentication.infrastructure.security.jwt.AuthEntryPoint;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.TokenAuthFilter;
-import br.com.juliocauan.authentication.infrastructure.security.service.AuthenticationService;
+import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 
 @Configuration
@@ -26,26 +25,21 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WebSecurityConfig {
     
-    private final AuthenticationService authService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
-    private final TokenAuthFilter authTokenFilter;
+    private final TokenAuthFilter tokenAuthFilter;
     
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(authService);
-        authProvider.setPasswordEncoder(passwordEncoder());
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder());
         return authProvider;
     }
     
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
     
     @Bean
@@ -54,7 +48,7 @@ public class WebSecurityConfig {
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()

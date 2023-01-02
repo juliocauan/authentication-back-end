@@ -53,7 +53,8 @@ public final class UserEntity implements User, UserDetails {
 	@JoinTable(name = "users_roles",
         joinColumns = @JoinColumn(referencedColumnName = "id", name = "user_id"),
         inverseJoinColumns = @JoinColumn(referencedColumnName = "id", name = "role_id"))
-	private final Set<RoleEntity> roles = new HashSet<>();
+	@Builder.Default
+	private Set<RoleEntity> roles = new HashSet<>();
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -97,7 +97,7 @@
 								<prependFormOrBodyParameters>true</prependFormOrBodyParameters>
 								<skipDefaultInterface>true</skipDefaultInterface>
 								<generateSupportingFiles>false</generateSupportingFiles>
-								<unhandledException>true</unhandledException>
+								<unhandledException>false</unhandledException>
 								<useSpringBoot3>true</useSpringBoot3>
 								<useTags>true</useTags>
 							</configOptions>

@@ -25,6 +25,10 @@ paths:
       responses:
         '200':
           description: 'Registered successfully!'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
         '400':
           description: 'Bad Request in form! Could not register new User!'
 
@@ -90,6 +94,7 @@ components:
         - 'username'
         - 'email'
         - 'password'
+        - 'roles'
       properties:
         username:
           $ref: '#/components/schemas/Username'
@@ -97,6 +102,11 @@ components:
           $ref: '#/components/schemas/Email'
         password:
           $ref: '#/components/schemas/Password'
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EnumRole'
     SigninForm:
       type: object
       required:
@@ -137,14 +147,32 @@ components:
       required:
         - 'token'
         - 'type'
-        - 'userInfo'
-        - 'authorities'
+        - 'userId'
+        - 'username'
+        - 'email'
+        - 'roles'
       properties:
         token:
           type: string
         type:
-          type: string
-        userInfo:
-          type: string
-        authorities:
-          type: string
+          $ref: '#/components/schemas/EnumToken'
+        userId:
+          $ref: '#/components/schemas/UserId'
+        username:
+          $ref: '#/components/schemas/Username'
+        email:
+          $ref: '#/components/schemas/Email'
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnumRole'
+    EnumToken:
+      type: string
+      enum:
+        - 'BEARER'
+    UserId:
+      type: integer
+      format: int64
+    MessageResponse:
+      type: string
+    

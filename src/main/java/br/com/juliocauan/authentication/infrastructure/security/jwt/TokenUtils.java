@@ -23,7 +23,7 @@ public class TokenUtils {
 		UserEntity user = (UserEntity) authentication.getPrincipal();
 		return Jwts.builder()
 				.setIssuer("Auth API")
-				.setSubject((user.getUsername()))
+				.setSubject(user.getUsername())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + expiration))
 				.signWith(SignatureAlgorithm.HS512, secret)

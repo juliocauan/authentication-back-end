@@ -56,6 +56,11 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -93,7 +98,7 @@
 								<disallowAdditionalPropertiesIfNotPresent>false</disallowAdditionalPropertiesIfNotPresent>
 								<documentationProvider>none</documentationProvider>
 								<interfaceOnly>true</interfaceOnly>
-								<openApiNullable>false</openApiNullable>
+								<openApiNullable>true</openApiNullable>
 								<prependFormOrBodyParameters>true</prependFormOrBodyParameters>
 								<skipDefaultInterface>true</skipDefaultInterface>
 								<generateSupportingFiles>false</generateSupportingFiles>

@@ -57,7 +57,7 @@ paths:
 
 components:
   schemas:
-    Error:
+    CustomError:
       type: object
       required:
         - code
@@ -73,8 +73,8 @@ components:
         fieldList:
           type: array
           items:
-            $ref: "#/components/schemas/ErrorField"
-    ErrorField:
+            $ref: "#/components/schemas/CustomErrorField"
+    CustomErrorField:
       type: object
       required:
         - code

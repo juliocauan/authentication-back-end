@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public final class TestController implements TestApi {
+public class TestController implements TestApi {
     
     @Override
     public ResponseEntity<String> _allAccess() {

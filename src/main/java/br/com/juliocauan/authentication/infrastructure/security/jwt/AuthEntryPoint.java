@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.infrastructure.security.jwt;
 
 import java.io.IOException;
 
-import org.openapitools.model.Error;
+import org.openapitools.model.CustomError;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 				response.setStatus(403);
 		
 				ObjectMapper mapper = new ObjectMapper();
-				response.getWriter().write(mapper.writeValueAsString(new Error()
+				response.getWriter().write(mapper.writeValueAsString(new CustomError()
 					.code(501)
 					.message("Bad Credentials!")
 					.trace(null)

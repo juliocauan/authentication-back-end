@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-public final class AuthController implements AuthApi {
+public class AuthController implements AuthApi {
 
 	private final TokenService tokenService;
 

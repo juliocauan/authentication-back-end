@@ -1,12 +1,10 @@
 package br.com.juliocauan.authentication.infrastructure.exception;
 
 import org.openapitools.model.CustomError;
-import org.openapitools.model.CustomErrorField;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -33,20 +31,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> handleEntityExists(EntityExistsException ex){
         responseError = init(101, ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
-    }
-    
-    //OPENAPI VALIDATION ERROR
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        responseError = init(102, ex);
-        ex.getFieldErrors().forEach(error -> {
-            CustomErrorField e = new CustomErrorField();
-            e.setField(error.getObjectName() + "." + error.getField());
-            e.setMessage(error.getDefaultMessage());
-            e.setCode(error.getCode());
-            responseError.addFieldListItem(e);
-        });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 

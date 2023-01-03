@@ -55,6 +55,36 @@ paths:
         '401':
           description: 'Unauthorized!'
 
+  /api/test/all:
+    get:
+      tags:
+        - 'test'
+      summary: 'Public Content'
+      description: 'Access enabled to anyone'
+      operationId: allAccess
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+  
+  /api/test/{ROLE}:
+    get:
+      tags:
+        - 'test'
+      summary: 'Restrict Content'
+      description: 'Access enabled to specific Role'
+      operationId: roleAccess
+      parameters:
+        - name: ROLE
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/EnumRole'
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+        '401':
+          description: 'Unauthorized!'
+
 components:
   schemas:
     CustomError:

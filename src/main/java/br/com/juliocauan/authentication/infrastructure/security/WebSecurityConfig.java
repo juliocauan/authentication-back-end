@@ -1,5 +1,6 @@
 package br.com.juliocauan.authentication.infrastructure.security;
 
+import org.openapitools.model.EnumRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,9 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
     private final TokenAuthFilter tokenAuthFilter;
+    private final String user = EnumRole.USER.getValue();
+    private final String admin = EnumRole.ADMIN.getValue();
+    private final String moderator = EnumRole.MODERATOR.getValue();
     
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -58,7 +62,10 @@ public class WebSecurityConfig {
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests()
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/test/**").permitAll()
+                .requestMatchers("/api/test/all").permitAll()
+                .requestMatchers(String.format("/api/test/%s", user)).hasAnyRole(user, moderator, admin)
+                .requestMatchers(String.format("/api/test/%s", moderator)).hasRole(moderator)
+                .requestMatchers(String.format("/api/test/%s", admin)).hasRole(admin)
             .anyRequest().authenticated();
         return http.build();
     }

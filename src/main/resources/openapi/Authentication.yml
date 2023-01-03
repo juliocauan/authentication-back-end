@@ -65,8 +65,12 @@ paths:
       responses:
         '200':
           description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
   
-  /api/test/{ROLE}:
+  /api/test/{role}:
     get:
       tags:
         - 'test'
@@ -74,7 +78,7 @@ paths:
       description: 'Access enabled to specific Role'
       operationId: roleAccess
       parameters:
-        - name: ROLE
+        - name: role
           in: path
           required: true
           schema:
@@ -82,6 +86,10 @@ paths:
       responses:
         '200':
           description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
         '401':
           description: 'Unauthorized!'
 

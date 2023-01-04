@@ -1,8 +1,5 @@
 package br.com.juliocauan.authentication.infrastructure.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.openapitools.model.EnumRole;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -14,7 +11,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,9 +31,6 @@ public final class RoleEntity implements Role, GrantedAuthority {
     @Enumerated(EnumType.STRING)
 	@Column(length = 20)
     private EnumRole name;
-
-    @ManyToMany(mappedBy = "roles")
-    private final Set<UserEntity> users = new HashSet<>();
 
     @Override
     public String getAuthority() {

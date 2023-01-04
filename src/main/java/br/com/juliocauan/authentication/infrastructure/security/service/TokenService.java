@@ -52,7 +52,7 @@ public final class TokenService {
 		userService.checkDuplicatedEmail(signupForm.getEmail());
 		UserEntity userEntity = UserMapper.formToEntityWithEncodedPassword(signupForm, encoder);
 		Set<RoleEntity> roles = new HashSet<>();
-		signupForm.getRoles().forEach(role -> roles.add(RoleMapper.domainToEntity(roleService.findByName(role))));
+		signupForm.getRoles().forEach(role -> roles.add(RoleMapper.domainToEntity(roleService.getByName(role))));
 		userEntity.setRoles(roles);
 		userService.save(userEntity);
     }

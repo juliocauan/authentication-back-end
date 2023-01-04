@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import br.com.juliocauan.authentication.infrastructure.security.jwt.AuthEntryPoint;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.TokenAuthFilter;
-import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import lombok.AllArgsConstructor;
 
 @Configuration
@@ -27,7 +27,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WebSecurityConfig {
     
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserServiceImpl userService;
     private final AuthEntryPoint unauthorizedHandler;
     private final TokenAuthFilter tokenAuthFilter;
     private final String user = EnumRole.USER.getValue();
@@ -37,7 +37,7 @@ public class WebSecurityConfig {
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setUserDetailsService(userService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

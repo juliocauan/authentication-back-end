@@ -1,20 +1,20 @@
 server:
-    port: ${SERVER_PORT}
+    port: ${TEST_SERVER_PORT}
     
 spring:
     config:
         import: optional:file:.env[.properties]
     datasource:
-        url: ${DB_LOCAL_URL}
-        username: ${DB_USER}
-        password: ${DB_ROOT_PASSWORD}
-        driver-class-name: ${DB_DRIVER_CLASS_NAME}
+        url: ${TEST_DB_LOCAL_URL}
+        username: ${TEST_DB_USER}
+        password: ${TEST_DB_ROOT_PASSWORD}
+        driver-class-name: ${TEST_DB_DRIVER_CLASS_NAME}
     mustache:  
         check-template-location: false
     jpa:
         hibernate:
-            ddl-auto: update
-        database-platform: ${DB_DIALECT}
+            ddl-auto: create
+        database-platform: ${TEST_DB_DIALECT}
         open-in-view: false
         show-sql: false
         defer-datasource-initialization: false

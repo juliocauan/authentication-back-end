@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.repository.RoleRepository;
@@ -18,7 +17,6 @@ public class RoleServiceTest extends TestContext {
     private final RoleServiceImpl roleService;
     private final RoleRepositoryImpl roleRepository;
 
-    @Autowired
     public RoleServiceTest(RoleServiceImpl roleService, RoleRepositoryImpl roleRepository) {
         this.roleService = roleService;
         this.roleRepository = roleRepository;

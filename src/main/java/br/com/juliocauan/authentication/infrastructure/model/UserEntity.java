@@ -35,7 +35,7 @@ public final class UserEntity implements User, UserDetails {
 	
 	private static final long serialVersionUID = 1L;
     
-	@Id
+	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -49,11 +49,11 @@ public final class UserEntity implements User, UserDetails {
 	@NotBlank @Size(min = 8, max = 120)
 	private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles",
         joinColumns = @JoinColumn(referencedColumnName = "id", name = "user_id"),
         inverseJoinColumns = @JoinColumn(referencedColumnName = "id", name = "role_id"))
-	@Builder.Default
+	@Builder.Default @EqualsAndHashCode.Exclude
 	private Set<RoleEntity> roles = new HashSet<>();
 
 	@Override

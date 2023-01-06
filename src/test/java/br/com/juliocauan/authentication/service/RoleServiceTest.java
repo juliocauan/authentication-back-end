@@ -9,6 +9,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -16,14 +17,17 @@ public class RoleServiceTest extends TestContext {
     
     private final RoleServiceImpl roleService;
     private final RoleRepositoryImpl roleRepository;
+    private final UserRepositoryImpl userRepository;
 
-    public RoleServiceTest(RoleServiceImpl roleService, RoleRepositoryImpl roleRepository) {
+    public RoleServiceTest(RoleServiceImpl roleService, RoleRepositoryImpl roleRepository, UserRepositoryImpl userRepository) {
         this.roleService = roleService;
         this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
     }
 
     @BeforeAll
     public void setup(){
+        userRepository.deleteAll();
         roleRepository.deleteAll();
         for(EnumRole name : EnumRole.values())
             roleRepository.save(RoleEntity.builder().name(name).build());

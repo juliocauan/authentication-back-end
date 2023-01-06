@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public final class RoleEntity implements Role, GrantedAuthority {
     
-    @Id
+	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Short id;
     

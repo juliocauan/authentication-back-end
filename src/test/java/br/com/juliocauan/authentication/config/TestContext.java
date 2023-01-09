@@ -25,9 +25,7 @@ import lombok.AllArgsConstructor;
 public class TestContext {
 
     private final UserRepositoryImpl userRepository;
-
     private final RoleRepositoryImpl roleRepository;
-
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
     

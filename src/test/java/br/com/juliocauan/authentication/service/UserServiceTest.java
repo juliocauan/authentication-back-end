@@ -122,6 +122,7 @@ public class UserServiceTest extends TestContext {
         Assertions.assertDoesNotThrow(() -> userService.save(entity));
     }
 
+    //TODO remove this test
     @Test
     public void givenInvalidFields_WhenSave_ThenConstraintViolationException(){
         entity.setUsername(invalidUsernameMin);

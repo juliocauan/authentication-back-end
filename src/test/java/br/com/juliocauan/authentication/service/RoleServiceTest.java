@@ -1,36 +1,27 @@
 package br.com.juliocauan.authentication.service;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 
 public class RoleServiceTest extends TestContext {
-    
+
     private final RoleServiceImpl roleService;
-    private final RoleRepositoryImpl roleRepository;
-    private final UserRepositoryImpl userRepository;
-
-    public RoleServiceTest(RoleServiceImpl roleService, RoleRepositoryImpl roleRepository, UserRepositoryImpl userRepository) {
+    
+    public RoleServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, RoleServiceImpl roleService) {
+        super(userRepository, roleRepository, objectMapper, mockMvc);
         this.roleService = roleService;
-        this.roleRepository = roleRepository;
-        this.userRepository = userRepository;
-    }
-
-    @BeforeAll
-    public void setup(){
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
-        for(EnumRole name : EnumRole.values())
-            roleRepository.save(RoleEntity.builder().name(name).build());
     }
 
     @Test

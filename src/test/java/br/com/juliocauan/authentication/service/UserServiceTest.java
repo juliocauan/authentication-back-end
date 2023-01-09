@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.test.web.servlet.MockMvc;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
@@ -23,8 +25,6 @@ import jakarta.validation.ConstraintViolationException;
 public class UserServiceTest extends TestContext {
 
     private final UserServiceImpl userService;
-    private final UserRepositoryImpl userRepository;
-    private final RoleRepositoryImpl roleRepository;
 
     private final String password = "12345678";
     private final String username = "testUsername";
@@ -45,25 +45,21 @@ public class UserServiceTest extends TestContext {
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
 
-    public UserServiceTest(UserServiceImpl userService, UserRepositoryImpl userRepository,
-            RoleRepositoryImpl roleRepository) {
+    public UserServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, UserServiceImpl userService) {
+        super(userRepository, roleRepository, objectMapper, mockMvc);
         this.userService = userService;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
     }
 
-    @BeforeAll
+    @Override @BeforeAll
     public void setup(){
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
-        for(EnumRole name : EnumRole.values())
-            roleRepository.save(RoleEntity.builder().name(name).build());
-        roleRepository.findAll().forEach(role -> roles.add(role));
+        super.setup();
+        getRoleRepository().findAll().forEach(role -> roles.add(role));
     }
 
     @BeforeEach
     public void standard(){
-        userRepository.deleteAll();
+        getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .email(email)
             .password(password)
@@ -79,7 +75,7 @@ public class UserServiceTest extends TestContext {
 
     @Test
     public void givenPresentUsername_WhenGetByUsername_ThenEqualsUser(){
-        userRepository.save(entity);
+        getUserRepository().save(entity);
         Assertions.assertEquals(entity, userService.getByUsername(username));
     }
 
@@ -90,7 +86,7 @@ public class UserServiceTest extends TestContext {
 
     @Test
     public void givenDuplicatedUsername_WhenCheckDuplicatedUsername_ThenEntityExistsException(){
-        userRepository.save(entity);
+        getUserRepository().save(entity);
         Assertions.assertThrows(EntityExistsException.class, () -> userService.checkDuplicatedUsername(username), errorDuplicatedUsername);
     }
 
@@ -101,7 +97,7 @@ public class UserServiceTest extends TestContext {
 
     @Test
     public void givenDuplicatedEmail_WhenCheckDuplicatedEmail_ThenEntityExistsException(){
-        userRepository.save(entity);
+        getUserRepository().save(entity);
         Assertions.assertThrows(EntityExistsException.class, () -> userService.checkDuplicatedEmail(email), errorDuplicatedEmail);
     }
 
@@ -112,7 +108,7 @@ public class UserServiceTest extends TestContext {
 
     @Test
     public void givenPresentUsername_WhenLoadUserByUsername_ThenUser(){
-        userRepository.save(entity);
+        getUserRepository().save(entity);
         Assertions.assertEquals(entity, userService.loadUserByUsername(username));
     }
 

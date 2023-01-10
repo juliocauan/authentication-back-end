@@ -22,14 +22,18 @@ CREATE TABLE users_roles
 );
 
 INSERT INTO users(username, email, password) VALUES
-    ('Julio', 'julio@test.com', '$2a$10$ofEy..aODV5QleKty0kkJ.8UXdOXIdr/CeyXswcjJGBVYgxU296NK');
-INSERT INTO users(username, email, password) VALUES
-    ('Cauan', 'cauan@test.com', '$2a$10$ofEy..aODV5QleKty0kkJ.8UXdOXIdr/CeyXswcjJGBVYgxU296NK');
+    ('Julio', 'julio@test.com', '$2a$10$e6H1Jgrft/scpmpzbMFO0uqF1gxqop73l5wOlwF30Aem6Tty1nI2G'),
+    ('Cauan', 'cauan@test.com', '2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq'),
+    ('Guest', 'guest@test.br', '$2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq');
 
-INSERT INTO roles(name) VALUES ('ROLE_ADMIN');
-INSERT INTO roles(name) VALUES ('ROLE_MODERATOR');
-INSERT INTO roles(name) VALUES ('ROLE_USER');
+INSERT INTO roles(name) VALUES
+    ('ROLE_ADMIN'),
+    ('ROLE_MANAGER'),
+    ('ROLE_USER');
 
-INSERT INTO users_roles(user_id, role_id) VALUES (1, 1);
-INSERT INTO users_roles(user_id, role_id) VALUES (1, 2);
-INSERT INTO users_roles(user_id, role_id) VALUES (2, 3);
+INSERT INTO users_roles(user_id, role_id) VALUES 
+    (1, 2),
+    (2, 1),
+    (2, 2),
+    (2, 3),
+    (3, 1);

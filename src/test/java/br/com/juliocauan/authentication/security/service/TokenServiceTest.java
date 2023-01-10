@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.JWTResponse;
+import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +26,7 @@ public class TokenServiceTest extends TestContext {
 
     private final TokenService tokenService;
     private final SignupForm signupForm = new SignupForm();
+    private final SigninForm signinForm = new SigninForm();
 
     private final String password = "12345678";
     private final String username = "testUsername";
@@ -52,6 +55,7 @@ public class TokenServiceTest extends TestContext {
     public void standard(){
         getUserRepository().deleteAll();
         signupForm.email(email).username(username).password(password).roles(roles);
+        signinForm.username(username).password(password);
         entity = UserEntity.builder()
             .email(email)
             .keyPassword(password)
@@ -77,6 +81,12 @@ public class TokenServiceTest extends TestContext {
         signupForm.username(usernameNotPresent).email(email);
         Assertions.assertThrows(EntityExistsException.class, () -> tokenService.validateAndRegisterNewUser(signupForm),
             errorEmailDuplicated);
+    }
+
+    @Test
+    public void givenValidSigninForm_WhenAuthenticate_ThenJWTResponse(){
+        tokenService.validateAndRegisterNewUser(signupForm);
+        Assertions.assertInstanceOf(JWTResponse.class, tokenService.authenticate(signinForm));
     }
 
 }

@@ -1,13 +1,20 @@
 package br.com.juliocauan.authentication.infrastructure.exception;
 
-import org.openapitools.model.CustomError;
+import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.openapitools.model.ApiError;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.StringUtils;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import jakarta.persistence.EntityExistsException;
@@ -17,48 +24,59 @@ import jakarta.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private CustomError responseError;
+    private ApiError responseError;
 
-    private CustomError init(int code, Exception ex){
-        CustomError error = new CustomError();
-        error.setCode(code);
-        error.setTrace(stackTraceString(ex.getStackTrace().toString()));
+    private ApiError init(Exception ex){
+        ApiError error = new ApiError();
+        error.setTimestamp(OffsetDateTime.now());
         error.setMessage(ex.getMessage());
         return error;
     }
 
-    private String stackTraceString(String elements){
-        return StringUtils.trimTrailingCharacter(elements, '\n');
+    @Override
+    @Nullable
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+            HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        responseError = init(ex);
+        List<String> fieldErrors = ex.getBindingResult()
+            .getFieldErrors()
+            .stream()
+            .map(field -> field.getField() + ", " + field.getDefaultMessage())
+            .collect(Collectors.toList());
+        List<String> globalErrors = ex.getBindingResult()
+            .getGlobalErrors()
+            .stream()
+            .map(field -> field.getObjectName() + ", " + field.getDefaultMessage())
+            .collect(Collectors.toList());
+
+        responseError.setGlobalErrors(globalErrors);
+        responseError.setFieldErrors(fieldErrors);
+    
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> handleEntityExists(EntityExistsException ex){
-        responseError = init(101, ex);
+        responseError = init(ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex){
-        responseError = init(102, ex);
+        responseError = init(ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex){
-        responseError = init(201, ex);
-        responseError.message("Invalid User or Password!");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseError);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex){
-        responseError = init(301, ex);
+        responseError = init(ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException ex){
-        responseError = init(302, ex);
+        responseError = init(ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
     }
 

@@ -1,8 +1,9 @@
 package br.com.juliocauan.authentication.infrastructure.security.jwt;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
 
-import org.openapitools.model.CustomError;
+import org.openapitools.model.ApiError;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -24,11 +25,9 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
 		ObjectMapper mapper = new ObjectMapper();
-		response.getWriter().write(mapper.writeValueAsString(new CustomError()
-			.code(100)
-			.message("Bad Credentials!")
-			.trace(null)
-			.fieldList(null)));
+		response.getWriter().write(mapper.writeValueAsString(new ApiError()
+			.message("Not Allowed!")
+			.timestamp(OffsetDateTime.now())));
 	}
 
 }

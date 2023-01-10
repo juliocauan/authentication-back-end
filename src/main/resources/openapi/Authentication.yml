@@ -95,36 +95,25 @@ paths:
 
 components:
   schemas:
-    CustomError:
+    ApiError:
       type: object
       required:
-        - code
+        - timestamp
         - message
-        - trace
       properties:
-        code:
-          type: integer
+        timestamp:
+          type: string
+          format: date-time
         message:
           type: string
-        trace:
-          type: string
-        fieldList:
+        fieldErrors:
           type: array
           items:
-            $ref: "#/components/schemas/CustomErrorField"
-    CustomErrorField:
-      type: object
-      required:
-        - code
-        - message
-        - field
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-        field:
-          type: string
+            type: string
+        globalErrors:
+          type: array
+          items:
+            type: string
 
     SignupForm:
       type: object

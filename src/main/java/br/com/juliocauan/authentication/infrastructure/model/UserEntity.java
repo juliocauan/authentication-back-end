@@ -39,15 +39,15 @@ public final class UserEntity implements User, UserDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank @Size(min = 6, max = 20) @Column(unique = true)
-	private String username;
+    @NotBlank @Size(min = 6, max = 20) @Column(unique = true, name = "username")
+	private String accessName;
 
 	@Email
 	@NotBlank @Size(max = 50) @Column(unique = true)
 	private String email;
 
-	@NotBlank @Size(min = 8, max = 120)
-	private String password;
+	@NotBlank @Size(min = 8, max = 120) @Column(name = "password")
+	private String keyPassword;
 
     @ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles",
@@ -58,7 +58,15 @@ public final class UserEntity implements User, UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return roles;
+		return this.roles;
+	}
+	@Override
+	public String getPassword() {
+		return this.keyPassword;
+	}
+	@Override
+	public String getUsername() {
+		return this.accessName;
 	}
 	@Override
 	public boolean isAccountNonExpired() {

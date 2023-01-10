@@ -17,26 +17,28 @@ public class TokenUtils {
 	private String secret;
 
 	@Value("${auth.jwt.expiration}")
-	private long expiration;
+	private Long expiration;
 
 	public String generateToken(Authentication authentication) {
 		UserEntity user = (UserEntity) authentication.getPrincipal();
+		Date date = new Date();
+		Date expirationDate = new Date(date.getTime() + expiration);
 		return Jwts.builder()
 				.setIssuer("Auth API")
 				.setSubject(user.getUsername())
-				.setIssuedAt(new Date())
-				.setExpiration(new Date((new Date()).getTime() + expiration))
+				.setIssuedAt(date)
+				.setExpiration(expirationDate)
 				.signWith(SignatureAlgorithm.HS512, secret)
 				.compact();
 	}
 
 	public String getUsername(String token) {
-		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parser().setSigningKey(this.secret).parseClaimsJws(token).getBody().getSubject();
 	}
 
 	public Boolean isTokenValid(String authToken) {
 		try {
-			Jwts.parser().setSigningKey(secret).parseClaimsJws(authToken);
+			Jwts.parser().setSigningKey(this.secret).parseClaimsJws(authToken);
 			return Boolean.TRUE;
 		} catch (Exception e) {
 			return Boolean.FALSE;

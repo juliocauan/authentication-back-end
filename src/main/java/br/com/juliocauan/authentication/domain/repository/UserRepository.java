@@ -5,7 +5,7 @@ import java.util.Optional;
 import br.com.juliocauan.authentication.domain.model.User;
 
 public interface UserRepository {
-    Boolean existsByUsername(String username);
+    Boolean existsByAccessName(String accessName);
     Boolean existsByEmail(String email);
-    Optional<User> findByUsername(String username);
+    Optional<User> findByAccessName(String accessName);
 }

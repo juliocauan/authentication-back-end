@@ -3,6 +3,7 @@ package br.com.juliocauan.authentication.infrastructure.security;
 import org.openapitools.model.EnumRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -21,8 +22,8 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableMethodSecurity(
-    securedEnabled = true,
-    jsr250Enabled = true,
+    // securedEnabled = true,
+    // jsr250Enabled = true,
     prePostEnabled = true)
 @AllArgsConstructor
 public class WebSecurityConfig {
@@ -61,7 +62,8 @@ public class WebSecurityConfig {
             .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests()
-                .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
                 .requestMatchers("/api/test/all").permitAll()
                 .requestMatchers(String.format("/api/test/%s", user)).hasAnyRole(user, moderator, admin)
                 .requestMatchers(String.format("/api/test/%s", moderator)).hasRole(moderator)

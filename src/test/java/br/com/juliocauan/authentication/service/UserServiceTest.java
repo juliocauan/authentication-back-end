@@ -62,8 +62,8 @@ public class UserServiceTest extends TestContext {
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .email(email)
-            .password(password)
-            .username(username)
+            .keyPassword(password)
+            .accessName(username)
             .roles(roles)
         .build();
     }
@@ -125,13 +125,13 @@ public class UserServiceTest extends TestContext {
     //TODO remove this test
     @Test
     public void givenInvalidFields_WhenSave_ThenConstraintViolationException(){
-        entity.setUsername(invalidUsernameMin);
+        entity.setAccessName(invalidUsernameMin);
         Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
 
-        entity.setUsername(invalidUsernameMax);
+        entity.setAccessName(invalidUsernameMax);
         Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
 
-        entity.setUsername(username);
+        entity.setAccessName(username);
 
         entity.setEmail(invalidEmailMax);
         Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
@@ -141,13 +141,13 @@ public class UserServiceTest extends TestContext {
 
         entity.setEmail(email);
 
-        entity.setPassword(invalidPasswordBlank);
+        entity.setKeyPassword(invalidPasswordBlank);
         Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
         
-        entity.setPassword(invalidPasswordMax);
+        entity.setKeyPassword(invalidPasswordMax);
         Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
         
-        entity.setPassword(invalidPasswordMin);
+        entity.setKeyPassword(invalidPasswordMin);
         Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity)).printStackTrace();;
     }
     

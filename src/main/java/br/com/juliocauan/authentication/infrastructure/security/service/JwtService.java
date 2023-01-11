@@ -1,6 +1,5 @@
 package br.com.juliocauan.authentication.infrastructure.security.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,9 +32,9 @@ public final class JwtService {
 
   private final AuthenticationManager authenticationManager;
   private final JwtProvider jwtProvider;
+  private final PasswordEncoder encoder;
   private final UserServiceImpl userService;
   private final RoleServiceImpl roleService;
-  private final PasswordEncoder encoder;
 
   public JWTResponse authenticate(SigninForm signinForm) {
     Authentication auth = authenticationManager.authenticate(parseAsAuthToken(signinForm));
@@ -51,10 +50,9 @@ public final class JwtService {
   public void validateAndRegisterNewUser(SignupForm signupForm) {
     userService.checkDuplicatedUsername(signupForm.getUsername());
     userService.checkDuplicatedEmail(signupForm.getEmail());
-    UserEntity userEntity = UserMapper.formToEntityWithEncodedPassword(signupForm, encoder);
-    Set<RoleEntity> roles = new HashSet<>();
-    signupForm.getRoles().forEach(role -> roles.add(RoleMapper.domainToEntity(roleService.getByName(role))));
-    userEntity.setRoles(roles);
+    Set<RoleEntity> roles = signupForm.getRoles().stream()
+      .map(role -> RoleMapper.domainToEntity(roleService.getByName(role))).collect(Collectors.toSet());
+    UserEntity userEntity = UserMapper.formToEntity(signupForm, roles, encoder);
     userService.save(userEntity);
   }
 

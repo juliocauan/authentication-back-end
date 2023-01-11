@@ -17,5 +17,5 @@ public class RoleServiceImpl implements RoleService {
     public RoleRepository getRepository() {
         return roleRepository;
     }
-    
+
 }

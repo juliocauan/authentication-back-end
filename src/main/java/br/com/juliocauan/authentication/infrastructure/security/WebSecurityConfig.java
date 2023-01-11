@@ -32,11 +32,11 @@ public class WebSecurityConfig {
     
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
-    private final JwtAuthenticationFilter tokenAuthFilter;
+    private final JwtAuthenticationFilter jwtAuthFilter;
     
     private final String user = EnumRole.USER.getValue();
     private final String admin = EnumRole.ADMIN.getValue();
-    private final String moderator = EnumRole.MODERATOR.getValue();
+    private final String moderator = EnumRole.MANAGER.getValue();
     
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -50,7 +50,7 @@ public class WebSecurityConfig {
     AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
-    
+
     @Bean
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -58,20 +58,21 @@ public class WebSecurityConfig {
     
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors().and()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-            .addFilterBefore(tokenAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests()
-            .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/auth/signin").permitAll()
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http.authenticationProvider(authenticationProvider());
+        http.cors().and().csrf().disable();
+        
+        http.authorizeHttpRequests((authorize) -> authorize
+            .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers("/api/test/all").permitAll()
-                .requestMatchers(String.format("/api/test/%s", user)).hasAnyRole(user, moderator, admin)
-                .requestMatchers(String.format("/api/test/%s", moderator)).hasRole(moderator)
-                .requestMatchers(String.format("/api/test/%s", admin)).hasRole(admin)
-            .anyRequest().authenticated();
+                .requestMatchers("/api/test/" + user).hasAnyRole(user, moderator, admin)
+                .requestMatchers("/api/test/" + moderator).hasRole(moderator)
+                .requestMatchers("/api/test/" + admin).hasRole(admin)
+            .anyRequest().authenticated());
+
         return http.build();
     }
 }

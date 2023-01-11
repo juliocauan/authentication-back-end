@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class AuthenticationApplicationTests {
 
 	@Test
-	void contextLoads() {
-		Assertions.assertTrue(true);
-	}
+		void contextLoads() {
+			Assertions.assertTrue(true);
+		}
 
 }

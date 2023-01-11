@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 
+//TODO test this
 public abstract class RoleMapper {
     
     public static RoleEntity domainToEntity(Role model) {

@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +13,11 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
+//TODO test this
 public class JwtProvider {
 
-	@Value("${auth.jwt.secret}")
-	private String jwtSecret;
-
-	@Value("${auth.jwt.expiration}")
-	private Long jwtExpirationInMs;
-
-	private SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	private final Long jwtExpirationInMs = (long) 86400000;
+	private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 	public String generateToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
@@ -36,7 +31,7 @@ public class JwtProvider {
 				.compact();
 	}
 
-	public String getUserUsernameFromJWT(String token) {
+	public String getUsernameFromJWT(String token) {
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
 	}
 

@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
+//TODO test this
 public class AuthController implements AuthApi {
 
 	private final JwtService tokenService;

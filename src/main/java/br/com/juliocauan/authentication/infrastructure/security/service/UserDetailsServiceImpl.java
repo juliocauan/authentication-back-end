@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-//TODO test this
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepositoryImpl userRepository;
@@ -22,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User NOT Found"));
+            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
         return UserMapper.domainToPrincipal(user);
     }
     

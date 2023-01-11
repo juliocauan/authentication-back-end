@@ -12,12 +12,12 @@ public interface UserService {
 	void save(User user);
 
     default User getByUsername(String username){
-        return getRepository().findByAccessName(username)
+        return getRepository().findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 	}
 
 	default void checkDuplicatedUsername(String username) {
-		if (getRepository().existsByAccessName(username))
+		if (getRepository().existsByUsername(username))
 			throw new EntityExistsException("Username is already taken!");
     }
 

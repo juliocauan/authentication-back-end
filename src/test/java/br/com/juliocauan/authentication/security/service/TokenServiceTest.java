@@ -19,12 +19,12 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.security.service.TokenService;
+import br.com.juliocauan.authentication.infrastructure.security.service.JwtService;
 import jakarta.persistence.EntityExistsException;
 
 public class TokenServiceTest extends TestContext {
 
-    private final TokenService tokenService;
+    private final JwtService tokenService;
     private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
 
@@ -40,7 +40,7 @@ public class TokenServiceTest extends TestContext {
     private Set<EnumRole> roles = new HashSet<>();
 
     public TokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, TokenService tokenService) {
+            ObjectMapper objectMapper, MockMvc mockMvc, JwtService tokenService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.tokenService = tokenService;
     }
@@ -58,8 +58,8 @@ public class TokenServiceTest extends TestContext {
         signinForm.username(username).password(password);
         entity = UserEntity.builder()
             .email(email)
-            .keyPassword(password)
-            .accessName(username)
+            .password(password)
+            .username(username)
             .roles(null)
         .build();
     }

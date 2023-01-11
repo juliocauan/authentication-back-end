@@ -9,6 +9,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,11 +17,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import br.com.juliocauan.authentication.infrastructure.security.jwt.AuthEntryPoint;
-import br.com.juliocauan.authentication.infrastructure.security.jwt.TokenAuthFilter;
-import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtAuthenticationFilter;
+import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 
 @Configuration
+@EnableWebSecurity
 @EnableMethodSecurity(
     // securedEnabled = true,
     // jsr250Enabled = true,
@@ -28,9 +30,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WebSecurityConfig {
     
-    private final UserServiceImpl userService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
-    private final TokenAuthFilter tokenAuthFilter;
+    private final JwtAuthenticationFilter tokenAuthFilter;
+    
     private final String user = EnumRole.USER.getValue();
     private final String admin = EnumRole.ADMIN.getValue();
     private final String moderator = EnumRole.MODERATOR.getValue();
@@ -38,7 +41,7 @@ public class WebSecurityConfig {
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userService);
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }

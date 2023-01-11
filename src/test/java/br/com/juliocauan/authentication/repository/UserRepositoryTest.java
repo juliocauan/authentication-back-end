@@ -42,8 +42,8 @@ public class UserRepositoryTest extends TestContext {
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .email(email)
-            .keyPassword(password)
-            .accessName(username)
+            .password(password)
+            .username(username)
             .roles(roles)
         .build();
     }
@@ -51,12 +51,12 @@ public class UserRepositoryTest extends TestContext {
     @Test
     public void givenPresentUsername_WhenExistsByUsername_ThenTrue(){
         getUserRepository().save(entity);
-        Assertions.assertTrue(getUserRepository().existsByAccessName(username));
+        Assertions.assertTrue(getUserRepository().existsByUsername(username));
     }
 
     @Test
     public void givenNotPresentUsername_WhenExistsByUsername_ThenFalse(){
-        Assertions.assertFalse(getUserRepository().existsByAccessName(username));
+        Assertions.assertFalse(getUserRepository().existsByUsername(username));
     }
 
     @Test
@@ -73,12 +73,12 @@ public class UserRepositoryTest extends TestContext {
     @Test
     public void givenPresentUsername_WhenFindByUsername_ThenUser(){
         getUserRepository().save(entity);
-        Assertions.assertEquals(entity, getUserRepository().findByAccessName(username).get());
+        Assertions.assertEquals(entity, getUserRepository().findByUsername(username).get());
     }
 
     @Test
     public void givenNotPresentUsername_WhenFindByUsername_ThenUserNotPresent(){
-        Assertions.assertFalse(getUserRepository().findByAccessName(username).isPresent());
+        Assertions.assertFalse(getUserRepository().findByUsername(username).isPresent());
     }
 
 }

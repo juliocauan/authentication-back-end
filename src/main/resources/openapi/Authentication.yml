@@ -174,21 +174,15 @@ components:
       required:
         - 'token'
         - 'type'
-        - 'userId'
         - 'username'
-        - 'email'
         - 'roles'
       properties:
         token:
           type: string
         type:
           $ref: '#/components/schemas/EnumToken'
-        userId:
-          $ref: '#/components/schemas/UserId'
         username:
           $ref: '#/components/schemas/Username'
-        email:
-          $ref: '#/components/schemas/Email'
         roles:
           type: array
           items:

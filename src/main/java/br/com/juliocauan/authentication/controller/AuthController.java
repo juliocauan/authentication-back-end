@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.security.service.TokenService;
+import br.com.juliocauan.authentication.infrastructure.security.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthController implements AuthApi {
 
-	private final TokenService tokenService;
+	private final JwtService tokenService;
 
   @Override
   public ResponseEntity<JWTResponse> _signinUser(@Valid SigninForm signinForm) {

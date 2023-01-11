@@ -4,12 +4,12 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,28 +18,29 @@ import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor
-public class TokenAuthFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	private final TokenUtils tokenUtils;
-	private final UserServiceImpl userService;
+	private final JwtProvider jwtProvider;
+	private final UserDetailsServiceImpl userDetailsService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		String token = parseToken(request);
-		if (tokenUtils.isTokenValid(token)) authenticateUser(token, request);
+		String token = getJwtFromRequest(request);
+		if (jwtProvider.isTokenValid(token)) authenticateUser(token, request);
 		filterChain.doFilter(request, response);
 	}
 
     private void authenticateUser(String token, HttpServletRequest request) {
-		UserEntity userEntity = userService.loadUserByUsername(tokenUtils.getUsername(token));
+		String username = jwtProvider.getUserUsernameFromJWT(token);
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-				userEntity, null, userEntity.getAuthorities());
+			userDetails, null, userDetails.getAuthorities());
 		authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-	private String parseToken(HttpServletRequest request) {
+	private String getJwtFromRequest(HttpServletRequest request) {
 		String token = request.getHeader("Authorization");
         if(token == null || token.isEmpty() || !token.startsWith("Bearer ")) return null;
         return token.substring(7);

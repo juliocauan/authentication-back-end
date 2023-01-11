@@ -1,7 +1,10 @@
 package br.com.juliocauan.authentication.domain.model;
 
+import java.util.Set;
+
 public interface User {
-    String getAccessName();
+    String getUsername();
     String getEmail();
-    String getKeyPassword();
+    String getPassword();
+    Set<? extends Role> getRoles();
 }

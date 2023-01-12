@@ -110,10 +110,6 @@ components:
           type: array
           items:
             type: string
-        globalErrors:
-          type: array
-          items:
-            type: string
 
     SignupForm:
       type: object

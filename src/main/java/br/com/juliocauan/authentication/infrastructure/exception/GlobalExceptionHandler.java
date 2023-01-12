@@ -39,19 +39,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         responseError = init(ex);
+
         List<String> fieldErrors = ex.getBindingResult()
             .getFieldErrors()
             .stream()
-            .map(field -> field.getField() + ", " + field.getDefaultMessage())
-            .collect(Collectors.toList());
-        List<String> globalErrors = ex.getBindingResult()
-            .getGlobalErrors()
-            .stream()
-            .map(field -> field.getObjectName() + ", " + field.getDefaultMessage())
+            .map(field -> field.getField() + ": " + field.getDefaultMessage())
             .collect(Collectors.toList());
 
-        responseError.setGlobalErrors(globalErrors);
         responseError.setFieldErrors(fieldErrors);
+        responseError.setMessage("Validation Error");
     
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }

@@ -47,7 +47,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             .collect(Collectors.toList());
 
         responseError.setFieldErrors(fieldErrors);
-        responseError.setMessage("Validation Error");
+        responseError.setMessage("Validation Error!");
     
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }

@@ -14,20 +14,19 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-//TODO test this
 public class AuthController implements AuthApi {
 
-	private final JwtService tokenService;
+	private final JwtService jwtService;
 
   @Override
   public ResponseEntity<JWTResponse> _signinUser(@Valid SigninForm signinForm) {
-    JWTResponse response = tokenService.authenticate(signinForm);
+    JWTResponse response = jwtService.authenticate(signinForm);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
 	@Override
   public ResponseEntity<String> _signupUser(@Valid SignupForm signupForm) {
-    tokenService.validateAndRegisterNewUser(signupForm);
+    jwtService.validateAndRegisterNewUser(signupForm);
     return ResponseEntity.status(HttpStatus.OK).body("User registered successfully!");
   }
 

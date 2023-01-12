@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.infrastructure.security.jwt;
 
 import java.io.IOException;
-import java.time.OffsetDateTime;
 
 import org.openapitools.model.ApiError;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,7 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 		ObjectMapper mapper = new ObjectMapper();
 		response.getWriter().write(mapper.writeValueAsString(new ApiError()
 			.message("Not Allowed!")
-			.timestamp(OffsetDateTime.now())));
+			.timestamp(null)));
 	}
 
 }

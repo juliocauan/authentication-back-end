@@ -4,16 +4,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasLength;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +29,11 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 public class AuthControllerTest extends TestContext {
 
+    private final AuthController authController;
+
     private final String urlSignup = "/api/auth/signup";
+    private final String urlSignin = "/api/auth/signin";
+
     private final String email = "test@email.com";
     private final String password = "1234567890";
     private final String username = "TestUsername";
@@ -40,13 +46,15 @@ public class AuthControllerTest extends TestContext {
     private final String errorDuplicatedEmail = "Email is already in use!";
 
     private final SignupForm signupForm = new SignupForm();
+    private final SigninForm signinForm = new SigninForm();
 
     private UserEntity entity;
     private Set<EnumRole> roles = new HashSet<>();
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc) {
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthController authController) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
+        this.authController = authController;
     }
 
     @Override @BeforeAll
@@ -65,6 +73,7 @@ public class AuthControllerTest extends TestContext {
             .roles(null)
         .build();
         signupForm.email(email).password(password).username(username).roles(roles);
+        signinForm.username(username).password(password);
     }
 
     @Test
@@ -102,6 +111,38 @@ public class AuthControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorDuplicatedEmail));
+    }
+
+    @Test
+    public void givenValidSigninForm_WhenAuthenticate_ThenJwtResponse() throws Exception{
+        authController._signupUser(signupForm);
+
+        getMockMvc().perform(
+            post(urlSignin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signinForm)))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token", hasLength(140)))
+            .andExpect(jsonPath("$.type").value("BEARER"))
+            .andExpect(jsonPath("$.username").value(username))
+            .andExpect(jsonPath("$.roles", hasSize(roles.size())));
+
+    }
+
+    @Test
+    public void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized() throws Exception{
+        signinForm.username(usernameNotPresent).password(password);
+        getMockMvc().perform(
+            post(urlSignin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signinForm)))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value("Not Allowed!"));
+
     }
     
 }

@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-//TODO test this
 public final class RoleEntity implements Role {
     
 	@Id @EqualsAndHashCode.Exclude

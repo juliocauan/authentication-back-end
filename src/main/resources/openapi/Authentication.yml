@@ -179,19 +179,20 @@ components:
       format: email
       description: 'User e-mail for contact and to redefine lost password [UNIQUE]'
       example: 'example@example.com'
+      maxLength: 50
     Username:
       type: string
       description: 'Name used to refer User [UNIQUE]'
       example: 'ForrestGump1'
-      maxLength: 128
+      maxLength: 20
       minLength: 6
     Password:
       type: string
       format: password
       description: 'User password to access account'
       example: '1234567890'
-      maxLength: 255
-      minLength: 6
+      maxLength: 120
+      minLength: 8
     EnumRole:
       type: string
       enum:

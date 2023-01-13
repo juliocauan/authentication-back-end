@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 @Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-//TODO test this
 public final class UserEntity implements User {
     
 	@Id @EqualsAndHashCode.Exclude

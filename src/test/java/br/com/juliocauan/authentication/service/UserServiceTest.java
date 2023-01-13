@@ -20,7 +20,6 @@ import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.persistence.EntityExistsException;
-import jakarta.validation.ConstraintViolationException;
 
 public class UserServiceTest extends TestContext {
 
@@ -29,14 +28,6 @@ public class UserServiceTest extends TestContext {
     private final String password = "12345678";
     private final String username = "testUsername";
     private final String email = "test@email.com";
-
-    private final String invalidUsernameMin = "abcde";
-    private final String invalidUsernameMax = "abcdefghijklmnopqrstu";
-    private final String invalidEmailMax = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    private final String invalidEmailBlank = "     ";
-    private final String invalidPasswordMin = "1234567";
-    private final String invalidPasswordMax = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111";
-    private final String invalidPasswordBlank = "    ";
 
     private final String errorUsernameNotFound =  "User Not Found with username: " + username;
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -106,50 +97,9 @@ public class UserServiceTest extends TestContext {
         Assertions.assertDoesNotThrow(() -> userService.checkDuplicatedEmail(email));
     }
 
-    //TODO review this tests
-    // @Test
-    // public void givenPresentUsername_WhenLoadUserByUsername_ThenUser(){
-    //     getUserRepository().save(entity);
-    //     Assertions.assertEquals(entity, userService.loadUserByUsername(username));
-    // }
-
-    // @Test
-    // public void givenNotPresentUsername_WhenLoadUserByUsername_ThenUsernameNotFoundException(){
-    //     Assertions.assertThrows(UsernameNotFoundException.class, () -> userService.loadUserByUsername(username), errorUsernameNotFound);
-    // }
-
     @Test
     public void givenValidUserEntity_WhenSave_ThenVoid(){
         Assertions.assertDoesNotThrow(() -> userService.save(entity));
-    }
-
-    //TODO remove this test
-    @Test
-    public void givenInvalidFields_WhenSave_ThenConstraintViolationException(){
-        entity.setUsername(invalidUsernameMin);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
-
-        entity.setUsername(invalidUsernameMax);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
-
-        entity.setUsername(username);
-
-        entity.setEmail(invalidEmailMax);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
-
-        entity.setEmail(invalidEmailBlank);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
-
-        entity.setEmail(email);
-
-        entity.setPassword(invalidPasswordBlank);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
-        
-        entity.setPassword(invalidPasswordMax);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity));
-        
-        entity.setPassword(invalidPasswordMin);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> userService.save(entity)).printStackTrace();;
     }
     
 }

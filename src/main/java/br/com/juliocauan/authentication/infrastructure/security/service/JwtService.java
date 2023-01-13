@@ -28,7 +28,6 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-//TODO test this
 public final class JwtService {
 
   private final AuthenticationManager authenticationManager;

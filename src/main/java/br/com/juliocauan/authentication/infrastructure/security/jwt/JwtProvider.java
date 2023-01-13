@@ -13,7 +13,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
-//TODO test this
 public class JwtProvider {
 
 	private final Long jwtExpirationInMs = (long) 86400000;

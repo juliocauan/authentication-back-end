@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.TestApi;
-import org.openapitools.model.EnumRole;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +14,18 @@ public class TestController implements TestApi {
     }
 
     @Override
-    public ResponseEntity<String> _roleAccess(EnumRole role) {
-        return ResponseEntity.status(HttpStatus.OK).body(role.getValue() + " Board");
+    public ResponseEntity<String> _adminAccess() {
+        return ResponseEntity.status(HttpStatus.OK).body("Admin Board");
+    }
+
+    @Override
+    public ResponseEntity<String> _managerAccess() {
+        return ResponseEntity.status(HttpStatus.OK).body("Manager Board");
+    }
+
+    @Override
+    public ResponseEntity<String> _userAccess() {
+        return ResponseEntity.status(HttpStatus.OK).body("User Board");
     }
     
 }

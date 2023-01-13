@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.EnumToken;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -125,7 +126,7 @@ public class AuthControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.token", hasLength(140)))
-            .andExpect(jsonPath("$.type").value("BEARER"))
+            .andExpect(jsonPath("$.type").value(EnumToken.BEARER.getValue()))
             .andExpect(jsonPath("$.username").value(username))
             .andExpect(jsonPath("$.roles", hasSize(roles.size())));
 

@@ -31,15 +31,15 @@ public class TestControllerTest extends TestContext {
 
     private final String header = "Authorization";
     private final String urlAll = "/api/test/all";
-    private final String urlAdmin = "/api/test/" + EnumRole.ADMIN;
-    private final String urlManager = "/api/test/" + EnumRole.MANAGER;
-    private final String urlUser = "/api/test/" + EnumRole.USER;
+    private final String urlAdmin = "/api/test/admin";
+    private final String urlManager = "/api/test/manager";
+    private final String urlUser = "/api/test/user";
 
     private final String allOkMessage = "Public Content";
-    private final String adminOkMessage = EnumRole.ADMIN + " Board";
-    private final String managerOkMessage = EnumRole.MANAGER + " Board";
-    private final String userOkMessage = EnumRole.USER + " Board";
-    private final String errorMessage = "";
+    private final String adminOkMessage = "Admin Board";
+    private final String managerOkMessage = "Manager Board";
+    private final String userOkMessage = "User Board";
+    private final String notAllowedMessage = "Not Allowed!";
 
     private final String adminEmail = "admin@email.com";
     private final String adminUsername = "adminTest";
@@ -91,7 +91,7 @@ public class TestControllerTest extends TestContext {
     }
     
     @Test
-    public void givenAuthenticatedAdmin_WhenRoleAccess_ThenOkMessage() throws Exception{
+    public void givenAuthenticatedAdmin_WhenAdminAccess_ThenAdminOkMessage() throws Exception{
         getMockMvc().perform(
             get(urlAdmin)
                 .header(header, adminToken))
@@ -99,6 +99,80 @@ public class TestControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").value(adminOkMessage));
+    }
+    
+    @Test
+    public void givenAuthenticatedUserOrManager_WhenAdminAccess_ThenForbidden() throws Exception{
+        getMockMvc().perform(
+            get(urlAdmin)
+                .header(header, userToken))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+        getMockMvc().perform(
+            get(urlAdmin)
+                .header(header, managerToken))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+    
+    @Test
+    public void givenAuthenticatedManager_WhenManagerAccess_ThenManagerOkMessage() throws Exception{
+        getMockMvc().perform(
+            get(urlManager)
+                .header(header, managerToken))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").value(managerOkMessage));
+    }
+    
+    @Test
+    public void givenAuthenticatedUserOrAdmin_WhenManagerAccess_ThenForbidden() throws Exception{
+        getMockMvc().perform(
+            get(urlManager)
+                .header(header, userToken))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+        getMockMvc().perform(
+            get(urlManager)
+                .header(header, adminToken))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void givenAuthenticatedUserOrAdminOrManager_WhenUserAccess_ThenUserOkMessage() throws Exception{
+        getMockMvc().perform(
+            get(urlUser)
+                .header(header, userToken))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").value(userOkMessage));
+        getMockMvc().perform(
+            get(urlUser)
+                .header(header, managerToken))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").value(userOkMessage));
+        getMockMvc().perform(
+            get(urlUser)
+                .header(header, adminToken))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").value(userOkMessage));
+    }
+    
+    @Test
+    public void givenNonAuthenticated_WhenUserAccess_ThenUnauthorized() throws Exception{
+        getMockMvc().perform(
+            get(urlUser))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value(notAllowedMessage));
     }
     
 }

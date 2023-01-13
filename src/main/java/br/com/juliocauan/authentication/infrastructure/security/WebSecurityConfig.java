@@ -36,7 +36,7 @@ public class WebSecurityConfig {
     
     private final String user = EnumRole.USER.getValue();
     private final String admin = EnumRole.ADMIN.getValue();
-    private final String moderator = EnumRole.MANAGER.getValue();
+    private final String manager = EnumRole.MANAGER.getValue();
     
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -68,9 +68,9 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorize) -> authorize
             .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers("/api/test/all").permitAll()
-                .requestMatchers("/api/test/" + user).hasAnyAuthority(user, moderator, admin)
-                .requestMatchers("/api/test/" + moderator).hasAuthority(moderator)
-                .requestMatchers("/api/test/" + admin).hasAuthority(admin)
+                .requestMatchers("/api/test/user").hasAnyAuthority(user, manager, admin)
+                .requestMatchers("/api/test/manager").hasAuthority(manager)
+                .requestMatchers("/api/test/admin").hasAuthority(admin)
             .anyRequest().authenticated());
 
         return http.build();

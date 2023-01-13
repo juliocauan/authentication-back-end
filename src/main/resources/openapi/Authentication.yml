@@ -70,21 +70,15 @@ paths:
               schema:
                 type: string
   
-  /api/test/{role}:
+  /api/test/admin:
     get:
       tags:
         - 'test'
       security:
         - bearerAuth: []
-      summary: 'Restrict Content'
-      description: 'Access enabled to specific Role'
-      operationId: roleAccess
-      parameters:
-        - name: role
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/EnumRole'
+      summary: 'Admin Restrict Content'
+      description: 'Access enabled only to Admin'
+      operationId: adminAccess
       responses:
         '200':
           description: 'Authenticated successfully!'
@@ -92,8 +86,46 @@ paths:
             application/json:
               schema:
                 type: string
-        '401':
-          description: 'Unauthorized!'
+        '403':
+          description: 'Forbidden!'  
+  
+  /api/test/manager:
+    get:
+      tags:
+        - 'test'
+      security:
+        - bearerAuth: []
+      summary: 'Manager Restrict Content'
+      description: 'Access enabled only to Manager'
+      operationId: managerAccess
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
+        '403':
+          description: 'Forbidden!'  
+  
+  /api/test/user:
+    get:
+      tags:
+        - 'test'
+      security:
+        - bearerAuth: []
+      summary: 'User Restrict Content'
+      description: 'Access enabled to User, Manager and Admin'
+      operationId: userAccess
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
+        '403':
+          description: 'Forbidden!'
 
 components:
   schemas:

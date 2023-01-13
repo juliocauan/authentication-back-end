@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.constraint;
+package br.com.juliocauan.authentication.model;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

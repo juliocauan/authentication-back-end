@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.mapper;
+package br.com.juliocauan.authentication.model.mapper;
 
 import java.util.HashSet;
 import java.util.Set;

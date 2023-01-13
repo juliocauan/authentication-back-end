@@ -26,7 +26,7 @@ public class RoleMapperTest extends TestContext {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }
 
-    private final Role getRole(Short id, EnumRole role){
+    private final Role getRole(EnumRole role){
         return new Role() {
             @Override
             public Short getId() {return id;}
@@ -34,7 +34,7 @@ public class RoleMapperTest extends TestContext {
             public EnumRole getName() {return role;}
         };
     }
-    private final RoleEntity getRoleEntity(Short id, EnumRole role){
+    private final RoleEntity getRoleEntity(EnumRole role){
         return RoleEntity.builder()
             .id(id)
             .name(role)
@@ -43,8 +43,8 @@ public class RoleMapperTest extends TestContext {
 
     @Test
     public void oneDomainRoleToOneEntity(){
-        RoleEntity entity = getRoleEntity(id, EnumRole.ADMIN);
-        Role role = getRole(id, EnumRole.ADMIN);
+        RoleEntity entity = getRoleEntity(EnumRole.ADMIN);
+        Role role = getRole(EnumRole.ADMIN);
         Assertions.assertEquals(entity, RoleMapper.domainToEntity(role));
     }
 
@@ -53,8 +53,8 @@ public class RoleMapperTest extends TestContext {
         Set<RoleEntity> entities = new HashSet<>();
         Set<Role> roles = new HashSet<>();
         for(EnumRole name : EnumRole.values()){
-            entities.add(getRoleEntity(id, name));
-            roles.add(getRole(id, name));
+            entities.add(getRoleEntity(name));
+            roles.add(getRole(name));
         }
         Assertions.assertEquals(entities, RoleMapper.domainToEntity(roles));
     }

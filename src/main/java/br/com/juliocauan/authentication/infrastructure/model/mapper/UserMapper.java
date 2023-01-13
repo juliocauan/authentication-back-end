@@ -12,7 +12,6 @@ import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
-//TODO test this
 public abstract class UserMapper {
 
     public static UserEntity domainToEntity(User model) {

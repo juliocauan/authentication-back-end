@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-//TODO test this
 public class TestController implements TestApi {
     
     @Override
@@ -17,7 +16,7 @@ public class TestController implements TestApi {
 
     @Override
     public ResponseEntity<String> _roleAccess(EnumRole role) {
-        return ResponseEntity.status(HttpStatus.OK).body(role.getValue() + "Board");
+        return ResponseEntity.status(HttpStatus.OK).body(role.getValue() + " Board");
     }
     
 }

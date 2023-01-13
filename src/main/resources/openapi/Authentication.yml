@@ -74,6 +74,8 @@ paths:
     get:
       tags:
         - 'test'
+      security:
+        - bearerAuth: []
       summary: 'Restrict Content'
       description: 'Access enabled to specific Role'
       operationId: roleAccess
@@ -186,10 +188,15 @@ components:
     EnumToken:
       type: string
       enum:
-        - 'BEARER'
+        - 'Bearer'
     UserId:
       type: integer
       format: int64
     MessageResponse:
       type: string
-    
+  
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http
+      bearerFormat: JWT

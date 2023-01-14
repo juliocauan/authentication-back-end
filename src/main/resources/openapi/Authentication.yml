@@ -196,9 +196,9 @@ components:
     EnumRole:
       type: string
       enum:
-        - 'ROLE_ADMIN'
-        - 'ROLE_MANAGER'
-        - 'ROLE_USER'
+        - 'ADMIN'
+        - 'MANAGER'
+        - 'USER'
       description: 'Client permissions'
     JWTResponse:
       type: object

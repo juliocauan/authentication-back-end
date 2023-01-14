@@ -27,9 +27,9 @@ INSERT INTO users(username, email, password) VALUES
     ('Guest123', 'guest@test.br', '$2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq');
 
 INSERT INTO roles(name) VALUES
-    ('ROLE_ADMIN'),
-    ('ROLE_MANAGER'),
-    ('ROLE_USER');
+    ('ADMIN'),
+    ('MANAGER'),
+    ('USER');
 
 INSERT INTO users_roles(user_id, role_id) VALUES 
     (1, 2),

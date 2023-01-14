@@ -1,6 +1,7 @@
 package br.com.juliocauan.authentication.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -65,7 +66,7 @@ public class TestControllerTest extends TestContext {
         managerToken = signupAndSignin(managerEmail, managerUsername, EnumRole.MANAGER);
         userToken = signupAndSignin(userEmail, userUsername, EnumRole.USER);
     }
-    
+
     private final String signupAndSignin(String email, String username, EnumRole role) {
         SignupForm signupForm = new SignupForm();
         SigninForm signinForm = new SigninForm();
@@ -80,98 +81,97 @@ public class TestControllerTest extends TestContext {
     }
 
     @Test
-    public void givenNonAuthenticatedUser_WhenAllAccess_ThenOkMessage() throws Exception{
+    public void givenNonAuthenticatedUser_WhenAllAccess_ThenOkMessage() throws Exception {
         getMockMvc().perform(
-            get(urlAll))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(allOkMessage));
-    }
-    
-    @Test
-    public void givenAuthenticatedAdmin_WhenAdminAccess_ThenAdminOkMessage() throws Exception{
-        getMockMvc().perform(
-            get(urlAdmin)
-                .header(header, adminToken))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(adminOkMessage));
-    }
-    
-    @Test
-    public void givenAuthenticatedUserOrManager_WhenAdminAccess_ThenForbidden() throws Exception{
-        getMockMvc().perform(
-            get(urlAdmin)
-                .header(header, userToken))
-            //.andDo(print())
-            .andExpect(status().isForbidden());
-        getMockMvc().perform(
-            get(urlAdmin)
-                .header(header, managerToken))
-            //.andDo(print())
-            .andExpect(status().isForbidden());
-    }
-    
-    @Test
-    public void givenAuthenticatedManager_WhenManagerAccess_ThenManagerOkMessage() throws Exception{
-        getMockMvc().perform(
-            get(urlManager)
-                .header(header, managerToken))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(managerOkMessage));
-    }
-    
-    @Test
-    public void givenAuthenticatedUserOrAdmin_WhenManagerAccess_ThenForbidden() throws Exception{
-        getMockMvc().perform(
-            get(urlManager)
-                .header(header, userToken))
-            //.andDo(print())
-            .andExpect(status().isForbidden());
-        getMockMvc().perform(
-            get(urlManager)
-                .header(header, adminToken))
-            //.andDo(print())
-            .andExpect(status().isForbidden());
+                get(urlAll))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(allOkMessage));
     }
 
     @Test
-    public void givenAuthenticatedUserOrAdminOrManager_WhenUserAccess_ThenUserOkMessage() throws Exception{
+    public void givenAuthenticatedAdmin_WhenAdminAccess_ThenAdminOkMessage() throws Exception {
         getMockMvc().perform(
-            get(urlUser)
-                .header(header, userToken))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(userOkMessage));
-        getMockMvc().perform(
-            get(urlUser)
-                .header(header, managerToken))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(userOkMessage));
-        getMockMvc().perform(
-            get(urlUser)
-                .header(header, adminToken))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(userOkMessage));
+                get(urlAdmin)
+                        .header(header, adminToken))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(adminOkMessage));
     }
-    
+
     @Test
-    public void givenNonAuthenticated_WhenUserAccess_ThenUnauthorized() throws Exception{
+    public void givenAuthenticatedUserOrManager_WhenAdminAccess_ThenForbidden() throws Exception {
         getMockMvc().perform(
-            get(urlUser))
-            //.andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(notAllowedMessage));
+                get(urlAdmin)
+                        .header(header, userToken))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        getMockMvc().perform(
+                get(urlAdmin)
+                        .header(header, managerToken))
+                .andDo(print())
+                .andExpect(status().isForbidden());
     }
-    
+
+    @Test
+    public void givenAuthenticatedManager_WhenManagerAccess_ThenManagerOkMessage() throws Exception {
+        getMockMvc().perform(
+                get(urlManager)
+                        .header(header, managerToken))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(managerOkMessage));
+    }
+
+    @Test
+    public void givenAuthenticatedUserOrAdmin_WhenManagerAccess_ThenForbidden() throws Exception {
+        getMockMvc().perform(
+                get(urlManager)
+                        .header(header, userToken))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+        getMockMvc().perform(
+                get(urlManager)
+                        .header(header, adminToken))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void givenAuthenticatedUserOrAdminOrManager_WhenUserAccess_ThenUserOkMessage() throws Exception {
+        getMockMvc().perform(
+                get(urlUser)
+                        .header(header, userToken))
+                .andDo(print())
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(userOkMessage));
+        getMockMvc().perform(
+                get(urlUser)
+                        .header(header, managerToken))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(userOkMessage));
+        getMockMvc().perform(
+                get(urlUser)
+                        .header(header, adminToken))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(userOkMessage));
+    }
+
+    @Test
+    public void givenNonAuthenticated_WhenUserAccess_ThenUnauthorized() throws Exception {
+        getMockMvc().perform(
+                get(urlUser))
+                .andDo(print())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(notAllowedMessage));
+    }
+
 }

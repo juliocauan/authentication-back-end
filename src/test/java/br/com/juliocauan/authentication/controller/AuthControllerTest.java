@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -83,7 +82,7 @@ public class AuthControllerTest extends TestContext {
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andDo(print())
+            //.andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").value(messageOk));
@@ -98,7 +97,7 @@ public class AuthControllerTest extends TestContext {
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andDo(print())
+            //.andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorDuplicatedUsername));
@@ -108,7 +107,7 @@ public class AuthControllerTest extends TestContext {
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andDo(print())
+            //.andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorDuplicatedEmail));
@@ -122,7 +121,7 @@ public class AuthControllerTest extends TestContext {
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
-            .andDo(print())
+            //.andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.token", hasLength(140)))
@@ -139,7 +138,7 @@ public class AuthControllerTest extends TestContext {
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
-            .andDo(print())
+            //.andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value("Not Allowed!"));

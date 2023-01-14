@@ -22,9 +22,9 @@ CREATE TABLE users_roles
 );
 
 INSERT INTO users(username, email, password) VALUES
-    ('Julio', 'julio@test.com', '$2a$10$e6H1Jgrft/scpmpzbMFO0uqF1gxqop73l5wOlwF30Aem6Tty1nI2G'),
-    ('Cauan', 'cauan@test.com', '2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq'),
-    ('Guest', 'guest@test.br', '$2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq');
+    ('Julio123', 'julio@test.com', '$2a$10$e6H1Jgrft/scpmpzbMFO0uqF1gxqop73l5wOlwF30Aem6Tty1nI2G'),
+    ('Cauan123', 'cauan@test.com', '2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq'),
+    ('Guest123', 'guest@test.br', '$2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq');
 
 INSERT INTO roles(name) VALUES
     ('ROLE_ADMIN'),

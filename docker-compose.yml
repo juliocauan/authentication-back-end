@@ -12,7 +12,7 @@ services:
     ports:
       - ${DB_LOCAL_PORT}:${DB_DOCKER_PORT}
     volumes:
-      - ./docker-resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./src/main/resources/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/postgresql/data
     networks:
       - backend

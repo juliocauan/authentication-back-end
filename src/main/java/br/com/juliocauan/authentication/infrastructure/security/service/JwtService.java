@@ -41,9 +41,7 @@ public final class JwtService {
     SecurityContextHolder.getContext().setAuthentication(auth);
     String token = jwtProvider.generateToken(auth);
     UserDetails userPrincipal = (UserDetails) auth.getPrincipal();
-    List<EnumRole> roles = userPrincipal.getAuthorities().stream()
-        .map(item -> EnumRole.fromValue(item.getAuthority()))
-        .collect(Collectors.toList());
+    List<EnumRole> roles = RoleMapper.authoritiesToEnumRole(userPrincipal.getAuthorities());
     return parseAsJWTResponse(token, userPrincipal, roles);
   }
 

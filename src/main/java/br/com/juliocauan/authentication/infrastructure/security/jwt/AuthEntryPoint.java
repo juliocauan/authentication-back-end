@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class AuthEntryPoint implements AuthenticationEntryPoint {
 
-	//Used when User is not present in DB, so the authentication fails
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {

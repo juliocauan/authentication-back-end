@@ -1,7 +1,5 @@
 CREATE SCHEMA auth;
 
-CREATE TYPE auth.role AS ENUM ('ADMIN', 'MANAGER', 'USER');
-
 CREATE TABLE auth.users
 (
     id BIGSERIAL PRIMARY KEY,
@@ -12,7 +10,7 @@ CREATE TABLE auth.users
 CREATE TABLE auth.roles
 (
     id SMALLSERIAL PRIMARY KEY,
-    name auth.role NOT NULL
+    name VARCHAR(20) NOT NULL
 );
 CREATE TABLE auth.users_roles
 (

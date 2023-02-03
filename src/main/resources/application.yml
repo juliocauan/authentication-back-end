@@ -1,20 +1,18 @@
 server:
-    port: ${SERVER_PORT}
+    port: ${PORT}
     
 spring:
-    config:
-        import: optional:file:.env[.properties]
     datasource:
-        url: ${DB_LOCAL_URL}
+        url: ${DB_URL}
         username: ${DB_USER}
-        password: ${DB_ROOT_PASSWORD}
-        driver-class-name: ${DB_DRIVER_CLASS_NAME}
+        password: ${DB_PASSWORD}
+        driver-class-name: org.postgresql.Driver
     mustache:  
         check-template-location: false
     jpa:
         hibernate:
             ddl-auto: update
-        database-platform: ${DB_DIALECT}
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
         open-in-view: false
         show-sql: false
         defer-datasource-initialization: false

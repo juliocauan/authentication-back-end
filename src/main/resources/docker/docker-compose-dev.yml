@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  datasource:
+    image: postgres:14.5-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=auth-db
+      - POSTGRES_USER=root
+    ports:
+      - 5432:5432
+    volumes:
+      - ./src/main/resources/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+    name: auth-db

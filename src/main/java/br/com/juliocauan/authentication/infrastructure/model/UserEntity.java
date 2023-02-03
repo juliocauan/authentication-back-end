@@ -23,7 +23,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Entity @Table(name = "users")
+@Entity @Table(name = "users", schema = "auth")
 @Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
@@ -44,7 +44,7 @@ public final class UserEntity implements User {
 	private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "users_roles",
+	@JoinTable(name = "users_roles", schema = "auth",
         joinColumns = @JoinColumn(referencedColumnName = "id", name = "user_id"),
         inverseJoinColumns = @JoinColumn(referencedColumnName = "id", name = "role_id"))
 	@Builder.Default @EqualsAndHashCode.Exclude

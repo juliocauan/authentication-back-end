@@ -1,39 +1,28 @@
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS users_roles;
+-- TODO add AUTH schema and create ENUM role
+CREATE SCHEMA auth;
 
-CREATE TABLE users
+CREATE TYPE role AS ENUM ('ADMIN', 'MANAGER', 'USER');
+
+CREATE TABLE auth.users
 (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(20) UNIQUE NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(120) NOT NULL
 );
-CREATE TABLE roles
+CREATE TABLE auth.roles
 (
     id SMALLSERIAL PRIMARY KEY,
-    name VARCHAR(20) NOT NULL
+    name role NOT NULL
 );
-CREATE TABLE users_roles
+CREATE TABLE auth.users_roles
 (
-    user_id BIGINT REFERENCES users(id),
-    role_id SMALLINT REFERENCES roles(id),
+    user_id BIGINT REFERENCES auth.users(id),
+    role_id SMALLINT REFERENCES auth.roles(id),
     PRIMARY KEY(user_id, role_id)
 );
 
-INSERT INTO users(username, email, password) VALUES
-    ('Julio123', 'julio@test.com', '$2a$10$e6H1Jgrft/scpmpzbMFO0uqF1gxqop73l5wOlwF30Aem6Tty1nI2G'),
-    ('Cauan123', 'cauan@test.com', '2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq'),
-    ('Guest123', 'guest@test.br', '$2a$10$SNsPkXTh0ryc82.D2HRJqOcY8sYh/TPnJW8WLqrERWkOq01ViWaCq');
-
-INSERT INTO roles(name) VALUES
+INSERT INTO auth.roles(name) VALUES
     ('ADMIN'),
     ('MANAGER'),
     ('USER');
-
-INSERT INTO users_roles(user_id, role_id) VALUES 
-    (1, 1),
-    (1, 2),
-    (1, 3),
-    (2, 2),
-    (3, 3);

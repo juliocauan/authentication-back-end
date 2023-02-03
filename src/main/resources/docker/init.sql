@@ -1,4 +1,3 @@
--- TODO add AUTH schema and create ENUM role
 CREATE SCHEMA auth;
 
 CREATE TYPE auth.role AS ENUM ('ADMIN', 'MANAGER', 'USER');

@@ -10,6 +10,11 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    env:
+      PORT: 8000
+      DB_USER: root
+      DB_PASSWORD: secret
+      DB_URL: jdbc:postgresql://postgres:5432/dev-auth-db
     steps:
     - uses: actions/checkout@v3
     

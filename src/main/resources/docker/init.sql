@@ -1,7 +1,7 @@
 -- TODO add AUTH schema and create ENUM role
 CREATE SCHEMA auth;
 
-CREATE TYPE role AS ENUM ('ADMIN', 'MANAGER', 'USER');
+CREATE TYPE auth.role AS ENUM ('ADMIN', 'MANAGER', 'USER');
 
 CREATE TABLE auth.users
 (
@@ -13,7 +13,7 @@ CREATE TABLE auth.users
 CREATE TABLE auth.roles
 (
     id SMALLSERIAL PRIMARY KEY,
-    name role NOT NULL
+    name auth.role NOT NULL
 );
 CREATE TABLE auth.users_roles
 (

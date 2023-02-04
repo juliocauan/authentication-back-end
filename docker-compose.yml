@@ -1,16 +1,27 @@
 version: '3.9'
 
 services:
-  datasource:
-    image: postgres:14.5-alpine
-    restart: always
-    env_file: .env
-    environment:
-      - POSTGRES_PASSWORD=${DB_ROOT_PASSWORD}
-      - POSTGRES_DB=${DB}
-      - POSTGRES_USER=${DB_USER}
+
+  authentication-app:
+    image: juliocauan/authentication:master
+    depends_on:
+      - postgres
     ports:
-      - ${DB_LOCAL_PORT}:${DB_DOCKER_PORT}
+      - 8000:8000
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  postgres:
+    image: postgres:15.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=auth-db
+      - POSTGRES_USER=root
+    ports:
+      - 5432:5432
     volumes:
       - ./src/main/resources/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db:/var/lib/postgresql/data
@@ -21,9 +32,9 @@ services:
     image: adminer
     restart: always
     depends_on:
-      - datasource
+      - postgres
     ports:
-      - "9000:8080"
+      - 9000:8080
     volumes:
       - db:/var/lib/postgresql/data
     networks:

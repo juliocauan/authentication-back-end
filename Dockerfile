@@ -14,6 +14,6 @@ WORKDIR /auth
 ENV DB_URL=jdbc:postgresql://localhost:5432/dev-auth-db PORT=8000
 ENV DB_USER=root DB_PASSWORD=secret
 
-COPY ./target/*.jar authentication.jar
+COPY ./*.jar authentication.jar
 
 # CMD [ "./main" ]

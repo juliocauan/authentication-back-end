@@ -14,28 +14,16 @@ services:
       - backend
 
   postgres:
-    image: postgres:15.1-alpine
+    image: postgres:alpine
     restart: always
     environment:
       - POSTGRES_PASSWORD=secret
       - POSTGRES_DB=auth-db
       - POSTGRES_USER=root
     ports:
-      - 5432:5432
+      - 8001:5432
     volumes:
       - ./src/main/resources/docker/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
-    networks:
-      - backend
-
-  adminer:
-    image: adminer
-    restart: always
-    depends_on:
-      - postgres
-    ports:
-      - 9000:8080
-    volumes:
       - db:/var/lib/postgresql/data
     networks:
       - backend

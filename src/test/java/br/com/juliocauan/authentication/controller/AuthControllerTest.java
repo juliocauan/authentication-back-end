@@ -35,16 +35,13 @@ public class AuthControllerTest extends TestContext {
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
 
-    private final String email = "test@email.com";
     private final String password = "1234567890";
-    private final String username = "TestUsername";
+    private final String username = "test@email.com";
 
-    private final String emailNotPresent = "test2@email.com";
-    private final String usernameNotPresent = "TestUsername2";
+    private final String usernameNotPresent = "test2@email.com";
 
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
-    private final String errorDuplicatedEmail = "Email is already in use!";
 
     private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
@@ -68,12 +65,11 @@ public class AuthControllerTest extends TestContext {
     public void standard(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
-            .email(email)
             .password(password)
             .username(username)
             .roles(null)
         .build();
-        signupForm.email(email).password(password).username(username).roles(roles);
+        signupForm.password(password).username(username).roles(roles);
         signinForm.username(username).password(password);
     }
 
@@ -90,10 +86,8 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenDuplicatedEmailOrUsername_WhenSignupUser_ThenEntityExistsException() throws Exception{
+    public void givenDuplicatedUsername_WhenSignupUser_ThenEntityExistsException() throws Exception{
         getUserRepository().save(entity);
-
-        signupForm.email(emailNotPresent);
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -102,16 +96,6 @@ public class AuthControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorDuplicatedUsername));
-            
-        signupForm.username(usernameNotPresent).email(email);
-        getMockMvc().perform(
-            post(urlSignup)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andDo(print())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(errorDuplicatedEmail));
     }
 
     @Test
@@ -125,7 +109,7 @@ public class AuthControllerTest extends TestContext {
             .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(140)))
+            .andExpect(jsonPath("$.token", hasLength(143)))
             .andExpect(jsonPath("$.type").value(EnumToken.BEARER.getValue()))
             .andExpect(jsonPath("$.username").value(username))
             .andExpect(jsonPath("$.roles", hasSize(roles.size())));

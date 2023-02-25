@@ -29,12 +29,8 @@ public class TokenServiceTest extends TestContext {
     private final SigninForm signinForm = new SigninForm();
 
     private final String password = "12345678";
-    private final String username = "testUsername";
-    private final String usernameNotPresent = "testUsername2";
-    private final String email = "test@email.com";
-    private final String emailNotPresent = "test2@email.com";
+    private final String username = "test@email.com";
     private final String errorUsernameDuplicated = "Username is already taken!";
-    private final String errorEmailDuplicated = "Email is already in use!";
 
     private UserEntity entity;
     private Set<EnumRole> roles = new HashSet<>();
@@ -54,10 +50,9 @@ public class TokenServiceTest extends TestContext {
     @BeforeEach
     public void standard(){
         getUserRepository().deleteAll();
-        signupForm.email(email).username(username).password(password).roles(roles);
+        signupForm.username(username).password(password).roles(roles);
         signinForm.username(username).password(password);
         entity = UserEntity.builder()
-            .email(email)
             .password(password)
             .username(username)
             .roles(null)
@@ -71,16 +66,10 @@ public class TokenServiceTest extends TestContext {
     }
     
     @Test
-    public void givenInvalidSignupForm_WhenValidateAndRegisterNewUser_ThenDuplicatedUsernameOrEmail(){
+    public void givenInvalidSignupForm_WhenValidateAndRegisterNewUser_ThenDuplicatedUsername(){
         getUserRepository().save(entity);
-
-        signupForm.email(emailNotPresent);
         Assertions.assertThrows(EntityExistsException.class, () -> tokenService.validateAndRegisterNewUser(signupForm),
             errorUsernameDuplicated);
-
-        signupForm.username(usernameNotPresent).email(email);
-        Assertions.assertThrows(EntityExistsException.class, () -> tokenService.validateAndRegisterNewUser(signupForm),
-            errorEmailDuplicated);
     }
 
     @Test

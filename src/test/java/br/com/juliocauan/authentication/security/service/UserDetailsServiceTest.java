@@ -25,8 +25,7 @@ public class UserDetailsServiceTest extends TestContext {
     private final UserDetailsServiceImpl userDetailsService;
     
     private final String password = "12345678";
-    private final String username = "testUsername";
-    private final String email = "test@email.com";
+    private final String username = "test@email.com";
     private final String errorUsernameNotFound = "User Not Found with username: " + username;
 
     private UserEntity entity;
@@ -48,7 +47,6 @@ public class UserDetailsServiceTest extends TestContext {
     public void standard(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
-            .email(email)
             .password(password)
             .username(username)
             .roles(roles)

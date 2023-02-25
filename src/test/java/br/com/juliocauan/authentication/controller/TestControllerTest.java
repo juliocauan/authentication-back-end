@@ -41,12 +41,9 @@ public class TestControllerTest extends TestContext {
     private final String userOkMessage = "User Board";
     private final String notAllowedMessage = "Not Allowed!";
 
-    private final String adminEmail = "admin@email.com";
-    private final String adminUsername = "adminTest";
-    private final String managerEmail = "manager@email.com";
-    private final String managerUsername = "managerTest";
-    private final String userEmail = "user@email.com";
-    private final String userUsername = "userTest";
+    private final String adminUsername = "admin@email.com";
+    private final String managerUsername = "manager@email.com";
+    private final String userUsername = "user@email.com";
     private final String password = "1234567890";
 
     private String adminToken;
@@ -62,18 +59,18 @@ public class TestControllerTest extends TestContext {
     @Override @BeforeAll
     public void setup() {
         super.setup();
-        adminToken = signupAndSignin(adminEmail, adminUsername, EnumRole.ADMIN);
-        managerToken = signupAndSignin(managerEmail, managerUsername, EnumRole.MANAGER);
-        userToken = signupAndSignin(userEmail, userUsername, EnumRole.USER);
+        adminToken = signupAndSignin(adminUsername, EnumRole.ADMIN);
+        managerToken = signupAndSignin(managerUsername, EnumRole.MANAGER);
+        userToken = signupAndSignin(userUsername, EnumRole.USER);
     }
 
-    private final String signupAndSignin(String email, String username, EnumRole role) {
+    private final String signupAndSignin(String username, EnumRole role) {
         SignupForm signupForm = new SignupForm();
         SigninForm signinForm = new SigninForm();
         Set<EnumRole> roles = new HashSet<>();
         JWTResponse body = new JWTResponse();
         roles.add(role);
-        signupForm.email(email).username(username).password(password).roles(roles);
+        signupForm.username(username).password(password).roles(roles);
         signinForm.username(username).password(password);
         authController._signupUser(signupForm);
         body = authController._signinUser(signinForm).getBody();

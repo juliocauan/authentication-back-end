@@ -26,12 +26,10 @@ public class UserServiceTest extends TestContext {
     private final UserServiceImpl userService;
 
     private final String password = "12345678";
-    private final String username = "testUsername";
-    private final String email = "test@email.com";
+    private final String username = "test@email.com";
 
     private final String errorUsernameNotFound =  "User Not Found with username: " + username;
     private final String errorDuplicatedUsername = "Username is already taken!";
-    private final String errorDuplicatedEmail = "Email is already taken!";
 
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
@@ -52,7 +50,6 @@ public class UserServiceTest extends TestContext {
     public void standard(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
-            .email(email)
             .password(password)
             .username(username)
             .roles(roles)
@@ -84,17 +81,6 @@ public class UserServiceTest extends TestContext {
     @Test
     public void givenNotDuplicatedUsername_WhenCheckDuplicatedUsername_ThenVoid(){
         Assertions.assertDoesNotThrow(() -> userService.checkDuplicatedUsername(username));
-    }
-
-    @Test
-    public void givenDuplicatedEmail_WhenCheckDuplicatedEmail_ThenEntityExistsException(){
-        getUserRepository().save(entity);
-        Assertions.assertThrows(EntityExistsException.class, () -> userService.checkDuplicatedEmail(email), errorDuplicatedEmail);
-    }
-
-    @Test
-    public void givenNotDuplicatedEmail_WhenCheckDuplicatedEmail_ThenVoid(){
-        Assertions.assertDoesNotThrow(() -> userService.checkDuplicatedEmail(email));
     }
 
     @Test

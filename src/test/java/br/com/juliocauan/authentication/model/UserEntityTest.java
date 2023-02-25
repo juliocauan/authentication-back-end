@@ -15,17 +15,11 @@ import jakarta.validation.ConstraintViolationException;
 
 public class UserEntityTest extends TestContext {
 
+    private final String usernameValid = "test@email.com";
+    private final String usernameInvalid = "testnotmail.com";
     private final String usernameBlank = " ";
-    private final String usernameMin = "aaaaa";
-    private final String usernameMax = "aaaaaaaaaaaaaaaaaaaaa";
-    private final String usernameMinValid = "aaaaaa";
-    private final String usernameMaxValid = "aaaaaaaaaaaaaaaaaaaa";
-
-    private final String emailValid = "test@email.com";
-    private final String email = "testnotmail.com";
-    private final String emailBlank = " ";
-    private final String emailMax = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
-    private final String emailMaxValid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
+    private final String usernameMax = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
+    private final String usernameMaxValid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
 
     private final String passwordValid = "1234567890";
     private final String passwordBlank = " ";
@@ -46,16 +40,15 @@ public class UserEntityTest extends TestContext {
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .id(null)
-            .email(emailValid)
             .password(passwordValid)
-            .username(usernameMinValid)
+            .username(usernameValid)
             .roles(null)
         .build();
     }
 
     @Test
     public void usernameValidConstraints(){
-        entity.setUsername(usernameMinValid);
+        entity.setUsername(usernameValid);
         Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
         getUserRepository().deleteAll();
 
@@ -70,42 +63,14 @@ public class UserEntityTest extends TestContext {
     }
 
     @Test
+    public void usernameConstraint(){
+        entity.setUsername(usernameInvalid);
+        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+    }
+
+    @Test
     public void usernameMaxConstraint(){
         entity.setUsername(usernameMax);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
-    }
-
-    @Test
-    public void usernameMinConstraint(){
-        entity.setUsername(usernameMin);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
-    }
-
-    @Test
-    public void emailValidConstraints(){
-        entity.setEmail(emailValid);
-        Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
-        getUserRepository().deleteAll();
-
-        entity.setEmail(emailMaxValid);
-        Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
-    }
-
-    @Test
-    public void emailBlankConstraint(){
-        entity.setEmail(emailBlank);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
-    }
-
-    @Test
-    public void emailConstraint(){
-        entity.setEmail(email);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
-    }
-
-    @Test
-    public void emailMaxConstraint(){
-        entity.setEmail(emailMax);
         Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
     }
     

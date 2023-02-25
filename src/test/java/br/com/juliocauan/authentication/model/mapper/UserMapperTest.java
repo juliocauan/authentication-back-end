@@ -30,8 +30,7 @@ public class UserMapperTest extends TestContext {
 
     private final Long idLong = 1L;
     private final Short idShort = 1;
-    private final String username = "usernameTest";
-    private final String email = "email@test.com";
+    private final String username = "test@email.com";
     private final String password = "1234567890";
 
     private UserEntity entity;
@@ -59,8 +58,6 @@ public class UserMapperTest extends TestContext {
             @Override
             public String getUsername() {return username;}
             @Override
-            public String getEmail() {return email;}
-            @Override
             public String getPassword() {return password;}
             @Override
             public Set<Role> getRoles() {return roles;}
@@ -69,7 +66,6 @@ public class UserMapperTest extends TestContext {
     private final UserEntity getUserEntity(){
         return UserEntity.builder()
             .id(idLong)
-            .email(email)
             .password(password)
             .username(username)
             .roles(roleEntities)
@@ -96,10 +92,9 @@ public class UserMapperTest extends TestContext {
     @Test
     public void formToEntity(){
         SignupForm signupForm = new SignupForm();
-        signupForm.email(email).username(username).password(password).roles(null);
+        signupForm.username(username).password(password).roles(null);
         UserEntity mappedEntity = UserMapper.formToEntity(signupForm, roleEntities, encoder);
         Assertions.assertEquals(null, mappedEntity.getId());
-        Assertions.assertEquals(entity.getEmail(), mappedEntity.getEmail());
         Assertions.assertNotEquals(entity.getPassword(), mappedEntity.getPassword());
         Assertions.assertEquals(60, mappedEntity.getPassword().length());
         Assertions.assertEquals(entity.getUsername(), mappedEntity.getUsername());

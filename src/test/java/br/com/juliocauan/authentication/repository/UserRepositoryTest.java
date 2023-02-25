@@ -20,8 +20,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 public class UserRepositoryTest extends TestContext {
 
     private final String password = "12345678";
-    private final String username = "testUsername";
-    private final String email = "test@email.com";
+    private final String username = "test@email.com";
 
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
@@ -41,7 +40,6 @@ public class UserRepositoryTest extends TestContext {
     public void standard(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
-            .email(email)
             .password(password)
             .username(username)
             .roles(roles)
@@ -57,17 +55,6 @@ public class UserRepositoryTest extends TestContext {
     @Test
     public void givenNotPresentUsername_WhenExistsByUsername_ThenFalse(){
         Assertions.assertFalse(getUserRepository().existsByUsername(username));
-    }
-
-    @Test
-    public void givenPresentEmail_WhenExistsByEmail_ThenTrue(){
-        getUserRepository().save(entity);
-        Assertions.assertTrue(getUserRepository().existsByEmail(email));
-    }
-
-    @Test
-    public void givenNotPresentEmail_WhenExistsByEmail_ThenFalse(){
-        Assertions.assertFalse(getUserRepository().existsByEmail(email));
     }
 
     @Test

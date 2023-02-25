@@ -47,7 +47,6 @@ public final class JwtService {
 
   public void validateAndRegisterNewUser(SignupForm signupForm) {
     userService.checkDuplicatedUsername(signupForm.getUsername());
-    userService.checkDuplicatedEmail(signupForm.getEmail());
     Set<RoleEntity> roles = signupForm.getRoles().stream()
       .map(role -> RoleMapper.domainToEntity(roleService.getByName(role))).collect(Collectors.toSet());
     UserEntity userEntity = UserMapper.formToEntity(signupForm, roles, encoder);

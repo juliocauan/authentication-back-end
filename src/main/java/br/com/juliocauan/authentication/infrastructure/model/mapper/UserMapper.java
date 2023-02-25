@@ -17,7 +17,6 @@ public abstract class UserMapper {
     public static UserEntity domainToEntity(User model) {
         return UserEntity.builder()
             .id(model.getId())
-            .email(model.getEmail())
             .password(model.getPassword())
             .username(model.getUsername())
             .roles(RoleMapper.domainToEntity(model.getRoles()))
@@ -27,7 +26,6 @@ public abstract class UserMapper {
     public static UserEntity formToEntity(SignupForm signupForm, Set<RoleEntity> roles, PasswordEncoder encoder) {
         return UserEntity.builder()
             .id(null)
-            .email(signupForm.getEmail())
             .password(encoder.encode(signupForm.getPassword()))
             .username(signupForm.getUsername())
             .roles(roles)

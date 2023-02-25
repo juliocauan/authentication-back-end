@@ -3,8 +3,7 @@ CREATE SCHEMA auth;
 CREATE TABLE auth.users
 (
     id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(20) UNIQUE NOT NULL,
-    email VARCHAR(50) UNIQUE NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(120) NOT NULL
 );
 CREATE TABLE auth.roles

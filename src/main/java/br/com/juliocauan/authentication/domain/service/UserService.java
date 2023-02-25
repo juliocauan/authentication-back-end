@@ -20,10 +20,5 @@ public interface UserService {
 		if (getRepository().existsByUsername(username))
 			throw new EntityExistsException("Username is already taken!");
     }
-
-	default void checkDuplicatedEmail(String email) {
-		if (getRepository().existsByEmail(email))
-			throw new EntityExistsException("Email is already in use!");
-    }
 	
 }

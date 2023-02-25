@@ -33,12 +33,9 @@ public final class UserEntity implements User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank @Size(min = 6, max = 20) @Column(unique = true)
-	private String username;
-
 	@Email
 	@NotBlank @Size(max = 50) @Column(unique = true)
-	private String email;
+	private String username;
 
 	@NotBlank @Size(min = 8, max = 120)
 	private String password;

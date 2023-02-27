@@ -2,6 +2,7 @@ package br.com.juliocauan.authentication.model.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +29,7 @@ public class UserMapperTest extends TestContext {
 
     private final PasswordEncoder encoder;
 
-    private final Long idLong = 1L;
+    private final UUID idUUID = UUID.randomUUID();
     private final Short idShort = 1;
     private final String username = "test@email.com";
     private final String password = "1234567890";
@@ -54,7 +55,7 @@ public class UserMapperTest extends TestContext {
     private final User getUser(){
         return new User() {
             @Override
-            public Long getId() {return idLong;}
+            public UUID getId() {return idUUID;}
             @Override
             public String getUsername() {return username;}
             @Override
@@ -65,7 +66,7 @@ public class UserMapperTest extends TestContext {
     }
     private final UserEntity getUserEntity(){
         return UserEntity.builder()
-            .id(idLong)
+            .id(idUUID)
             .password(password)
             .username(username)
             .roles(roleEntities)

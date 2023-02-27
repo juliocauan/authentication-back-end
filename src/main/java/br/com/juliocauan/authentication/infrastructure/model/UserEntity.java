@@ -2,6 +2,7 @@ package br.com.juliocauan.authentication.infrastructure.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import br.com.juliocauan.authentication.domain.model.User;
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ public final class UserEntity implements User {
     
 	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
 	@Email
 	@NotBlank @Size(max = 50) @Column(unique = true)

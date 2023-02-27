@@ -213,9 +213,6 @@ components:
       type: string
       enum:
         - 'Bearer'
-    UserId:
-      type: integer
-      format: int64
     MessageResponse:
       type: string
   

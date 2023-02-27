@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.TransactionSystemException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,7 +12,6 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import jakarta.validation.ConstraintViolationException;
 
 public class UserEntityTest extends TestContext {
 
@@ -59,19 +59,19 @@ public class UserEntityTest extends TestContext {
     @Test
     public void usernameBlankConstraint(){
         entity.setUsername(usernameBlank);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
     public void usernameConstraint(){
         entity.setUsername(usernameInvalid);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
     public void usernameMaxConstraint(){
         entity.setUsername(usernameMax);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
     
     @Test
@@ -91,19 +91,19 @@ public class UserEntityTest extends TestContext {
     @Test
     public void passwordBlankConstraint(){
         entity.setPassword(passwordBlank);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
     public void passwordMinConstraint(){
         entity.setPassword(passwordMin);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
     public void passwordMaxConstraint(){
         entity.setPassword(passwordMax);
-        Assertions.assertThrows(ConstraintViolationException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
 }

@@ -28,7 +28,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MessageResponse'
+                type: string
         '400':
           description: 'Bad Request in form! Could not register new User!'
 
@@ -213,8 +213,6 @@ components:
       type: string
       enum:
         - 'Bearer'
-    MessageResponse:
-      type: string
   
   securitySchemes:
     bearerAuth:

@@ -1,6 +1,7 @@
 package br.com.juliocauan.authentication.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.EnumToken;
+import org.openapitools.model.JWTResponse;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -34,6 +36,7 @@ public class AuthControllerTest extends TestContext {
 
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
+    private final String urlProfile = "/api/auth/profile";
 
     private final String password = "1234567890";
     private final String username = "test@email.com";
@@ -42,6 +45,7 @@ public class AuthControllerTest extends TestContext {
 
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
+    private final String header = "Authorization";
 
     private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
@@ -129,5 +133,20 @@ public class AuthControllerTest extends TestContext {
             .andExpect(jsonPath("$.message").value("Not Allowed!"));
 
     }
-    
+
+    @Test
+    public void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
+        authController._signupUser(signupForm);
+        JWTResponse jwt = authController._signinUser(signinForm).getBody();
+        String token = jwt == null ? null : jwt.getType() + " " + jwt.getToken();
+
+        getMockMvc().perform(
+            get(urlProfile)
+                .header(header, token))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.username").value(username));
+    }
+
 }

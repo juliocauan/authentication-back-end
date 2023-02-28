@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/Profile'
         '403':
           description: 'Forbidden!'  
   
@@ -232,7 +232,12 @@ components:
       type: string
       enum:
         - 'Bearer'
-  
+    Profile:
+      type: object
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+
   securitySchemes:
     bearerAuth:
       scheme: bearer

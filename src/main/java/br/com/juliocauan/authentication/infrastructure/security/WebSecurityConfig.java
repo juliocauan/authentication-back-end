@@ -68,7 +68,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorize) -> authorize
             .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers("/api/test/all").permitAll()
-                .requestMatchers("/api/test/user").hasAnyAuthority(user, manager, admin)
+                .requestMatchers("/api/test/user").hasAuthority(user)
                 .requestMatchers("/api/test/manager").hasAuthority(manager)
                 .requestMatchers("/api/test/admin").hasAuthority(admin)
             .anyRequest().authenticated());

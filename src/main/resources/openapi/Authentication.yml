@@ -115,7 +115,7 @@ paths:
       security:
         - bearerAuth: []
       summary: 'User Restrict Content'
-      description: 'Access enabled to User, Manager and Admin'
+      description: 'Access enabled to User'
       operationId: userAccess
       responses:
         '200':

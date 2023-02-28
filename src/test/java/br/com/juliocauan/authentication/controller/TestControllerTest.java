@@ -138,27 +138,27 @@ public class TestControllerTest extends TestContext {
     }
 
     @Test
-    public void givenAuthenticatedUserOrAdminOrManager_WhenUserAccess_ThenUserOkMessage() throws Exception {
+    public void givenAuthenticatedUser_WhenUserAccess_ThenUserOkMessage() throws Exception {
         getMockMvc().perform(
                 get(urlUser)
                         .header(header, userToken))
                 .andDo(print())
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(userOkMessage));
+    }
+
+    @Test
+    public void givenAuthenticatedManagerOrAdmin_WhenUserAccess_ThenForbidden() throws Exception {
         getMockMvc().perform(
                 get(urlUser)
                         .header(header, managerToken))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(userOkMessage));
+                .andExpect(status().isForbidden());
         getMockMvc().perform(
                 get(urlUser)
                         .header(header, adminToken))
                 .andDo(print())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(userOkMessage));
+                .andExpect(status().isForbidden());
     }
 
     @Test

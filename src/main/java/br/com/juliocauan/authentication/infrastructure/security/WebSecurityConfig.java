@@ -66,11 +66,12 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable();
         
         http.authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers("/api/test/all").permitAll()
                 .requestMatchers("/api/test/user").hasAuthority(user)
                 .requestMatchers("/api/test/manager").hasAuthority(manager)
                 .requestMatchers("/api/test/admin").hasAuthority(admin)
+                .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
+                .requestMatchers(HttpMethod.GET, "api/auth/profile").hasAuthority(user)
             .anyRequest().authenticated());
 
         return http.build();

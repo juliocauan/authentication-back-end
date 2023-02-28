@@ -55,6 +55,25 @@ paths:
         '401':
           description: 'Unauthorized!'
 
+  /api/auth/profile:
+    get:
+      tags:
+        - 'auth'
+      security:
+        - bearerAuth: []
+      summary: 'User Profile Content'
+      description: 'Access enabled only to User'
+      operationId: profileContent
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
+        '403':
+          description: 'Forbidden!'  
+  
   /api/test/all:
     get:
       tags:

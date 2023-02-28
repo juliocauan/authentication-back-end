@@ -30,4 +30,10 @@ public class AuthController implements AuthApi {
     return ResponseEntity.status(HttpStatus.OK).body("User registered successfully!");
   }
 
+  @Override
+  public ResponseEntity<String> _profileContent() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method '_profileContent'");
+  }
+
 }

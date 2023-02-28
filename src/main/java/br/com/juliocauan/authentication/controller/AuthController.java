@@ -7,11 +7,9 @@ import org.openapitools.model.SignupForm;
 import org.openapitools.model.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.security.service.JwtService;
-import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -35,9 +33,7 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<Profile> _profileContent() {
-    Profile profile = new Profile();
-    UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    profile.username(user.getUsername());
+    Profile profile = jwtService.getProfileContent();
     return ResponseEntity.status(HttpStatus.OK).body(profile);
   }
 

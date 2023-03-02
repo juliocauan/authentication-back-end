@@ -1,8 +1,8 @@
 package br.com.juliocauan.authentication.infrastructure.security.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.EnumToken;
@@ -49,8 +49,8 @@ public final class JwtService {
 
   public void validateAndRegisterNewUser(SignupForm signupForm) {
     userService.checkDuplicatedUsername(signupForm.getUsername());
-    Set<RoleEntity> roles = signupForm.getRoles().stream()
-        .map(role -> RoleMapper.domainToEntity(roleService.getByName(role))).collect(Collectors.toSet());
+    Set<RoleEntity> roles = new HashSet<>();
+    roles.add(RoleMapper.domainToEntity(roleService.getByName(EnumRole.USER)));
     UserEntity userEntity = UserMapper.formToEntity(signupForm, roles, encoder);
     userService.save(userEntity);
   }

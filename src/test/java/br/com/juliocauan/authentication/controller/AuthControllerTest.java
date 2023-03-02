@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumToken;
-import org.openapitools.model.JWTResponse;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -40,12 +39,9 @@ public class AuthControllerTest extends TestContext {
 
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
-    private final String header = "Authorization";
 
     private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
-
-    private UserEntity entity;
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthController authController) {
@@ -56,11 +52,6 @@ public class AuthControllerTest extends TestContext {
     @BeforeEach
     public void standard(){
         getUserRepository().deleteAll();
-        entity = UserEntity.builder()
-            .password(password)
-            .username(username)
-            .roles(null)
-        .build();
         signupForm.password(password).username(username);
         signinForm.username(username).password(password);
     }
@@ -79,7 +70,7 @@ public class AuthControllerTest extends TestContext {
 
     @Test
     public void givenDuplicatedUsername_WhenSignupUser_ThenEntityExistsException() throws Exception{
-        getUserRepository().save(entity);
+        getUserRepository().save(UserEntity.builder().password(password).username(username).roles(null).build());
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -120,16 +111,12 @@ public class AuthControllerTest extends TestContext {
             .andExpect(jsonPath("$.message").value("Not Allowed!"));
     }
 
-    //TODO review this
     @Test
     public void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
         authController._signupUser(signupForm);
-        JWTResponse jwt = authController._signinUser(signinForm).getBody();
-        String token = jwt == null ? null : jwt.getType() + " " + jwt.getToken();
-
+        authController._signinUser(signinForm);
         getMockMvc().perform(
-            get(urlProfile)
-                .header(header, token))
+            get(urlProfile))
             .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

@@ -93,7 +93,7 @@ public class UserMapperTest extends TestContext {
     @Test
     public void formToEntity(){
         SignupForm signupForm = new SignupForm();
-        signupForm.username(username).password(password).roles(null);
+        signupForm.username(username).password(password);
         UserEntity mappedEntity = UserMapper.formToEntity(signupForm, roleEntities, encoder);
         Assertions.assertEquals(null, mappedEntity.getId());
         Assertions.assertNotEquals(entity.getPassword(), mappedEntity.getPassword());

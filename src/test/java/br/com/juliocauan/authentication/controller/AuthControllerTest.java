@@ -1,21 +1,16 @@
 package br.com.juliocauan.authentication.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.hamcrest.Matchers.hasLength;
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.hasLength;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.EnumToken;
 import org.openapitools.model.JWTResponse;
 import org.openapitools.model.SigninForm;
@@ -51,18 +46,11 @@ public class AuthControllerTest extends TestContext {
     private final SigninForm signinForm = new SigninForm();
 
     private UserEntity entity;
-    private Set<EnumRole> roles = new HashSet<>();
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthController authController) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authController = authController;
-    }
-
-    @Override @BeforeAll
-    public void setup() {
-        super.setup();
-        getRoleRepository().findAll().forEach(role -> roles.add(role.getName()));
     }
 
     @BeforeEach
@@ -73,7 +61,7 @@ public class AuthControllerTest extends TestContext {
             .username(username)
             .roles(null)
         .build();
-        signupForm.password(password).username(username).roles(roles);
+        signupForm.password(password).username(username);
         signinForm.username(username).password(password);
     }
 

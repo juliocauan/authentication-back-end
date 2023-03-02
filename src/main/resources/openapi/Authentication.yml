@@ -175,11 +175,6 @@ components:
           $ref: '#/components/schemas/Username'
         password:
           $ref: '#/components/schemas/Password'
-        roles:
-          type: array
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/EnumRole'
     SigninForm:
       type: object
       required:

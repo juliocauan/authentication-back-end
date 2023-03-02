@@ -1,13 +1,8 @@
 package br.com.juliocauan.authentication.security.service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
@@ -33,7 +28,6 @@ public class TokenServiceTest extends TestContext {
     private final String errorUsernameDuplicated = "Username is already taken!";
 
     private UserEntity entity;
-    private Set<EnumRole> roles = new HashSet<>();
 
     public TokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, JwtService tokenService) {
@@ -41,16 +35,10 @@ public class TokenServiceTest extends TestContext {
         this.tokenService = tokenService;
     }
 
-    @Override @BeforeAll
-    public void setup(){
-        super.setup();
-        getRoleRepository().findAll().forEach(role -> roles.add(role.getName()));
-    }
-
     @BeforeEach
     public void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username).password(password).roles(roles);
+        signupForm.username(username).password(password);
         signinForm.username(username).password(password);
         entity = UserEntity.builder()
             .password(password)

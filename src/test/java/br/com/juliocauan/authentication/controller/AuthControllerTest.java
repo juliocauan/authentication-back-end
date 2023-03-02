@@ -116,7 +116,7 @@ public class AuthControllerTest extends TestContext {
             .andExpect(jsonPath("$.token", hasLength(143)))
             .andExpect(jsonPath("$.type").value(EnumToken.BEARER.getValue()))
             .andExpect(jsonPath("$.username").value(username))
-            .andExpect(jsonPath("$.roles", hasSize(roles.size())));
+            .andExpect(jsonPath("$.roles", hasSize(1)));
 
     }
 

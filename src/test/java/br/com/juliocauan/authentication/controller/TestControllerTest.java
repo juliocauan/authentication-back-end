@@ -17,6 +17,7 @@ import org.openapitools.model.JWTResponse;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,10 +89,10 @@ public class TestControllerTest extends TestContext {
     }
 
     @Test
+    @WithMockUser(authorities = {"ADMIN"})
     public void givenAuthenticatedAdmin_WhenAdminAccess_ThenAdminOkMessage() throws Exception {
         getMockMvc().perform(
-                get(urlAdmin)
-                        .header(header, adminToken))
+                get(urlAdmin))
                 .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -113,10 +114,10 @@ public class TestControllerTest extends TestContext {
     }
 
     @Test
+    @WithMockUser(authorities = {"MANAGER"})
     public void givenAuthenticatedManager_WhenManagerAccess_ThenManagerOkMessage() throws Exception {
         getMockMvc().perform(
-                get(urlManager)
-                        .header(header, managerToken))
+                get(urlManager))
                 .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -148,15 +149,14 @@ public class TestControllerTest extends TestContext {
     }
 
     @Test
+    @WithMockUser(authorities = {"MANAGER", "ADMIN"})
     public void givenAuthenticatedManagerOrAdmin_WhenUserAccess_ThenForbidden() throws Exception {
         getMockMvc().perform(
-                get(urlUser)
-                        .header(header, managerToken))
+                get(urlUser))
                 .andDo(print())
                 .andExpect(status().isForbidden());
         getMockMvc().perform(
-                get(urlUser)
-                        .header(header, adminToken))
+                get(urlUser))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }

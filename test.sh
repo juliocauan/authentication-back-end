@@ -3,6 +3,9 @@ docker compose -f "src/main/resources/docker/docker-compose-test.yml" down
 docker volume rm --force VOLUME test-auth-db
 docker compose -f "src/main/resources/docker/docker-compose-test.yml" up -d --build
 ./mvnw jacoco:prepare-agent clean test install jacoco:report
-firefox target/site/jacoco/index.html &
+if [ $? -eq 0 ]
+then
+    firefox target/site/jacoco/index.html &
+fi
 docker compose -f "src/main/resources/docker/docker-compose-test.yml" down
 docker volume rm --force VOLUME test-auth-db

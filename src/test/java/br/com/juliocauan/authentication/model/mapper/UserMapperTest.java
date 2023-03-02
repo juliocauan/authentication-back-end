@@ -79,6 +79,7 @@ public class UserMapperTest extends TestContext {
         roleEntities = getRoleRepository().findAll().stream().collect(Collectors.toSet());
         for(EnumRole name : EnumRole.values()) roles.add(getRole(name));
     }
+    
     @BeforeEach
     public void standard(){
         entity = getUserEntity();

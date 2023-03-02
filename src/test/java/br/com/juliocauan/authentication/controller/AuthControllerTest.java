@@ -105,7 +105,6 @@ public class AuthControllerTest extends TestContext {
             .andExpect(jsonPath("$.type").value(EnumToken.BEARER.getValue()))
             .andExpect(jsonPath("$.username").value(username))
             .andExpect(jsonPath("$.roles", hasSize(1)));
-
     }
 
     @Test
@@ -119,9 +118,9 @@ public class AuthControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value("Not Allowed!"));
-
     }
 
+    //TODO review this
     @Test
     public void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
         authController._signupUser(signupForm);

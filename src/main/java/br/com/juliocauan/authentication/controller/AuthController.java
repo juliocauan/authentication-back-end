@@ -46,8 +46,7 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<ProfileRoles> _alterUserRole(UUID userId, @NotNull @Size(min = 1) @Valid Set<EnumRole> roles) {
-    //TODO
-    ProfileRoles profileRoles = new ProfileRoles();
+    ProfileRoles profileRoles = jwtService.alterUserRole(userId, roles);
     return ResponseEntity.status(HttpStatus.OK).body(profileRoles);
   }
 

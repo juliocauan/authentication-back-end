@@ -29,6 +29,7 @@ paths:
             application/json:
               schema:
                 type: string
+                default: 'User registered successfully!'
         '400':
           description: 'Bad Request in form! Could not register new User!'
 
@@ -203,12 +204,14 @@ components:
       required:
         - 'username'
         - 'password'
-        - 'roles'
+        - 'role'
       properties:
         username:
           $ref: '#/components/schemas/Username'
         password:
           $ref: '#/components/schemas/Password'
+        role:
+          $ref: '#/components/schemas/EnumRole'
     SigninForm:
       type: object
       required:
@@ -238,6 +241,7 @@ components:
         - 'ADMIN'
         - 'MANAGER'
         - 'USER'
+      default: USER
       description: 'Client permissions'
     JWTResponse:
       type: object

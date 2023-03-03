@@ -3,11 +3,13 @@ package br.com.juliocauan.authentication.infrastructure.security.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.EnumToken;
 import org.openapitools.model.JWTResponse;
 import org.openapitools.model.Profile;
+import org.openapitools.model.ProfileRoles;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +28,9 @@ import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtProvider;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -50,7 +55,7 @@ public final class JwtService {
   public void validateAndRegisterNewUser(SignupForm signupForm) {
     userService.checkDuplicatedUsername(signupForm.getUsername());
     Set<RoleEntity> roles = new HashSet<>();
-    roles.add(RoleMapper.domainToEntity(roleService.getByName(EnumRole.USER)));
+    roles.add(RoleMapper.domainToEntity(roleService.getByName(signupForm.getRole())));
     UserEntity userEntity = UserMapper.formToEntity(signupForm, roles, encoder);
     userService.save(userEntity);
   }
@@ -70,6 +75,11 @@ public final class JwtService {
   public Profile getProfileContent() {
     UserPrincipal user = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return new Profile().username(user.getUsername());
+  }
+
+  public ProfileRoles alterUserRole(UUID userId, @NotNull @Size(min = 1) @Valid Set<EnumRole> roles) {
+      //TODO implement
+      return null;
   }
 
 }

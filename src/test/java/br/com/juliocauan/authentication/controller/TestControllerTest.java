@@ -91,7 +91,7 @@ public class TestControllerTest extends TestContext {
         getMockMvc().perform(
                 get(urlUser))
                 .andDo(print())
-                .andDo(print()).andExpect(status().isOk())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(userOkMessage));
     }
 

@@ -36,7 +36,7 @@
 			<artifactId>spring-security-test</artifactId>
 			<version>6.0.2</version>
 			<scope>test</scope>
-		</dependency>	
+		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>

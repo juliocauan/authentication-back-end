@@ -34,7 +34,6 @@ public class WebSecurityConfig {
     private final AuthEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
     
-    private final String user = EnumRole.USER.getValue();
     private final String admin = EnumRole.ADMIN.getValue();
     
     @Bean
@@ -57,7 +56,6 @@ public class WebSecurityConfig {
     
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.exceptionHandling().authenticationEntryPoint(unauthorizedHandler);
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -65,7 +63,6 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable();
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/auth/profile").hasAuthority(user)
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/profile/{userId}").hasAuthority(admin)
             .anyRequest().authenticated());
 

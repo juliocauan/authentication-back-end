@@ -63,17 +63,17 @@ paths:
       security:
         - bearerAuth: []
       summary: 'User Profile Content'
-      description: 'Access enabled only to User'
+      description: 'Access enabled only to Authenticated User'
       operationId: profileContent
       responses:
         '200':
-          description: 'Authenticated successfully!'
+          description: 'User Profile Content received successfuly!'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
-        '403':
-          description: 'Forbidden!'  
+        '401':
+          description: 'Unauthorized!'  
   
   /api/auth/profile/{userId}:
     patch:

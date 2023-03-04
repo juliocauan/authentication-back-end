@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
+import org.openapitools.model.JWTResponse;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,6 +31,7 @@ public class AuthControllerTest extends TestContext {
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
     private final String urlProfile = "/api/auth/profile";
+    private final String headerAuthorization = "Authorization";
 
     private final String password = "1234567890";
     private final String username = "test@email.com";
@@ -39,8 +41,11 @@ public class AuthControllerTest extends TestContext {
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
 
-    private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
+    private final SignupForm signupForm = new SignupForm();
+
+    private String token;
+    private JWTResponse response;
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthController authController) {
@@ -51,7 +56,7 @@ public class AuthControllerTest extends TestContext {
     @BeforeEach
     public void standard(){
         getUserRepository().deleteAll();
-        signupForm.password(password).username(username);
+        signupForm.password(password).username(username).role(EnumRole.USER);
         signinForm.username(username).password(password);
     }
 
@@ -126,32 +131,51 @@ public class AuthControllerTest extends TestContext {
     @Test
     public void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
         authController._signupUser(signupForm);
-        authController._signinUser(signinForm);
+        response = authController._signinUser(signinForm).getBody();
+        token = response == null ? null : response.getToken();
         getMockMvc().perform(
-            get(urlProfile))
+            get(urlProfile)
+                .header(headerAuthorization, token))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.username").value(username));
     }
 
     @Test
-    public void givenLoggedAdmin_WhenProfileContent_ThenForbidden() throws Exception{
+    public void givenLoggedAdmin_WhenProfileContent_ThenProfile() throws Exception{
         signupForm.role(EnumRole.ADMIN);
         authController._signupUser(signupForm);
-        authController._signinUser(signinForm);
+        response = authController._signinUser(signinForm).getBody();
+        token = response == null ? null : response.getToken();
         getMockMvc().perform(
-            get(urlProfile))
-            .andExpect(status().isForbidden());
+            get(urlProfile)
+                .header(headerAuthorization, token))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.username").value(username));
     }
 
     @Test
-    public void givenLoggedManager_WhenProfileContent_ThenForbidden() throws Exception{
+    public void givenLoggedManager_WhenProfileContent_ThenProfile() throws Exception{
         signupForm.role(EnumRole.MANAGER);
         authController._signupUser(signupForm);
-        authController._signinUser(signinForm);
+        response = authController._signinUser(signinForm).getBody();
+        token = response == null ? null : response.getToken();
+        getMockMvc().perform(
+            get(urlProfile)
+                .header(headerAuthorization, token))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.username").value(username));
+    }
+
+    @Test
+    public void givenUnlogged_WhenProfileContent_ThenUnauthorized() throws Exception{
         getMockMvc().perform(
             get(urlProfile))
-            .andExpect(status().isForbidden());
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value("Not Allowed!"));
     }
 
 }

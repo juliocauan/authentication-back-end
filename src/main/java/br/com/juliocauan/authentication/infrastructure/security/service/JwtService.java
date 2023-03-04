@@ -1,12 +1,10 @@
 package br.com.juliocauan.authentication.infrastructure.security.service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.openapitools.model.EnumRole;
-import org.openapitools.model.EnumToken;
 import org.openapitools.model.JWTResponse;
 import org.openapitools.model.Profile;
 import org.openapitools.model.ProfileRoles;
@@ -48,7 +46,7 @@ public final class JwtService {
     SecurityContextHolder.getContext().setAuthentication(auth);
     String token = jwtProvider.generateToken(auth);
     UserDetails userPrincipal = (UserDetails) auth.getPrincipal();
-    List<EnumRole> roles = RoleMapper.authoritiesToEnumRole(userPrincipal.getAuthorities());
+    Set<EnumRole> roles = RoleMapper.authoritiesToEnumRole(userPrincipal.getAuthorities());
     return parseAsJWTResponse(token, userPrincipal, roles);
   }
 
@@ -64,10 +62,9 @@ public final class JwtService {
     return new UsernamePasswordAuthenticationToken(signinForm.getUsername(), signinForm.getPassword());
   }
 
-  private JWTResponse parseAsJWTResponse(String token, UserDetails userPrincipal, List<EnumRole> roles) {
+  private JWTResponse parseAsJWTResponse(String token, UserDetails userPrincipal, Set<EnumRole> roles) {
     return new JWTResponse()
         .token(token)
-        .type(EnumToken.BEARER)
         .username(userPrincipal.getUsername())
         .roles(roles);
   }

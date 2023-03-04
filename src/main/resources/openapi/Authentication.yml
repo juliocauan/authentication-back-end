@@ -233,8 +233,8 @@ components:
       format: password
       description: 'User password to access account'
       example: '1234567890'
-      maxLength: 120
       minLength: 8
+      maxLength: 120
     EnumRole:
       type: string
       enum:
@@ -254,17 +254,15 @@ components:
         token:
           type: string
         type:
-          $ref: '#/components/schemas/EnumToken'
+          type: string
+          default: 'Bearer'
         username:
           $ref: '#/components/schemas/Username'
         roles:
           type: array
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/EnumRole'
-    EnumToken:
-      type: string
-      enum:
-        - 'Bearer'
     Profile:
       type: object
       properties:

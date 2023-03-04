@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.infrastructure.model.mapper;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,10 +23,10 @@ public abstract class RoleMapper {
         return model.stream().map(role -> domainToEntity(role)).collect(Collectors.toSet());
     }
 
-    public static List<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> authorities) {
+    public static Set<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> authorities) {
         return authorities.stream()
             .map(item -> EnumRole.fromValue(item.getAuthority()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
 }

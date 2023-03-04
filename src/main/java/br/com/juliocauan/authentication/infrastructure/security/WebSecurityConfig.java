@@ -36,7 +36,6 @@ public class WebSecurityConfig {
     
     private final String user = EnumRole.USER.getValue();
     private final String admin = EnumRole.ADMIN.getValue();
-    private final String manager = EnumRole.MANAGER.getValue();
     
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -65,10 +64,6 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http.cors().and().csrf().disable();
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/test/all").permitAll()
-                .requestMatchers("/api/test/user").hasAuthority(user)
-                .requestMatchers("/api/test/manager").hasAuthority(manager)
-                .requestMatchers("/api/test/admin").hasAuthority(admin)
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/auth/profile").hasAuthority(user)
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/profile/{userId}").hasAuthority(admin)

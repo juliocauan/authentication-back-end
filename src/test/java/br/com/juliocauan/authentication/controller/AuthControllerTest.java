@@ -4,14 +4,13 @@ import static org.hamcrest.Matchers.hasLength;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumToken;
+import org.openapitools.model.EnumRole;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -62,7 +61,6 @@ public class AuthControllerTest extends TestContext {
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$").value(messageOk));
@@ -75,27 +73,42 @@ public class AuthControllerTest extends TestContext {
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorDuplicatedUsername));
     }
 
     @Test
-    public void givenValidSigninForm_WhenAuthenticate_ThenJwtResponse() throws Exception{
+    public void givenStandardValidSigninForm_WhenAuthenticate_ThenJwtResponseWithUserRole() throws Exception{
         authController._signupUser(signupForm);
-
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.token", hasLength(143)))
-            .andExpect(jsonPath("$.type").value(EnumToken.BEARER.getValue()))
+            .andExpect(jsonPath("$.type").value("Bearer"))
             .andExpect(jsonPath("$.username").value(username))
-            .andExpect(jsonPath("$.roles", hasSize(1)));
+            .andExpect(jsonPath("$.roles", hasSize(1)))
+            .andExpect(jsonPath("$.roles[0]").value(EnumRole.USER.getValue()));
+    }
+
+    @Test
+    public void givenCustomValidSigninForm_WhenAuthenticate_ThenJwtResponseWithAdminRole() throws Exception{
+        signupForm.role(EnumRole.ADMIN);
+        authController._signupUser(signupForm);
+        getMockMvc().perform(
+            post(urlSignin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signinForm)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token", hasLength(143)))
+            .andExpect(jsonPath("$.type").value("Bearer"))
+            .andExpect(jsonPath("$.username").value(username))
+            .andExpect(jsonPath("$.roles", hasSize(1)))
+            .andExpect(jsonPath("$.roles[0]").value(EnumRole.ADMIN.getValue()));
     }
 
     @Test
@@ -105,7 +118,6 @@ public class AuthControllerTest extends TestContext {
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value("Not Allowed!"));
@@ -117,10 +129,29 @@ public class AuthControllerTest extends TestContext {
         authController._signinUser(signinForm);
         getMockMvc().perform(
             get(urlProfile))
-            .andDo(print())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.username").value(username));
+    }
+
+    @Test
+    public void givenLoggedAdmin_WhenProfileContent_ThenForbidden() throws Exception{
+        signupForm.role(EnumRole.ADMIN);
+        authController._signupUser(signupForm);
+        authController._signinUser(signinForm);
+        getMockMvc().perform(
+            get(urlProfile))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void givenLoggedManager_WhenProfileContent_ThenForbidden() throws Exception{
+        signupForm.role(EnumRole.MANAGER);
+        authController._signupUser(signupForm);
+        authController._signinUser(signinForm);
+        getMockMvc().perform(
+            get(urlProfile))
+            .andExpect(status().isForbidden());
     }
 
 }

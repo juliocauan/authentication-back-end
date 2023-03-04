@@ -70,7 +70,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/test/manager").hasAuthority(manager)
                 .requestMatchers("/api/test/admin").hasAuthority(admin)
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
-                .requestMatchers(HttpMethod.GET, "api/auth/profile").hasAuthority(user)
+                .requestMatchers(HttpMethod.GET, "/api/auth/profile").hasAuthority(user)
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/profile/{userId}").hasAuthority(admin)
             .anyRequest().authenticated());
 

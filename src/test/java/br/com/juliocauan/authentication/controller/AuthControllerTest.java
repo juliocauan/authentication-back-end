@@ -24,7 +24,7 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-public class AuthControllerTest extends TestContext {
+class AuthControllerTest extends TestContext {
 
     private final AuthController authController;
 
@@ -40,6 +40,7 @@ public class AuthControllerTest extends TestContext {
 
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
+    private final String validationError = "Input validation error!";
 
     private final SigninForm signinForm = new SigninForm();
     private final SignupForm signupForm = new SignupForm();
@@ -61,7 +62,21 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenValidSignupForm_WhenSignupUser_Then200AndMessage() throws Exception{
+    void givenInvalidFormatSignupForm_WhenSignupUser_Then400AndResponse() throws Exception{
+        signupForm.username("aaaaaaaaaaaaa").password("12345").role(null);
+        getMockMvc().perform(
+            post(urlSignup)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signupForm)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value(validationError))
+            .andExpect(jsonPath("$.timestamp").isNotEmpty())
+            .andExpect(jsonPath("$.fieldErrors", hasSize(3)));
+    }
+
+    @Test
+    void givenValidSignupForm_WhenSignupUser_Then200AndMessage() throws Exception{
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +87,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenDuplicatedUsername_WhenSignupUser_ThenEntityExistsException() throws Exception{
+    void givenDuplicatedUsername_WhenSignupUser_ThenEntityExistsException() throws Exception{
         getUserRepository().save(UserEntity.builder().password(password).username(username).roles(null).build());
         getMockMvc().perform(
             post(urlSignup)
@@ -84,7 +99,21 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenStandardValidSigninForm_WhenAuthenticate_ThenJwtResponseWithUserRole() throws Exception{
+    void givenInvalidFormatSigninForm_WhenSignupUser_Then400AndResponse() throws Exception{
+        signinForm.username("aaaaaaaaaaaaa").password("12345");
+        getMockMvc().perform(
+            post(urlSignin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signinForm)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value(validationError))
+            .andExpect(jsonPath("$.timestamp").isNotEmpty())
+            .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
+    }
+
+    @Test
+    void givenStandardValidSigninForm_WhenAuthenticate_ThenJwtResponseWithUserRole() throws Exception{
         authController._signupUser(signupForm);
         getMockMvc().perform(
             post(urlSignin)
@@ -100,7 +129,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenCustomValidSigninForm_WhenAuthenticate_ThenJwtResponseWithAdminRole() throws Exception{
+    void givenCustomValidSigninForm_WhenAuthenticate_ThenJwtResponseWithAdminRole() throws Exception{
         signupForm.role(EnumRole.ADMIN);
         authController._signupUser(signupForm);
         getMockMvc().perform(
@@ -117,7 +146,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized() throws Exception{
+    void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized() throws Exception{
         signinForm.username(usernameNotPresent).password(password);
         getMockMvc().perform(
             post(urlSignin)
@@ -129,7 +158,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
+    void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
         authController._signupUser(signupForm);
         response = authController._signinUser(signinForm).getBody();
         token = response == null ? null : response.getToken();
@@ -142,7 +171,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenLoggedAdmin_WhenProfileContent_ThenProfile() throws Exception{
+    void givenLoggedAdmin_WhenProfileContent_ThenProfile() throws Exception{
         signupForm.role(EnumRole.ADMIN);
         authController._signupUser(signupForm);
         response = authController._signinUser(signinForm).getBody();
@@ -156,7 +185,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenLoggedManager_WhenProfileContent_ThenProfile() throws Exception{
+    void givenLoggedManager_WhenProfileContent_ThenProfile() throws Exception{
         signupForm.role(EnumRole.MANAGER);
         authController._signupUser(signupForm);
         response = authController._signinUser(signinForm).getBody();
@@ -170,7 +199,7 @@ public class AuthControllerTest extends TestContext {
     }
 
     @Test
-    public void givenUnlogged_WhenProfileContent_ThenUnauthorized() throws Exception{
+    void givenUnlogged_WhenProfileContent_ThenUnauthorized() throws Exception{
         getMockMvc().perform(
             get(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

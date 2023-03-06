@@ -17,9 +17,9 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 import br.com.juliocauan.authentication.infrastructure.security.service.JwtService;
 import jakarta.persistence.EntityExistsException;
 
-public class TokenServiceTest extends TestContext {
+public class JwtServiceTest extends TestContext {
 
-    private final JwtService tokenService;
+    private final JwtService jwtService;
     private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
 
@@ -29,10 +29,10 @@ public class TokenServiceTest extends TestContext {
 
     private UserEntity entity;
 
-    public TokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, JwtService tokenService) {
+    public JwtServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, JwtService jwtService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.tokenService = tokenService;
+        this.jwtService = jwtService;
     }
 
     @BeforeEach
@@ -49,21 +49,26 @@ public class TokenServiceTest extends TestContext {
 
     @Test
     public void givenValidSignupForm_WhenValidateAndRegisterNewUser_ThenDoesNotThrow(){
-        Assertions.assertDoesNotThrow(() -> tokenService.validateAndRegisterNewUser(signupForm));
+        Assertions.assertDoesNotThrow(() -> jwtService.validateAndRegisterNewUser(signupForm));
         Assertions.assertEquals(1, getUserRepository().findAll().size());
     }
     
     @Test
     public void givenInvalidSignupForm_WhenValidateAndRegisterNewUser_ThenDuplicatedUsername(){
         getUserRepository().save(entity);
-        Assertions.assertThrows(EntityExistsException.class, () -> tokenService.validateAndRegisterNewUser(signupForm),
+        Assertions.assertThrows(EntityExistsException.class, () -> jwtService.validateAndRegisterNewUser(signupForm),
             errorUsernameDuplicated);
     }
 
     @Test
     public void givenValidSigninForm_WhenAuthenticate_ThenJWTResponse(){
-        tokenService.validateAndRegisterNewUser(signupForm);
-        Assertions.assertInstanceOf(JWTResponse.class, tokenService.authenticate(signinForm));
+        jwtService.validateAndRegisterNewUser(signupForm);
+        Assertions.assertInstanceOf(JWTResponse.class, jwtService.authenticate(signinForm));
+    }
+
+    @Test
+    public void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized(){
+        Assertions.assertThrows(Exception.class, () -> jwtService.authenticate(signinForm));
     }
 
 }

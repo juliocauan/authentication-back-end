@@ -10,7 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 
-public abstract class RoleMapper {
+public interface RoleMapper {
     
     public static RoleEntity domainToEntity(Role model) {
         return RoleEntity.builder()

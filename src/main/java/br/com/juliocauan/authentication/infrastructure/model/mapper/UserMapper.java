@@ -12,7 +12,7 @@ import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
-public abstract class UserMapper {
+public interface UserMapper {
 
     public static UserEntity domainToEntity(User model) {
         return UserEntity.builder()

@@ -13,12 +13,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "roles", schema = "auth")
-@Data @EqualsAndHashCode(callSuper = false)
+@Getter @EqualsAndHashCode
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 public final class RoleEntity implements Role {
@@ -28,7 +28,7 @@ public final class RoleEntity implements Role {
 	private Short id;
     
     @Enumerated(EnumType.STRING)
-	@Column(length = 20)
+	@Column(length = 20, nullable = false)
     private EnumRole name;
 
 }

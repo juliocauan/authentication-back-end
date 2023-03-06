@@ -37,8 +37,7 @@ public class RoleServiceTest extends TestContext {
 
     @Test
     public void givenInvalidName_WhenGetByName_ThenThrowsEntityNotFoundException(){
-        EnumRole name = null;
-        Assertions.assertThrows(EntityNotFoundException.class, () -> roleService.getByName(name), "Role Not Found with name: " + name);
+        Assertions.assertThrows(EntityNotFoundException.class, () -> roleService.getByName(null), "Role Not Found with name: null");
     }
 
 }

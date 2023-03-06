@@ -27,14 +27,14 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "users", schema = "auth")
-@Data @EqualsAndHashCode(callSuper = false)
+@Data @EqualsAndHashCode
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 public final class UserEntity implements User {
     
 	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue
-	@UuidGenerator(style = Style.TIME)
+	@UuidGenerator(style = Style.RANDOM)
     private UUID id;
 
 	@Email

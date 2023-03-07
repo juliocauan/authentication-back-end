@@ -20,7 +20,7 @@ public interface RoleMapper {
     }
 
     public static Set<RoleEntity> domainToEntity(Set<? extends Role> model) {
-        return model.stream().map(role -> domainToEntity(role)).collect(Collectors.toSet());
+        return model.stream().map(RoleMapper::domainToEntity).collect(Collectors.toSet());
     }
 
     public static Set<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> authorities) {

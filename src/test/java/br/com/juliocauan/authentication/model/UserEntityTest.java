@@ -13,7 +13,7 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-public class UserEntityTest extends TestContext {
+class UserEntityTest extends TestContext {
 
     private final String usernameValid = "test@email.com";
     private final String usernameInvalid = "testnotmail.com";
@@ -47,7 +47,7 @@ public class UserEntityTest extends TestContext {
     }
 
     @Test
-    public void usernameValidConstraints(){
+    void usernameValidConstraints(){
         entity.setUsername(usernameValid);
         Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
         getUserRepository().deleteAll();
@@ -57,25 +57,25 @@ public class UserEntityTest extends TestContext {
     }
 
     @Test
-    public void usernameBlankConstraint(){
+    void usernameBlankConstraint(){
         entity.setUsername(usernameBlank);
         Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
-    public void usernameConstraint(){
+    void usernameConstraint(){
         entity.setUsername(usernameInvalid);
         Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
-    public void usernameMaxConstraint(){
+    void usernameMaxConstraint(){
         entity.setUsername(usernameMax);
         Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
     
     @Test
-    public void passwordValidConstraints(){
+    void passwordValidConstraints(){
         entity.setPassword(passwordValid);
         Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
         getUserRepository().deleteAll();
@@ -89,19 +89,19 @@ public class UserEntityTest extends TestContext {
     }
 
     @Test
-    public void passwordBlankConstraint(){
+    void passwordBlankConstraint(){
         entity.setPassword(passwordBlank);
         Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
-    public void passwordMinConstraint(){
+    void passwordMinConstraint(){
         entity.setPassword(passwordMin);
         Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }
 
     @Test
-    public void passwordMaxConstraint(){
+    void passwordMaxConstraint(){
         entity.setPassword(passwordMax);
         Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
     }

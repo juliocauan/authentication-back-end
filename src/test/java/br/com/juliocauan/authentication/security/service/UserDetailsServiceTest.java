@@ -20,7 +20,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 
-public class UserDetailsServiceTest extends TestContext {
+class UserDetailsServiceTest extends TestContext {
 
     private final UserDetailsServiceImpl userDetailsService;
     
@@ -54,7 +54,7 @@ public class UserDetailsServiceTest extends TestContext {
     }
     
     @Test
-    public void givenPresentUsername_WhenLoadUserByUsername_ThenUserDetails(){
+    void givenPresentUsername_WhenLoadUserByUsername_ThenUserDetails(){
         getUserRepository().save(entity);
         UserDetails user = userDetailsService.loadUserByUsername(username);
         Assertions.assertEquals(username, user.getUsername());
@@ -63,7 +63,7 @@ public class UserDetailsServiceTest extends TestContext {
     }
     
     @Test
-    public void givenNotPresentUsername_WhenLoadUserByUsername_ThenUsernameNotFoundException(){
+    void givenNotPresentUsername_WhenLoadUserByUsername_ThenUsernameNotFoundException(){
         Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username), errorUsernameNotFound);
     }
 

@@ -12,7 +12,7 @@ import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-public class RoleRepositoryTest extends TestContext {
+class RoleRepositoryTest extends TestContext {
 
     private RoleEntity entity;
 
@@ -28,12 +28,12 @@ public class RoleRepositoryTest extends TestContext {
     }
 
     @Test
-    public void givenPresentName_WhenFindByName_ThenRole(){
+    void givenPresentName_WhenFindByName_ThenRole(){
         Assertions.assertEquals(entity, getRoleRepository().findByName(entity.getName()).get());
     }
 
     @Test
-    public void givenNotPresentName_WhenFindByName_ThenRoleNotPresent(){
+    void givenNotPresentName_WhenFindByName_ThenRoleNotPresent(){
         Assertions.assertFalse(getRoleRepository().findByName(null).isPresent());
     }
 

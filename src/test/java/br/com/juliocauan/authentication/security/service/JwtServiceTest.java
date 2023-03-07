@@ -17,7 +17,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 import br.com.juliocauan.authentication.infrastructure.security.service.JwtService;
 import jakarta.persistence.EntityExistsException;
 
-public class JwtServiceTest extends TestContext {
+class JwtServiceTest extends TestContext {
 
     private final JwtService jwtService;
     private final SignupForm signupForm = new SignupForm();
@@ -48,26 +48,26 @@ public class JwtServiceTest extends TestContext {
     }
 
     @Test
-    public void givenValidSignupForm_WhenValidateAndRegisterNewUser_ThenDoesNotThrow(){
+    void givenValidSignupForm_WhenValidateAndRegisterNewUser_ThenDoesNotThrow(){
         Assertions.assertDoesNotThrow(() -> jwtService.validateAndRegisterNewUser(signupForm));
         Assertions.assertEquals(1, getUserRepository().findAll().size());
     }
     
     @Test
-    public void givenInvalidSignupForm_WhenValidateAndRegisterNewUser_ThenDuplicatedUsername(){
+    void givenInvalidSignupForm_WhenValidateAndRegisterNewUser_ThenDuplicatedUsername(){
         getUserRepository().save(entity);
         Assertions.assertThrows(EntityExistsException.class, () -> jwtService.validateAndRegisterNewUser(signupForm),
             errorUsernameDuplicated);
     }
 
     @Test
-    public void givenValidSigninForm_WhenAuthenticate_ThenJWTResponse(){
+    void givenValidSigninForm_WhenAuthenticate_ThenJWTResponse(){
         jwtService.validateAndRegisterNewUser(signupForm);
         Assertions.assertInstanceOf(JWTResponse.class, jwtService.authenticate(signinForm));
     }
 
     @Test
-    public void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized(){
+    void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized(){
         Assertions.assertThrows(Exception.class, () -> jwtService.authenticate(signinForm));
     }
 

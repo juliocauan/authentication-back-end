@@ -17,7 +17,7 @@ import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-public class RoleMapperTest extends TestContext {
+class RoleMapperTest extends TestContext {
 
     private final Short id = 2;
 
@@ -34,6 +34,7 @@ public class RoleMapperTest extends TestContext {
             public EnumRole getName() {return role;}
         };
     }
+
     private final RoleEntity getRoleEntity(EnumRole role){
         return RoleEntity.builder()
             .id(id)
@@ -42,14 +43,14 @@ public class RoleMapperTest extends TestContext {
     }
 
     @Test
-    public void oneDomainRoleToOneEntity(){
+    void oneDomainRoleToOneEntity(){
         RoleEntity entity = getRoleEntity(EnumRole.ADMIN);
         Role role = getRole(EnumRole.ADMIN);
         Assertions.assertEquals(entity, RoleMapper.domainToEntity(role));
     }
 
     @Test
-    public void setDomainRoleToSetEntity(){
+    void setDomainRoleToSetEntity(){
         Set<RoleEntity> entities = new HashSet<>();
         Set<Role> roles = new HashSet<>();
         for(EnumRole name : EnumRole.values()){

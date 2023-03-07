@@ -17,7 +17,7 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-public class UserRepositoryTest extends TestContext {
+class UserRepositoryTest extends TestContext {
 
     private final String password = "12345678";
     private final String username = "test@email.com";
@@ -47,24 +47,24 @@ public class UserRepositoryTest extends TestContext {
     }
 
     @Test
-    public void givenPresentUsername_WhenExistsByUsername_ThenTrue(){
+    void givenPresentUsername_WhenExistsByUsername_ThenTrue(){
         getUserRepository().save(entity);
         Assertions.assertTrue(getUserRepository().existsByUsername(username));
     }
 
     @Test
-    public void givenNotPresentUsername_WhenExistsByUsername_ThenFalse(){
+    void givenNotPresentUsername_WhenExistsByUsername_ThenFalse(){
         Assertions.assertFalse(getUserRepository().existsByUsername(username));
     }
 
     @Test
-    public void givenPresentUsername_WhenFindByUsername_ThenUser(){
+    void givenPresentUsername_WhenFindByUsername_ThenUser(){
         getUserRepository().save(entity);
         Assertions.assertEquals(entity, getUserRepository().findByUsername(username).get());
     }
 
     @Test
-    public void givenNotPresentUsername_WhenFindByUsername_ThenUserNotPresent(){
+    void givenNotPresentUsername_WhenFindByUsername_ThenUserNotPresent(){
         Assertions.assertFalse(getUserRepository().findByUsername(username).isPresent());
     }
 

@@ -14,7 +14,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 
-public class RoleServiceTest extends TestContext {
+class RoleServiceTest extends TestContext {
 
     private final RoleServiceImpl roleService;
     
@@ -25,18 +25,18 @@ public class RoleServiceTest extends TestContext {
     }
 
     @Test
-    public void whenGetRepository_ThenInstanceOfRoleRepository(){
+    void whenGetRepository_ThenInstanceOfRoleRepository(){
         Assertions.assertInstanceOf(RoleRepository.class, roleService.getRepository());
     }
 
     @Test
-    public void givenValidName_WhenGetByName_ThenEqualsName(){
+    void givenValidName_WhenGetByName_ThenEqualsName(){
         for(EnumRole name : EnumRole.values())
             Assertions.assertEquals(name, roleService.getByName(name).getName());
     }
 
     @Test
-    public void givenInvalidName_WhenGetByName_ThenThrowsEntityNotFoundException(){
+    void givenInvalidName_WhenGetByName_ThenThrowsEntityNotFoundException(){
         Assertions.assertThrows(EntityNotFoundException.class, () -> roleService.getByName(null), "Role Not Found with name: null");
     }
 

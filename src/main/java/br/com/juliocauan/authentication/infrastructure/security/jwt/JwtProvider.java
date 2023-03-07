@@ -15,13 +15,13 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtProvider {
 
-	private final Long jwtExpirationInMs = (long) 86400000;
+	private static final long EXPIRATION = 86400000L;
 	private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
 	public String generateToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		Date now = new Date();
-		Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+		Date expiryDate = new Date(now.getTime() + EXPIRATION);
 		return Jwts.builder()
 				.setSubject(userPrincipal.getUsername())
 				.setIssuedAt(now)
@@ -34,12 +34,12 @@ public class JwtProvider {
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
 	}
 
-	public Boolean isTokenValid(String authToken) {
+	public boolean isTokenValid(String authToken) {
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
-			return Boolean.TRUE;
+			return true;
 		} catch (Exception e) {
-			return Boolean.FALSE;
+			return false;
 		}
 	}
 

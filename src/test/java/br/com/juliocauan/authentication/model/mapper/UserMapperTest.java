@@ -25,7 +25,7 @@ import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-public class UserMapperTest extends TestContext {
+class UserMapperTest extends TestContext {
 
     private final PasswordEncoder encoder;
 
@@ -86,13 +86,13 @@ public class UserMapperTest extends TestContext {
     }
 
     @Test
-    public void domainToEntity(){
+    void domainToEntity(){
         UserEntity mappedEntity = UserMapper.domainToEntity(getUser());
         Assertions.assertEquals(entity, mappedEntity);
     }
 
     @Test
-    public void formToEntity(){
+    void formToEntity(){
         SignupForm signupForm = new SignupForm();
         signupForm.username(username).password(password);
         UserEntity mappedEntity = UserMapper.formToEntity(signupForm, roleEntities, encoder);

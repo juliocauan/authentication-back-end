@@ -21,7 +21,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.persistence.EntityExistsException;
 
-public class UserServiceTest extends TestContext {
+class UserServiceTest extends TestContext {
 
     private final UserServiceImpl userService;
 
@@ -57,34 +57,34 @@ public class UserServiceTest extends TestContext {
     }
 
     @Test
-    public void whenGetRepository_ThenInstanceOfUserRepository(){
+    void whenGetRepository_ThenInstanceOfUserRepository(){
         Assertions.assertInstanceOf(UserRepository.class, userService.getRepository());
     }
 
     @Test
-    public void givenPresentUsername_WhenGetByUsername_ThenEqualsUser(){
+    void givenPresentUsername_WhenGetByUsername_ThenEqualsUser(){
         getUserRepository().save(entity);
         Assertions.assertEquals(entity, userService.getByUsername(username));
     }
 
     @Test
-    public void givenNotPresentUsername_WhenGetByUsername_ThenUsernameNotFoundException(){
+    void givenNotPresentUsername_WhenGetByUsername_ThenUsernameNotFoundException(){
         Assertions.assertThrows(UsernameNotFoundException.class, () -> userService.getByUsername(username), errorUsernameNotFound);
     }
 
     @Test
-    public void givenDuplicatedUsername_WhenCheckDuplicatedUsername_ThenEntityExistsException(){
+    void givenDuplicatedUsername_WhenCheckDuplicatedUsername_ThenEntityExistsException(){
         getUserRepository().save(entity);
         Assertions.assertThrows(EntityExistsException.class, () -> userService.checkDuplicatedUsername(username), errorDuplicatedUsername);
     }
 
     @Test
-    public void givenNotDuplicatedUsername_WhenCheckDuplicatedUsername_ThenVoid(){
+    void givenNotDuplicatedUsername_WhenCheckDuplicatedUsername_ThenVoid(){
         Assertions.assertDoesNotThrow(() -> userService.checkDuplicatedUsername(username));
     }
 
     @Test
-    public void givenValidUserEntity_WhenSave_ThenVoid(){
+    void givenValidUserEntity_WhenSave_ThenVoid(){
         Assertions.assertDoesNotThrow(() -> userService.save(entity));
     }
     

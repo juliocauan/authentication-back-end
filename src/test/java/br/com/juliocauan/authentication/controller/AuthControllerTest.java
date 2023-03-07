@@ -115,7 +115,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void givenSigninForm_WhenAuthenticate_ThenJwtResponseWithUserRole() throws Exception{
+    void givenSigninForm_WhenSigninUser_ThenJwtResponseWithUserRole() throws Exception{
         authController._signupUser(signupForm);
         getMockMvc().perform(
             post(urlSignin)
@@ -131,7 +131,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void givenCustomSigninForm_WhenAuthenticate_ThenJwtResponseWithAdminRole() throws Exception{
+    void givenCustomSigninForm_WhenSigninUser_ThenJwtResponseWithAdminRole() throws Exception{
         signupForm.role(EnumRole.ADMIN);
         authController._signupUser(signupForm);
         getMockMvc().perform(
@@ -148,7 +148,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void givenNotPresentUsernameSigninForm_WhenAuthenticate_ThenUnauthorized() throws Exception{
+    void givenNotPresentUsernameSigninForm_WhenSigninUser_ThenUnauthorized() throws Exception{
         signinForm.username(usernameNotPresent).password(password);
         getMockMvc().perform(
             post(urlSignin)

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -15,13 +15,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepositoryImpl userRepository;
+    private final UserServiceImpl userService;
     
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+        User user = userService.getByUsername(username);
         return UserMapper.domainToPrincipal(user);
     }
     

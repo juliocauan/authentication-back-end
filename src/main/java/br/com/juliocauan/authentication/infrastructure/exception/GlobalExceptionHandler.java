@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,7 +17,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -52,28 +49,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
-    @ExceptionHandler(TransactionSystemException.class)
-    public ResponseEntity<Object> handleTransactionSystem(TransactionSystemException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
-    }
-
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> handleEntityExists(EntityExistsException ex){
         responseError = init(ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
     }
 
 }

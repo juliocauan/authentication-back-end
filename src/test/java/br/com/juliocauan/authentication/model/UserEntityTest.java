@@ -27,6 +27,7 @@ class UserEntityTest extends TestContext {
     private final String passwordMax = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
     private final String passwordMinValid = "12345678";
     private final String passwordMaxValid = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    private final UserRepositoryImpl repository = getUserRepository();
 
     private UserEntity entity;
 
@@ -59,19 +60,19 @@ class UserEntityTest extends TestContext {
     @Test
     void usernameBlankConstraint(){
         entity.setUsername(usernameBlank);
-        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
     @Test
     void usernameConstraint(){
         entity.setUsername(usernameInvalid);
-        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
     @Test
     void usernameMaxConstraint(){
         entity.setUsername(usernameMax);
-        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
     
     @Test
@@ -91,19 +92,19 @@ class UserEntityTest extends TestContext {
     @Test
     void passwordBlankConstraint(){
         entity.setPassword(passwordBlank);
-        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
     @Test
     void passwordMinConstraint(){
         entity.setPassword(passwordMin);
-        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
     @Test
     void passwordMaxConstraint(){
         entity.setPassword(passwordMax);
-        Assertions.assertThrows(TransactionSystemException.class, () -> getUserRepository().save(entity));
+        Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
 }

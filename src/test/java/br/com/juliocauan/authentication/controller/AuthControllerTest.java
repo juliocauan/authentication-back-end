@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
@@ -41,8 +42,10 @@ class AuthControllerTest extends TestContext {
     private final String headerAuthorization = "Authorization";
 
     private final String password = "1234567890";
-    private final String username1 = "test@email.com";
+    private final String username1 = "test1@email.com";
     private final String username2 = "test2@email.com";
+    private final String username3 = "test3@email.com";
+    private final int uuidSize = 36;
 
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -74,7 +77,7 @@ class AuthControllerTest extends TestContext {
         SigninForm signin = new SigninForm().username(usernameToken).password(password);
         authController._signupUser(signup);
         JWTResponse response = authController._signinUser(signin).getBody();
-        return response == null ? null : response.getToken();
+        return response == null ? null : "Bearer " + response.getToken();
     }
 
     @Test
@@ -139,7 +142,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(143)))
+            .andExpect(jsonPath("$.token", hasLength(144)))
             .andExpect(jsonPath("$.type").value("Bearer"))
             .andExpect(jsonPath("$.username").value(username1))
             .andExpect(jsonPath("$.roles", hasSize(1)))
@@ -155,7 +158,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(143)))
+            .andExpect(jsonPath("$.token", hasLength(144)))
             .andExpect(jsonPath("$.type").value("Bearer"))
             .andExpect(jsonPath("$.username").value(username1))
             .andExpect(jsonPath("$.roles", hasSize(1)))
@@ -282,22 +285,67 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenNothing_WhenGetAllUsers_Then200AndList() throws Exception{
-        //TODO
+        token = getToken(username1, EnumRole.ADMIN);
+        getToken(username2, EnumRole.MANAGER);
+        getToken(username3, EnumRole.USER);
+        getMockMvc().perform(
+            get(urlGetAllUsers)
+                .header(headerAuthorization, token))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(3)))
+            .andExpect(jsonPath("$.[0].id", hasSize(uuidSize)))
+            .andExpect(jsonPath("$.[0].username", Matchers.containsString("test")))
+            .andExpect(jsonPath("$.[0].roles", hasSize(1)));
     }
 
     @Test
     void givenUsername_WhenGetAllUsers_Then200AndList() throws Exception{
-        //TODO
+        token = getToken(username1, EnumRole.ADMIN);
+        getToken(username2, EnumRole.MANAGER);
+        getToken(username3, EnumRole.USER);
+        getMockMvc().perform(
+            get(urlGetAllUsers)
+                .header(headerAuthorization, token)
+                .queryParam("username", "1"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$.[0].id", hasSize(uuidSize)))
+            .andExpect(jsonPath("$.[0].username").value(username1))
+            .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.ADMIN.getValue()));
     }
 
     @Test
     void givenRole_WhenGetAllUsers_Then200AndList() throws Exception{
-        //TODO
+        token = getToken(username1, EnumRole.ADMIN);
+        getToken(username2, EnumRole.MANAGER);
+        getToken(username3, EnumRole.USER);
+        getMockMvc().perform(
+            get(urlGetAllUsers)
+                .header(headerAuthorization, token)
+                .queryParam("role", EnumRole.MANAGER.getValue()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$.[0].id", hasSize(uuidSize)))
+            .andExpect(jsonPath("$.[0].username").value(username2))
+            .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.MANAGER.getValue()));
     }
 
     @Test
     void givenUsernameAndRole_WhenGetAllUsers_Then200AndList() throws Exception{
-        //TODO
+        token = getToken(username1, EnumRole.ADMIN);
+        getToken(username2, EnumRole.MANAGER);
+        getToken(username3, EnumRole.USER);
+        getMockMvc().perform(
+            get(urlGetAllUsers)
+                .header(headerAuthorization, token)
+                .queryParam("username", "1")
+                .queryParam("role", EnumRole.USER.getValue()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", Matchers.emptyArray()));
     }
 
 }

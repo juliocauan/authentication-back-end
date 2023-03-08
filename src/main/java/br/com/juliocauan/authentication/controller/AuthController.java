@@ -51,7 +51,7 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<List<UserInfo>> _getAllUsers(@Valid String email, @Valid EnumRole role) {
+  public ResponseEntity<List<UserInfo>> _getAllUsers(@Valid String username, @Valid EnumRole role) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method '_getAllUsers'");
   }

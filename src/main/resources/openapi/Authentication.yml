@@ -73,7 +73,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
         '401':
-          description: 'Unauthorized!'
+          description: 'You are not logged in!'
     patch:
       tags:
         - 'auth'
@@ -97,6 +97,8 @@ paths:
                 $ref: '#/components/schemas/ProfileRoles'
         '403':
           description: 'Forbidden!'
+        '404':
+          description: 'User not found!'
 
   /api/auth/users:
     get:
@@ -108,7 +110,7 @@ paths:
       description: 'Access enabled only to Admin'
       operationId: getAllUsers
       parameters:
-        - name: email
+        - name: username
           in: query
           required: false
           description: 'Searches by part of email string'
@@ -122,7 +124,7 @@ paths:
             $ref: '#/components/schemas/EnumRole'
       responses:
         '200':
-          description: 'User Profile Content received successfuly!'
+          description: 'List of Users retreived successfuly!'
           content:
             application/json:
               schema:

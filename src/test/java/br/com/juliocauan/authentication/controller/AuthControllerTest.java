@@ -69,9 +69,9 @@ class AuthControllerTest extends TestContext {
         signinForm.username(username1).password(password);
     }
 
-    private final String getToken(String usernameToken, String passwordToken, EnumRole role){
-        SignupForm signup = new SignupForm().username(usernameToken).password(passwordToken).role(role);
-        SigninForm signin = new SigninForm().username(usernameToken).password(passwordToken);
+    private final String getToken(String usernameToken, EnumRole role){
+        SignupForm signup = new SignupForm().username(usernameToken).password(password).role(role);
+        SigninForm signin = new SigninForm().username(usernameToken).password(password);
         authController._signupUser(signup);
         JWTResponse response = authController._signinUser(signin).getBody();
         return response == null ? null : response.getToken();
@@ -176,7 +176,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
-        token = getToken(username1, password, EnumRole.USER);
+        token = getToken(username1, EnumRole.USER);
         getMockMvc().perform(
             get(urlProfile)
                 .header(headerAuthorization, token))
@@ -187,7 +187,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenLoggedAdmin_WhenProfileContent_ThenProfile() throws Exception{
-        token = getToken(username1, password, EnumRole.ADMIN);
+        token = getToken(username1, EnumRole.ADMIN);
         getMockMvc().perform(
             get(urlProfile)
                 .header(headerAuthorization, token))
@@ -198,7 +198,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenLoggedManager_WhenProfileContent_ThenProfile() throws Exception{
-        token = getToken(username1, password, EnumRole.MANAGER);
+        token = getToken(username1, EnumRole.MANAGER);
         getMockMvc().perform(
             get(urlProfile)
                 .header(headerAuthorization, token))
@@ -218,12 +218,12 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenNotAuthenticatedAdmin_WhenAlterUserRole_ThenForbidden() throws Exception{
-        token = getToken(username1, password, EnumRole.USER);
+        token = getToken(username1, EnumRole.USER);
         getMockMvc().perform(
             patch(urlAlterUserRole)
                 .header(headerAuthorization, token))
             .andExpect(status().isForbidden());
-        token = getToken(username2, password, EnumRole.MANAGER);
+        token = getToken(username2, EnumRole.MANAGER);
         getMockMvc().perform(
             patch(urlAlterUserRole)
                 .header(headerAuthorization, token))
@@ -232,7 +232,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenNotPresentUsername_WhenAlterUserRole_Then404AndMessage() throws Exception{
-        token = getToken(username1, password, EnumRole.ADMIN);
+        token = getToken(username1, EnumRole.ADMIN);
         Set<EnumRole> roles = new HashSet<>();
         roles.add(EnumRole.USER);
         ProfileRoles profileRoles = new ProfileRoles().username(username2).roles(roles);
@@ -250,7 +250,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenProfileRoles_WhenAlterUserRole_Then200AndProfileRoles() throws Exception{
-        token = getToken(username2, password, EnumRole.ADMIN);
+        token = getToken(username2, EnumRole.ADMIN);
         authController._signupUser(signupForm);
         Set<EnumRole> roles = new HashSet<>();
         for(EnumRole role : EnumRole.values()) roles.add(role);
@@ -268,12 +268,12 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenNotAuthenticatedAdmin_WhenGetAllUsers_ThenForbidden() throws Exception{
-        token = getToken(username1, password, EnumRole.USER);
+        token = getToken(username1, EnumRole.USER);
         getMockMvc().perform(
             get(urlGetAllUsers)
                 .header(headerAuthorization, token))
             .andExpect(status().isForbidden());
-        token = getToken(username2, password, EnumRole.MANAGER);
+        token = getToken(username2, EnumRole.MANAGER);
         getMockMvc().perform(
             get(urlGetAllUsers)
                 .header(headerAuthorization, token))

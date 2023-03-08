@@ -64,9 +64,8 @@ public class WebSecurityConfig {
         http.cors().and().csrf().disable();
         http.authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
-                .requestMatchers(HttpMethod.PATCH, "/api/auth/profile/{userId}").hasAuthority(admin)
+                .requestMatchers(HttpMethod.PATCH, "/api/auth/profile").hasAuthority(admin)
             .anyRequest().authenticated());
-
         return http.build();
     }
 }

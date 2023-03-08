@@ -74,8 +74,6 @@ paths:
                 $ref: '#/components/schemas/Profile'
         '401':
           description: 'Unauthorized!'  
-  
-  /api/auth/profile/{userId}:
     patch:
       tags:
         - 'auth'
@@ -84,21 +82,12 @@ paths:
       summary: 'Alter User Role'
       description: 'Access enabled only to Admin'
       operationId: alterUserRole
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            $ref: '#/components/schemas/UserId'
-        - name: roles
-          in: query
-          required: true
-          schema:
-            type: array
-            uniqueItems: true
-            minItems: 1
-            items:
-              $ref: '#/components/schemas/EnumRole'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRoles'
       responses:
         '200':
           description: 'Patched User Roles successfully!'
@@ -108,7 +97,7 @@ paths:
                 $ref: '#/components/schemas/ProfileRoles'
         '403':
           description: 'Forbidden!'
-
+  
 components:
   schemas:
     ApiError:
@@ -198,12 +187,16 @@ components:
           $ref: '#/components/schemas/Username'
     ProfileRoles:
       type: object
+      required:
+        - 'username'
+        - 'roles'
       properties:
         username:
           $ref: '#/components/schemas/Username'
         roles:
           type: array
           uniqueItems: true
+          minItems: 1
           items:
             $ref: '#/components/schemas/EnumRole'
     UserId:

@@ -4,9 +4,13 @@ import static org.hamcrest.Matchers.hasLength;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import org.openapitools.model.EnumRole;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.openapitools.model.JWTResponse;
+import org.openapitools.model.ProfileRoles;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -31,22 +36,21 @@ class AuthControllerTest extends TestContext {
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
     private final String urlProfile = "/api/auth/profile";
+    private final String urlAlterUserRole = "/api/auth/profile";
     private final String headerAuthorization = "Authorization";
 
     private final String password = "1234567890";
     private final String username = "test@email.com";
-
-    private final String usernameNotPresent = "test2@email.com";
+    private final String username2 = "test2@email.com";
 
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
     private final String validationError = "Input validation error!";
+    private final String notAllowedError = "Not Allowed!";
+    private final String userNotFoundError = "User Not Found with username: ";
 
     private final SigninForm signinForm = new SigninForm();
     private final SignupForm signupForm = new SignupForm();
-
-    private String token;
-    private JWTResponse response;
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthController authController) {
@@ -59,6 +63,14 @@ class AuthControllerTest extends TestContext {
         getUserRepository().deleteAll();
         signupForm.password(password).username(username).role(EnumRole.USER);
         signinForm.username(username).password(password);
+    }
+
+    private final String getToken(String usernameToken, String passwordToken, EnumRole role){
+        SignupForm signup = new SignupForm().username(usernameToken).password(passwordToken).role(role);
+        SigninForm signin = new SigninForm().username(usernameToken).password(passwordToken);
+        authController._signupUser(signup);
+        JWTResponse response = authController._signinUser(signin).getBody();
+        return response == null ? null : response.getToken();
     }
 
     @Test
@@ -149,21 +161,19 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenNotPresentUsernameSigninForm_WhenSigninUser_ThenUnauthorized() throws Exception{
-        signinForm.username(usernameNotPresent).password(password);
+        signinForm.username(username2).password(password);
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value("Not Allowed!"));
+            .andExpect(jsonPath("$.message").value(notAllowedError));
     }
 
     @Test
     void givenLoggedUser_WhenProfileContent_ThenProfile() throws Exception{
-        authController._signupUser(signupForm);
-        response = authController._signinUser(signinForm).getBody();
-        token = response == null ? null : response.getToken();
+        String token = getToken(username, password, EnumRole.USER);
         getMockMvc().perform(
             get(urlProfile)
                 .header(headerAuthorization, token))
@@ -174,10 +184,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenLoggedAdmin_WhenProfileContent_ThenProfile() throws Exception{
-        signupForm.role(EnumRole.ADMIN);
-        authController._signupUser(signupForm);
-        response = authController._signinUser(signinForm).getBody();
-        token = response == null ? null : response.getToken();
+        String token = getToken(username, password, EnumRole.ADMIN);
         getMockMvc().perform(
             get(urlProfile)
                 .header(headerAuthorization, token))
@@ -188,10 +195,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenLoggedManager_WhenProfileContent_ThenProfile() throws Exception{
-        signupForm.role(EnumRole.MANAGER);
-        authController._signupUser(signupForm);
-        response = authController._signinUser(signinForm).getBody();
-        token = response == null ? null : response.getToken();
+        String token = getToken(username, password, EnumRole.MANAGER);
         getMockMvc().perform(
             get(urlProfile)
                 .header(headerAuthorization, token))
@@ -206,7 +210,52 @@ class AuthControllerTest extends TestContext {
             get(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value("Not Allowed!"));
+            .andExpect(jsonPath("$.message").value(notAllowedError));
+    }
+
+    @Test
+    void givenNotAuthenticatedAdmin_WhenAlterUserRole_ThenUnauthorized() throws Exception{
+        String token = getToken(username, password, EnumRole.USER);
+        getMockMvc().perform(
+            patch(urlAlterUserRole)
+                .header(headerAuthorization, token))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void givenNotPresentUsername_WhenAlterUserRole_Then404AndMessage() throws Exception{
+        String tokenAdmin = getToken(username, password, EnumRole.ADMIN);
+        Set<EnumRole> roles = new HashSet<>();
+        roles.add(EnumRole.USER);
+        ProfileRoles profileRoles = new ProfileRoles().username(username2).roles(roles);
+        getMockMvc().perform(
+            patch(urlAlterUserRole)
+                .header(headerAuthorization, tokenAdmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(profileRoles)))
+            .andExpect(status().isNotFound())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.message").value(userNotFoundError))
+            .andExpect(jsonPath("$.timestamp").isNotEmpty())
+            .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
+    void givenProfileRoles_WhenAlterUserRole_Then200AndProfileRoles() throws Exception{
+        authController._signupUser(signupForm);
+        String tokenAdmin = getToken(username2, password, EnumRole.ADMIN);
+        Set<EnumRole> roles = new HashSet<>();
+        for(EnumRole role : EnumRole.values()) roles.add(role);
+        ProfileRoles profileRoles = new ProfileRoles().username(username).roles(roles);
+        getMockMvc().perform(
+            patch(urlAlterUserRole)
+                .header(headerAuthorization, tokenAdmin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(profileRoles)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.username").value(username))
+            .andExpect(jsonPath("$.roles", hasSize(EnumRole.values().length)));
     }
 
 }

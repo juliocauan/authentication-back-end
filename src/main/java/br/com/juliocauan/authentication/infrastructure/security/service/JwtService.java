@@ -2,7 +2,6 @@ package br.com.juliocauan.authentication.infrastructure.security.service;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
@@ -27,8 +26,6 @@ import br.com.juliocauan.authentication.infrastructure.security.model.UserPrinci
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -74,9 +71,9 @@ public final class JwtService {
     return new Profile().username(user.getUsername());
   }
 
-  public ProfileRoles alterUserRole(UUID userId, @NotNull @Size(min = 1) @Valid Set<EnumRole> roles) {
-      //TODO implement
-      return null;
+  public ProfileRoles alterUserRole(@Valid ProfileRoles profileRoles) {
+    //TODO implement
+    return null;
   }
 
 }

@@ -235,7 +235,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(profileRoles)))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message").value(userNotFoundError))
+            .andExpect(jsonPath("$.message").value(userNotFoundError + username2))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

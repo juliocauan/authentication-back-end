@@ -9,7 +9,7 @@ import jakarta.persistence.EntityExistsException;
 public interface UserService {
 	
 	UserRepository getRepository();
-	void save(User user);
+	User save(User user);
 
     default User getByUsername(String username){
         return getRepository().findByUsername(username)

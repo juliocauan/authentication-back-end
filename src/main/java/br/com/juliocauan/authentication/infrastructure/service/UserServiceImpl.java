@@ -16,8 +16,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepositoryImpl userRepository;
 
     @Override
-    public void save(User user) {
-        userRepository.save(UserMapper.domainToEntity(user));
+    public User save(User user) {
+        return userRepository.save(UserMapper.domainToEntity(user));
     }
 
     @Override

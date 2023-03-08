@@ -65,6 +65,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/profile").hasAuthority(admin)
+                .requestMatchers(HttpMethod.GET, "/api/auth/users").hasAuthority(admin)
             .anyRequest().authenticated());
         return http.build();
     }

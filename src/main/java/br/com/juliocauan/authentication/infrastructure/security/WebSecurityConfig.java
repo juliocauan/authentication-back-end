@@ -62,7 +62,7 @@ public class WebSecurityConfig {
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());
         http.cors().and().csrf().disable();
-        http.authorizeHttpRequests((authorize) -> authorize
+        http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/profile").hasAuthority(admin)
             .anyRequest().authenticated());

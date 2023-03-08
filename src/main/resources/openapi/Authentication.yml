@@ -73,7 +73,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Profile'
         '401':
-          description: 'Unauthorized!'  
+          description: 'Unauthorized!'
     patch:
       tags:
         - 'auth'
@@ -97,7 +97,42 @@ paths:
                 $ref: '#/components/schemas/ProfileRoles'
         '403':
           description: 'Forbidden!'
-  
+
+  /api/auth/users:
+    get:
+      tags:
+        - 'auth'
+      security:
+        - bearerAuth: []
+      summary: 'List of Users registrated'
+      description: 'Access enabled only to Admin'
+      operationId: getAllUsers
+      parameters:
+        - name: email
+          in: query
+          required: false
+          description: 'Searches by part of email string'
+          schema:
+            type: string
+        - name: role
+          in: query
+          required: false
+          description: 'Searches by role'
+          schema:
+            $ref: '#/components/schemas/EnumRole'
+      responses:
+        '200':
+          description: 'User Profile Content received successfuly!'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserInfo'
+        '403':
+          description: 'Forbidden!'
+
+
 components:
   schemas:
     ApiError:
@@ -202,6 +237,23 @@ components:
     UserId:
       type: string
       format: uuid
+    UserInfo:
+      type: object
+      required:
+        - 'id'
+        - 'username'
+        - 'roles'
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          $ref: '#/components/schemas/Username'
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EnumRole'
 
   securitySchemes:
     bearerAuth:

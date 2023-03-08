@@ -1,11 +1,15 @@
 package br.com.juliocauan.authentication.controller;
 
+import java.util.List;
+
 import org.openapitools.api.AuthApi;
+import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
 import org.openapitools.model.Profile;
 import org.openapitools.model.ProfileRoles;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
+import org.openapitools.model.UserInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +48,12 @@ public class AuthController implements AuthApi {
   public ResponseEntity<ProfileRoles> _alterUserRole(@Valid ProfileRoles profileRoles) {
     ProfileRoles response = adminService.alterUserRole(profileRoles);
     return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @Override
+  public ResponseEntity<List<UserInfo>> _getAllUsers(@Valid String email, @Valid EnumRole role) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method '_getAllUsers'");
   }
 
 }

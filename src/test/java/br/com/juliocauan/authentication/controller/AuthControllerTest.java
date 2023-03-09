@@ -91,7 +91,7 @@ class AuthControllerTest extends TestContext {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(validationError))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
-            .andExpect(jsonPath("$.fieldErrors", hasSize(3)));
+            .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
     }
 
     @Test

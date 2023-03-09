@@ -1,7 +1,7 @@
 openapi: '3.0.3'
 info:
   title: Token Authentication API
-  version: '0.1.1'
+  version: '0.2.1'
 servers:
   - url: https://api.server.test/v1
 tags:

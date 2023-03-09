@@ -52,8 +52,8 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<List<UserInfo>> _getAllUsers(@Valid String username, @Valid EnumRole role) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method '_getAllUsers'");
+    List<UserInfo> response = adminService.getUserInfos(username, role);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
 }

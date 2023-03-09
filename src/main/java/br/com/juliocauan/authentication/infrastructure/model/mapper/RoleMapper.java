@@ -12,18 +12,18 @@ import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 
 public interface RoleMapper {
     
-    public static RoleEntity domainToEntity(Role model) {
+    static RoleEntity domainToEntity(Role model) {
         return RoleEntity.builder()
             .id(model.getId())
             .name(model.getName())
         .build();
     }
 
-    public static Set<RoleEntity> domainToEntity(Set<? extends Role> model) {
+    static Set<RoleEntity> domainToEntity(Set<? extends Role> model) {
         return model.stream().map(RoleMapper::domainToEntity).collect(Collectors.toSet());
     }
 
-    public static Set<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> authorities) {
+    static Set<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> authorities) {
         return authorities.stream()
             .map(item -> EnumRole.fromValue(item.getAuthority()))
             .collect(Collectors.toSet());

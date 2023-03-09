@@ -195,7 +195,6 @@ components:
         - 'ADMIN'
         - 'MANAGER'
         - 'USER'
-      default: USER
       description: 'Client permissions. Must be hidden from Users'
     JWTResponse:
       type: object

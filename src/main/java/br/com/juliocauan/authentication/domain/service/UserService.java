@@ -1,5 +1,8 @@
 package br.com.juliocauan.authentication.domain.service;
 
+import java.util.List;
+
+import org.openapitools.model.EnumRole;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import br.com.juliocauan.authentication.domain.model.User;
@@ -20,5 +23,9 @@ public interface UserService {
 		if (getRepository().existsByUsername(username))
 			throw new EntityExistsException("Username is already taken!");
     }
+
+	default List<User> getAllUsers(String username, EnumRole role){
+		return getRepository().findAllByUsernameContainingAndRole(username, role);
+	}
 	
 }

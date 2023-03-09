@@ -285,16 +285,19 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void givenNothing_WhenGetAllUsers_Then200AndList() throws Exception{
-        token = getToken(username1, EnumRole.ADMIN);
-        getToken(username2, EnumRole.MANAGER);
-        getToken(username3, EnumRole.USER);
+        getToken(username1, EnumRole.MANAGER);
+        getToken(username2, EnumRole.USER);
+        token = getToken(username3, EnumRole.ADMIN);
+        String nullString = null;
         getMockMvc().perform(
             get(urlGetAllUsers)
-                .header(headerAuthorization, token))
+                .header(headerAuthorization, token)
+                .queryParam("username", nullString)
+                .queryParam("role", nullString))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(3)))
-            .andExpect(jsonPath("$.[0].id", hasSize(uuidSize)))
+            .andExpect(jsonPath("$.[0].id", Matchers.hasLength(uuidSize)))
             .andExpect(jsonPath("$.[0].username", Matchers.containsString("test")))
             .andExpect(jsonPath("$.[0].roles", hasSize(1)));
     }
@@ -304,14 +307,16 @@ class AuthControllerTest extends TestContext {
         token = getToken(username1, EnumRole.ADMIN);
         getToken(username2, EnumRole.MANAGER);
         getToken(username3, EnumRole.USER);
+        String nullString = null;
         getMockMvc().perform(
             get(urlGetAllUsers)
                 .header(headerAuthorization, token)
-                .queryParam("username", "1"))
+                .queryParam("username", "1")
+                .queryParam("role", nullString))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$.[0].id", hasSize(uuidSize)))
+            .andExpect(jsonPath("$.[0].id", Matchers.hasLength(uuidSize)))
             .andExpect(jsonPath("$.[0].username").value(username1))
             .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.ADMIN.getValue()));
     }
@@ -328,7 +333,7 @@ class AuthControllerTest extends TestContext {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$.[0].id", hasSize(uuidSize)))
+            .andExpect(jsonPath("$.[0].id", Matchers.hasLength(uuidSize)))
             .andExpect(jsonPath("$.[0].username").value(username2))
             .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.MANAGER.getValue()));
     }
@@ -345,7 +350,7 @@ class AuthControllerTest extends TestContext {
                 .queryParam("role", EnumRole.USER.getValue()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$", Matchers.emptyArray()));
+            .andExpect(jsonPath("$").isEmpty());
     }
 
 }

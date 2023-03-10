@@ -6,7 +6,8 @@ servers:
   - url: https://api.server.test/v1
 tags:
   - name: 'auth'
-  - name: 'test'
+  - name: 'admin'
+  - name: 'profile'
 
 paths:
   /api/auth/signup:
@@ -59,7 +60,7 @@ paths:
   /api/auth/profile:
     get:
       tags:
-        - 'auth'
+        - 'profile'
       security:
         - bearerAuth: []
       summary: 'User Profile Content'
@@ -74,36 +75,11 @@ paths:
                 $ref: '#/components/schemas/Profile'
         '401':
           description: 'You are not logged in!'
-    patch:
-      tags:
-        - 'auth'
-      security:
-        - bearerAuth: []
-      summary: 'Alter User Role'
-      description: 'Access enabled only to Admin'
-      operationId: alterUserRole
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProfileRoles'
-      responses:
-        '200':
-          description: 'Patched User Roles successfully!'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProfileRoles'
-        '403':
-          description: 'Forbidden!'
-        '404':
-          description: 'User not found!'
 
-  /api/auth/users:
+  /api/auth/admin:
     get:
       tags:
-        - 'auth'
+        - 'admin'
       security:
         - bearerAuth: []
       summary: 'List of Users registrated'
@@ -133,6 +109,31 @@ paths:
                   $ref: '#/components/schemas/UserInfo'
         '403':
           description: 'Forbidden!'
+    patch:
+      tags:
+        - 'admin'
+      security:
+        - bearerAuth: []
+      summary: 'Alter User Role'
+      description: 'Access enabled only to Admin'
+      operationId: alterUserRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRoles'
+      responses:
+        '200':
+          description: 'Patched User Roles successfully!'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileRoles'
+        '403':
+          description: 'Forbidden!'
+        '404':
+          description: 'User not found!'
 
 components:
   schemas:

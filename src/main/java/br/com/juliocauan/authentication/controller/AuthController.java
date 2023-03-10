@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.security.service.JwtServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.AdminServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.ProfileServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -25,6 +26,7 @@ public class AuthController implements AuthApi {
 
 	private final JwtServiceImpl jwtService;
   private final AdminServiceImpl adminService;
+  private final ProfileServiceImpl profileService;
 
 	@Override
   public ResponseEntity<String> _signupUser(@Valid SignupForm signupForm) {
@@ -40,7 +42,7 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<Profile> _profileContent() {
-    Profile profile = jwtService.getProfileContent();
+    Profile profile = profileService.getProfileContent();
     return ResponseEntity.status(HttpStatus.OK).body(profile);
   }
 

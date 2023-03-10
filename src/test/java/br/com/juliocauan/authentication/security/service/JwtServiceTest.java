@@ -14,12 +14,12 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.security.service.JwtService;
+import br.com.juliocauan.authentication.infrastructure.security.service.JwtServiceImpl;
 import jakarta.persistence.EntityExistsException;
 
 class JwtServiceTest extends TestContext {
 
-    private final JwtService jwtService;
+    private final JwtServiceImpl jwtService;
     private final SignupForm signupForm = new SignupForm();
     private final SigninForm signinForm = new SigninForm();
 
@@ -30,7 +30,7 @@ class JwtServiceTest extends TestContext {
     private UserEntity entity;
 
     public JwtServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, JwtService jwtService) {
+            ObjectMapper objectMapper, MockMvc mockMvc, JwtServiceImpl jwtService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.jwtService = jwtService;
     }

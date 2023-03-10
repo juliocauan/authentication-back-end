@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.juliocauan.authentication.domain.service.JwtService;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
@@ -28,7 +29,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public final class JwtService {
+public final class JwtServiceImpl implements JwtService {
 
   private final AuthenticationManager authenticationManager;
   private final JwtProvider jwtProvider;

@@ -64,7 +64,7 @@ paths:
       security:
         - bearerAuth: []
       summary: 'User Profile Content'
-      description: 'Access enabled only to Authenticated User'
+      description: 'Access enabled only to Authenticated User [Any Role]'
       operationId: profileContent
       responses:
         '200':
@@ -73,6 +73,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Profile'
+        '401':
+          description: 'You are not logged in!'
+    patch:
+      tags:
+        - 'profile'
+      security:
+        - bearerAuth: []
+      summary: 'Alter User password'
+      description: 'Access enabled only to Authenticated User [Any Role]'
+      operationId: alterUserPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordUpdate'
+      responses:
+        '200':
+          description: 'User Password updated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
+                default: 'User Password updated successfully!'
+        '400':
+          description: 'Invalid Password Form!'
         '401':
           description: 'You are not logged in!'
 
@@ -254,6 +280,19 @@ components:
           uniqueItems: true
           items:
             $ref: '#/components/schemas/EnumRole'
+    PasswordUpdate:
+      type: object
+      required:
+        - 'oldPassword'
+        - 'newPassword'
+        - 'newPasswordConfirmation'
+      properties:
+        oldPassword:
+          $ref: '#/components/schemas/Password'
+        newPassword:
+          $ref: '#/components/schemas/Password'
+        newPasswordConfirmation:
+          $ref: '#/components/schemas/Password'
 
   securitySchemes:
     bearerAuth:

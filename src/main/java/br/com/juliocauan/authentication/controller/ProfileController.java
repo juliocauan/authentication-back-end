@@ -25,8 +25,8 @@ public class ProfileController implements ProfileApi {
 
     @Override
     public ResponseEntity<String> _alterUserPassword(@Valid PasswordUpdate passwordUpdate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method '_alterUserPassword'");
+        profileService.alterPassword(passwordUpdate);
+        return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully!");
     }
 
 }

@@ -36,7 +36,7 @@ class AuthControllerTest extends TestContext {
     private final String messageOk = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
     private final String validationError = "Input validation error!";
-    private final String notAllowedError = "Not Allowed!";
+    private final String badCredentialsError = "Bad credentials";
 
     private final SigninForm signinForm = new SigninForm();
     private final SignupForm signupForm = new SignupForm();
@@ -147,8 +147,8 @@ class AuthControllerTest extends TestContext {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(notAllowedError));
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value(badCredentialsError));
     }
 
 }

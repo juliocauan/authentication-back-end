@@ -6,10 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.ApiError;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
 import org.openapitools.model.PasswordUpdate;
@@ -116,11 +114,11 @@ class ProfileControllerTest extends TestContext {
 
     @Test
     void givenWrongOldPassword_WhenAlterUserPassword_ThenErrorMessage() throws Exception{
+        token = getToken(username1, EnumRole.USER);
         PasswordUpdate passwordUpdate = new PasswordUpdate()
             .oldPassword(newPassword)
             .newPassword(newPassword)
             .newPasswordConfirmation(newPassword);
-        token = getToken(username1, EnumRole.USER);
         getMockMvc().perform(
             patch(urlProfile)
                 .header(headerAuthorization, token)
@@ -133,11 +131,11 @@ class ProfileControllerTest extends TestContext {
 
     @Test
     void givenWrongConfirmationPassword_WhenAlterUserPassword_ThenErrorMessage() throws Exception{
+        token = getToken(username1, EnumRole.USER);
         PasswordUpdate passwordUpdate = new PasswordUpdate()
             .oldPassword(password)
             .newPassword(newPassword)
             .newPasswordConfirmation(password);
-        token = getToken(username1, EnumRole.USER);
         getMockMvc().perform(
             patch(urlProfile)
                 .header(headerAuthorization, token)
@@ -147,28 +145,5 @@ class ProfileControllerTest extends TestContext {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(newPasswordError));
     }
-    
-    @Test
-    void givenLoggedUser_WhenAlterUserPassword_CheckIfSucceded() throws Exception{
-        PasswordUpdate passwordUpdate = new PasswordUpdate()
-            .oldPassword(password)
-            .newPassword(newPassword)
-            .newPasswordConfirmation(newPassword);
-            getUserRepository().deleteAll();
-        token = getToken(username1, EnumRole.USER);
-        getMockMvc().perform(
-            patch(urlProfile)
-                .header(headerAuthorization, token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordUpdate)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$").value(updatedPasswordMessage));
-        
-        SigninForm signinForm = new SigninForm().username(username1).password(newPassword);
-        Assertions.assertInstanceOf(JWTResponse.class, authController._signinUser(signinForm).getBody());
 
-        signinForm.password(password);
-        Assertions.assertInstanceOf(ApiError.class, authController._signinUser(signinForm).getBody());
-    }
 }

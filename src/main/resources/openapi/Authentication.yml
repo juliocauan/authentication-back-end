@@ -96,7 +96,7 @@ paths:
             application/json:
               schema:
                 type: string
-                default: 'User Password updated successfully!'
+                default: 'Password updated successfully!'
         '400':
           description: 'Invalid Password Form!'
         '401':

@@ -29,4 +29,10 @@ public class ProfileController implements ProfileApi {
         return ResponseEntity.status(HttpStatus.OK).body("Password updated successfully!");
     }
 
+    @Override
+    public ResponseEntity<String> _alterUserPasswordByEmail(@Valid String body) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method '_alterUserPasswordByEmail'");
+    }
+
 }

@@ -1,0 +1,325 @@
+openapi: '3.0.3'
+info:
+  title: Token Authentication API
+  version: '0.3.1'
+servers:
+  - url: https://api.server.test/v1
+tags:
+  - name: 'auth'
+  - name: 'admin'
+  - name: 'profile'
+
+paths:
+  /api/auth/signup:
+    post:
+      tags:
+        - 'auth'
+      summary: 'Signup new Account'
+      description: 'Check existing and Save User to database'
+      operationId: signupUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignupForm'
+      responses:
+        '201':
+          description: 'Registered successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
+                default: 'User registered successfully!'
+        '400':
+          description: 'Bad Request in form! Could not register new User!'
+
+  /api/auth/signin:
+    post:
+      tags:
+        - 'auth'
+      summary: 'Login an Account'
+      description: 'Authenticate {username, password} and Create JWT string with a secret'
+      operationId: signinUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SigninForm'
+      responses:
+        '200':
+          description: 'Authenticated successfully!'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JWTResponse'
+        '401':
+          description: 'Unauthorized!'
+
+  /api/auth/forgotpassword:
+    patch:
+      tags:
+        - 'profile'
+      summary: 'Send email to user to update profile password'
+      description: 'Access enabled to anyone'
+      operationId: alterUserPasswordByEmail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Username'
+      responses:
+        '200':
+          description: 'Successfuly sent email to User!'
+          content:
+            application/json:
+              schema:
+                type: string
+                default: 'Email sent to User! Please click on the link and update your password'
+        '404':
+          description: 'User not registered!'
+
+  /api/auth/profile:
+    get:
+      tags:
+        - 'profile'
+      security:
+        - bearerAuth: []
+      summary: 'User Profile Content'
+      description: 'Access enabled only to Authenticated User [Any Role]'
+      operationId: profileContent
+      responses:
+        '200':
+          description: 'User Profile Content received successfuly!'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '401':
+          description: 'You are not logged in!'
+    patch:
+      tags:
+        - 'profile'
+      security:
+        - bearerAuth: []
+      summary: 'Alter User password'
+      description: 'Access enabled only to Authenticated User [Any Role]'
+      operationId: alterUserPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordUpdate'
+      responses:
+        '200':
+          description: 'User Password updated successfully!'
+          content:
+            application/json:
+              schema:
+                type: string
+                default: 'Password updated successfully!'
+        '400':
+          description: 'Invalid Password Form!'
+        '401':
+          description: 'You are not logged in!'
+
+  /api/auth/admin:
+    get:
+      tags:
+        - 'admin'
+      security:
+        - bearerAuth: []
+      summary: 'List of Users registrated'
+      description: 'Access enabled only to Admin'
+      operationId: getAllUsers
+      parameters:
+        - name: username
+          in: query
+          required: false
+          description: 'Searches by part of email string'
+          schema:
+            type: string
+        - name: role
+          in: query
+          required: false
+          description: 'Searches by role'
+          schema:
+            $ref: '#/components/schemas/EnumRole'
+      responses:
+        '200':
+          description: 'List of Users retreived successfuly!'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserInfo'
+        '403':
+          description: 'Forbidden!'
+    patch:
+      tags:
+        - 'admin'
+      security:
+        - bearerAuth: []
+      summary: 'Alter User Role'
+      description: 'Access enabled only to Admin'
+      operationId: alterUserRole
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRoles'
+      responses:
+        '200':
+          description: 'Patched User Roles successfully!'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileRoles'
+        '403':
+          description: 'Forbidden!'
+        '404':
+          description: 'User not found!'
+
+components:
+  schemas:
+    ApiError:
+      type: object
+      required:
+        - timestamp
+        - message
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        message:
+          type: string
+        fieldErrors:
+          type: array
+          items:
+            type: string
+
+    SignupForm:
+      type: object
+      required:
+        - 'username'
+        - 'password'
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        password:
+          $ref: '#/components/schemas/Password'
+        role:
+          $ref: '#/components/schemas/EnumRole'
+    SigninForm:
+      type: object
+      required:
+        - 'username'
+        - 'password'
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        password:
+          $ref: '#/components/schemas/Password'
+    Username:
+      type: string
+      format: email
+      description: 'User e-mail for contact and to redefine lost password [UNIQUE]'
+      example: 'example@example.com'
+      maxLength: 50
+    Password:
+      type: string
+      format: password
+      description: 'User password to access account'
+      example: '1234567890'
+      minLength: 8
+      maxLength: 120
+    EnumRole:
+      type: string
+      enum:
+        - 'ADMIN'
+        - 'MANAGER'
+        - 'USER'
+      description: 'Client permissions. Must be hidden from Users'
+    JWTResponse:
+      type: object
+      required:
+        - 'token'
+        - 'type'
+        - 'username'
+        - 'roles'
+      properties:
+        token:
+          type: string
+        type:
+          type: string
+          default: 'Bearer'
+        username:
+          $ref: '#/components/schemas/Username'
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EnumRole'
+    Profile:
+      type: object
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+    ProfileRoles:
+      type: object
+      required:
+        - 'username'
+        - 'roles'
+      properties:
+        username:
+          $ref: '#/components/schemas/Username'
+        roles:
+          type: array
+          uniqueItems: true
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EnumRole'
+    UserId:
+      type: string
+      format: uuid
+    UserInfo:
+      type: object
+      required:
+        - 'id'
+        - 'username'
+        - 'roles'
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          $ref: '#/components/schemas/Username'
+        roles:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/EnumRole'
+    PasswordUpdate:
+      type: object
+      required:
+        - 'oldPassword'
+        - 'newPassword'
+        - 'newPasswordConfirmation'
+      properties:
+        oldPassword:
+          $ref: '#/components/schemas/Password'
+        newPassword:
+          $ref: '#/components/schemas/Password'
+        newPasswordConfirmation:
+          $ref: '#/components/schemas/Password'
+
+  securitySchemes:
+    bearerAuth:
+      scheme: bearer
+      type: http
+      bearerFormat: JWT

@@ -25,6 +25,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    
+    - name: Add SSH Key
+      run: ssh-add ${{ secrets.SSH_PUBLIC_KEY }}
 
     - name: Update Submodules
       run: git submodule update --init --recursive

@@ -30,12 +30,19 @@ jobs:
       uses: webfactory/ssh-agent@v0.4.0
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      id: ssh-agent
+
+    - name: Set SSH_AUTH_SOCK output
+      run: echo "::set-output name=ssh-auth-sock::${{ steps.ssh-agent.outputs.ssh-auth-sock }}"
+
+    - name: Set SSH_AGENT_PID output
+      run: echo "::set-output name=ssh-agent-pid::${{ steps.ssh-agent.outputs.ssh-agent-pid }}"
 
     - name: Update submodules
       run: |
         git submodule sync --recursive
         git submodule update --init --recursive
-    
+
     - name: Build and Create Database
       run: docker compose -f "docker-compose.yml" up -d --build
     

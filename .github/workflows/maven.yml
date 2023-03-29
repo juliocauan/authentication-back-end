@@ -25,15 +25,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: Update Submodules
+      run: git submodule update --init --recursive
     
     - name: Build and Create Database
       run: docker compose -f "docker-compose.yml" up -d --build
-
-    - name: Update Submodules
-      run: git submodule update --recursive
-
-    - name: Download Git submodule, parse it, and generate OpenAPI code.
-      run: mvn generate-sources
     
     - name: Test and Package with Maven
       run: mvn -B package --file pom.xml

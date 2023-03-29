@@ -25,16 +25,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    
-    - name: Configure SSH key
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-        chmod 600 ~/.ssh/id_ed25519
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-    - name: Update Submodules
-      run: git submodule update --init --recursive
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.4.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Update submodules
+      run: |
+        git submodule sync --recursive
+        git submodule update --init --recursive
     
     - name: Build and Create Database
       run: docker compose -f "docker-compose.yml" up -d --build

@@ -17,7 +17,7 @@ jobs:
       DB_USER: root
       DB_PASSWORD: secret
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -26,13 +26,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Start ssh-agent
-      id: start-ssh-agent
-      run: |
-        eval $(ssh-agent -s)
-        touch $SSH_AUTH_SOCK
-        chmod 600 $SSH_AUTH_SOCK
-        ssh-add ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: webfactory/ssh-agent
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Update submodules
       run: |

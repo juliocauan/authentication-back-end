@@ -26,11 +26,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    # - name: webfactory/ssh-agent
-    #   uses: webfactory/ssh-agent@v0.8.0
-    #   with:
-    #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
     - name: Update submodules
       run: |
         git submodule sync --recursive

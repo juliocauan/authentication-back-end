@@ -28,6 +28,9 @@ jobs:
     
     - name: Build and Create Database
       run: docker compose -f "docker-compose.yml" up -d --build
+
+    - name: Download Git submodule, parse it, and generate OpenAPI code.
+      run: mvn generate-sources
     
     - name: Test and Package with Maven
       run: mvn -B package --file pom.xml

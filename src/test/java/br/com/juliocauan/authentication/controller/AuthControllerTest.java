@@ -76,7 +76,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$").value(messageOk));
+            .andExpect(jsonPath("$.message").value(messageOk));
     }
 
     @Test

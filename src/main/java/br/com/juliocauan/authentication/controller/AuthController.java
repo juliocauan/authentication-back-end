@@ -2,6 +2,7 @@ package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.AuthApi;
 import org.openapitools.model.JWTResponse;
+import org.openapitools.model.OkMessage;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ public class AuthController implements AuthApi {
 	private final JwtServiceImpl jwtService;
 
 	@Override
-  public ResponseEntity<String> _signupUser(@Valid SignupForm signupForm) {
+  public ResponseEntity<OkMessage> _signupUser(@Valid SignupForm signupForm) {
     jwtService.validateAndRegisterNewUser(signupForm);
-    return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully!");
+    return ResponseEntity.status(HttpStatus.CREATED).body(new OkMessage().message("User registered successfully!"));
   }
 
   @Override

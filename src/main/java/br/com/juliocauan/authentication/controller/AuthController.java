@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = {"http://127.0.0.1:3000", "http://localhost:8000"})
+@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8000"})
 public class AuthController implements AuthApi {
 
 	private final JwtServiceImpl jwtService;

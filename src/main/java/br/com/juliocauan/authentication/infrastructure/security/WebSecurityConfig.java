@@ -1,6 +1,10 @@
 package br.com.juliocauan.authentication.infrastructure.security;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.openapitools.model.EnumRole;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,8 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import br.com.juliocauan.authentication.infrastructure.security.jwt.AuthEntryPoint;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtAuthenticationFilter;
@@ -59,15 +63,15 @@ public class WebSecurityConfig {
     }
     
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*"); // Allow all origins
-        config.addAllowedHeader("*"); // Allow all headers
-        config.addAllowedMethod("*"); // Allow all HTTP methods
-        config.setAllowCredentials(true); // Allow credentials (e.g. cookies)
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config); // Apply the configuration to all paths
-        return source;
+    FilterRegistrationBean<CorsFilter> corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("*"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
+        source.registerCorsConfiguration("/**", config);
+        return new FilterRegistrationBean<>(new CorsFilter(source));
     }
     
     @Bean

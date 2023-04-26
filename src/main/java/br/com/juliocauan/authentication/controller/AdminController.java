@@ -8,7 +8,6 @@ import org.openapitools.model.ProfileRoles;
 import org.openapitools.model.UserInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.AdminServiceImpl;
@@ -17,7 +16,6 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = {"http://localhost:4200", "http://localhost:8000"})
 public class AdminController implements AdminApi {
 
     private final AdminServiceImpl adminService;

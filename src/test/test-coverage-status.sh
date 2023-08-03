@@ -1,4 +1,12 @@
-export DB_HOST=localhost DB_PORT=5432 DB_NAME=test-auth-db DB_USER=root DB_PASSWORD=secret
+source .env
+
+# Exporta as variáveis de ambiente
+export DB_HOST
+export DB_PORT
+export DB_NAME
+export DB_USER
+export DB_PASSWORD
+
 docker compose -f "docker-compose.yml" down
 docker volume rm --force VOLUME test-auth-db
 docker compose -f "docker-compose.yml" up -d --build

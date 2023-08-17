@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.openapitools.model.EnumRole;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,7 +32,7 @@ import lombok.AllArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(
-    // TODO
+    //TODO review
     // securedEnabled = true,
     // jsr250Enabled = true,
     prePostEnabled = true)
@@ -79,8 +81,7 @@ public class WebSecurityConfig {
         http.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());
-        //TODO review
-        http.cors().and().csrf().disable();
+        http.cors(withDefaults()).csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/admin").hasAuthority(admin)

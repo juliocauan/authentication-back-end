@@ -99,7 +99,7 @@ class ProfileControllerTest extends TestContext {
                     .content(getObjectMapper().writeValueAsString(passwordUpdate)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(updatedPasswordMessage));
+                .andExpect(jsonPath("$.message").value(updatedPasswordMessage));
         }
     }
 

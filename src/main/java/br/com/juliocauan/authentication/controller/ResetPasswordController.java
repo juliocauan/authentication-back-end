@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 public class ResetPasswordController implements ResetPasswordApi {
     
     @Override
-    public ResponseEntity<OkMessage> _sendPasswordResetEmail(@Valid String body) {
+    public ResponseEntity<OkMessage> _sendPasswordResetEmail(@Valid String username) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method '_sendPasswordResetEmail'");
     }

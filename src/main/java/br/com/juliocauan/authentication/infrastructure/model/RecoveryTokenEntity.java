@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.infrastructure.model;
 
 import java.time.LocalDateTime;
 
-import br.com.juliocauan.authentication.domain.model.ResetPasswordToken;
+import br.com.juliocauan.authentication.domain.model.RecoveryToken;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data @EqualsAndHashCode
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class ResetPasswordTokenEntity implements ResetPasswordToken {
+public final class RecoveryTokenEntity implements RecoveryToken {
     
     @Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

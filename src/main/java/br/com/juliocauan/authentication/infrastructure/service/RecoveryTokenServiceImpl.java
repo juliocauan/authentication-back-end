@@ -9,33 +9,32 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.model.ResetPasswordToken;
-import br.com.juliocauan.authentication.domain.service.ResetPasswordTokenService;
-import br.com.juliocauan.authentication.infrastructure.model.ResetPasswordTokenEntity;
+import br.com.juliocauan.authentication.domain.model.RecoveryToken;
+import br.com.juliocauan.authentication.domain.service.RecoveryTokenService;
+import br.com.juliocauan.authentication.infrastructure.model.RecoveryTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.ResetPasswordTokenMapper;
+import br.com.juliocauan.authentication.infrastructure.model.mapper.RecoveryTokenMapper;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
-import br.com.juliocauan.authentication.infrastructure.repository.ResetPasswordTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RecoveryTokenRepositoryImpl;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class ResetPasswordTokenServiceImpl implements ResetPasswordTokenService {
+public class RecoveryTokenServiceImpl implements RecoveryTokenService {
 
     private static final int TOKEN_LENGTH = 32;
     private static final int EXPIRE = 30;
 
-    private final ResetPasswordTokenRepositoryImpl resetPasswordTokenRepository;
+    private final RecoveryTokenRepositoryImpl recoveryTokenRepository;
     private final UserServiceImpl userService;
     private final JavaMailSender mailSender;
 
     @Override
-    public void generateResetTokenAndSendEmail(String username) {
+    public void generateLinkAndSendEmail(String username) {
         UserEntity user = UserMapper.domainToEntity(userService.getByUsername(username));
         String token = generateToken();
-        checkAndDeletePreviousResetPasswordToken(user);
-        ResetPasswordTokenEntity resetPasswordToken = createResetPasswordToken(user, token);
-        sendEmail(resetPasswordToken);
+        RecoveryTokenEntity recoveryToken = createRecoveryToken(user, token);
+        sendEmail(recoveryToken);
     }
 
     private String generateToken() {
@@ -45,22 +44,23 @@ public class ResetPasswordTokenServiceImpl implements ResetPasswordTokenService 
         return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
     }
 
-    private void checkAndDeletePreviousResetPasswordToken(UserEntity user) {
-        Optional<ResetPasswordToken> oldToken = resetPasswordTokenRepository.findByUser(user);
+    private void deletePreviousRecoveryToken(UserEntity user) {
+        Optional<RecoveryToken> oldToken = recoveryTokenRepository.findByUser(user);
         if(oldToken.isPresent())
-            resetPasswordTokenRepository.delete(ResetPasswordTokenMapper.domainToEntity(oldToken.get()));
+            recoveryTokenRepository.delete(RecoveryTokenMapper.domainToEntity(oldToken.get()));
     }
 
-    private ResetPasswordTokenEntity createResetPasswordToken(UserEntity user, String token) {
-        return resetPasswordTokenRepository.save(
-            ResetPasswordTokenEntity.builder()
+    private RecoveryTokenEntity createRecoveryToken(UserEntity user, String token) {
+        deletePreviousRecoveryToken(user);
+        return recoveryTokenRepository.save(
+            RecoveryTokenEntity.builder()
                 .user(user)
                 .token(token)
                 .expireDate(LocalDateTime.now().plusMinutes(EXPIRE))
             .build());
     }
 
-    private void sendEmail(ResetPasswordTokenEntity resetToken) {
+    private void sendEmail(RecoveryTokenEntity resetToken) {
         SimpleMailMessage email = new SimpleMailMessage();
         String url = "localhost:4200/forgotPassword/";
         email.setSubject("Reset your password!");

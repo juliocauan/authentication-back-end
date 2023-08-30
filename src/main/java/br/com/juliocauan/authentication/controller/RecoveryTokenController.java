@@ -6,19 +6,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.service.ResetPasswordTokenServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.RecoveryTokenServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-public class ResetPasswordController implements ResetPasswordApi {
+public class RecoveryTokenController implements ResetPasswordApi {
 
-    private final ResetPasswordTokenServiceImpl resetPasswordService;
+    private final RecoveryTokenServiceImpl resetPasswordService;
     
     @Override
     public ResponseEntity<OkMessage> _sendPasswordResetEmail(@Valid String username) {
-        resetPasswordService.generateResetTokenAndSendEmail(username);
+        resetPasswordService.generateLinkAndSendEmail(username);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().message(String.format(
             "Email sent to %s successfully!", username)));
     }

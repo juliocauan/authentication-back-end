@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.mail.MailException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -78,6 +79,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException ex){
         responseError = init(ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
+    }
+
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<Object> handleMail(MailException ex){
+        responseError = init(ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
 }

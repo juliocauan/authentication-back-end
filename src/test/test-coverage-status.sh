@@ -1,6 +1,7 @@
 source .env
 
 # Exporta as variáveis de ambiente
+# TODO make test, dev and prod ambience
 export DB_HOST
 export DB_PORT
 export DB_NAME

@@ -13,9 +13,13 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
     
+    //TODO review this
+    private static final String SENDER_EMAIL = "jcam.test01@gmail.com";
+    
     @Override
-    public void sendSimpleEmail(String receiver, String subject, String message) {
+    public void sendEmail(String receiver, String subject, String message) {
         SimpleMailMessage email = new SimpleMailMessage();
+        email.setFrom(SENDER_EMAIL);
         email.setTo(receiver);
         email.setSubject(subject);
         email.setText(message);

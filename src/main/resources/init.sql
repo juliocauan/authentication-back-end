@@ -18,7 +18,7 @@ CREATE TABLE auth.users_roles
     role_id SMALLINT REFERENCES auth.roles(id),
     PRIMARY KEY(user_id, role_id)
 );
-CREATE TABLE auth.password_reset_tokens
+CREATE TABLE auth.recovery_tokens
 (
     id SERIAL PRIMARY KEY,
     user_id uuid REFERENCES auth.users(id) UNIQUE NOT NULL,

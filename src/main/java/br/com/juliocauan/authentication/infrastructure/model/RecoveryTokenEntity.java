@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Entity @Table(name = "password_reset_tokens", schema = "auth")
+@Entity @Table(name = "recovery_tokens", schema = "auth")
 @Data @EqualsAndHashCode
 @AllArgsConstructor @NoArgsConstructor
 @Builder

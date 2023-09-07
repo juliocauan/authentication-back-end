@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.RecoveryToken;
@@ -27,7 +25,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
 
     private final RecoveryTokenRepositoryImpl recoveryTokenRepository;
     private final UserServiceImpl userService;
-    private final JavaMailSender mailSender;
+    private final EmailServiceImpl emailService;
 
     @Override
     public void generateLinkAndSendEmail(String username) {
@@ -61,13 +59,14 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
     }
 
     private void sendEmail(RecoveryTokenEntity resetToken) {
-        SimpleMailMessage email = new SimpleMailMessage();
         String url = "localhost:4200/forgotPassword/";
-        email.setSubject("Reset your password!");
-        email.setTo(resetToken.getUser().getUsername());
-        email.setText(String.format("To reset your password, click on the following link: %s%s %n%n This link will last %d minutes",
-            url, resetToken.getToken(), EXPIRE));
-        mailSender.send(email);
+        String message = String.format("To reset your password, click on the following link: %s%s %n%n This link will last %d minutes",
+            url, resetToken.getToken(), EXPIRE);
+        
+        emailService.sendEmail(
+            resetToken.getUser().getUsername(), 
+            "Reset your password!", 
+            message);
     }
 
 }

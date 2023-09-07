@@ -1,5 +1,5 @@
 package br.com.juliocauan.authentication.domain.service;
 
 public interface EmailService {
-    void sendSimpleEmail(String receiver, String subject, String message);
+    void sendEmail(String receiver, String subject, String message);
 }

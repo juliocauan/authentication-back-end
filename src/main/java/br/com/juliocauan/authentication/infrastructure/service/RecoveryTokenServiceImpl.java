@@ -11,7 +11,6 @@ import br.com.juliocauan.authentication.domain.model.RecoveryToken;
 import br.com.juliocauan.authentication.domain.service.RecoveryTokenService;
 import br.com.juliocauan.authentication.infrastructure.model.RecoveryTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.RecoveryTokenMapper;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RecoveryTokenRepositoryImpl;
 import lombok.AllArgsConstructor;
@@ -30,9 +29,23 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
     @Override
     public void generateLinkAndSendEmail(String username) {
         UserEntity user = UserMapper.domainToEntity(userService.getByUsername(username));
-        String token = generateToken();
-        RecoveryTokenEntity recoveryToken = createRecoveryToken(user, token);
-        sendEmail(recoveryToken);
+        sendEmail(createRecoveryToken(user));
+    }
+
+    private RecoveryTokenEntity createRecoveryToken(UserEntity user) {
+        deletePreviousRecoveryToken(user);
+        return recoveryTokenRepository.save(
+            RecoveryTokenEntity.builder()
+                .user(user)
+                .token(generateToken())
+                .expireDate(LocalDateTime.now().plusMinutes(EXPIRE))
+            .build());
+    }
+
+    private void deletePreviousRecoveryToken(UserEntity user) {
+        Optional<RecoveryToken> oldToken = recoveryTokenRepository.findByUser(user);
+        if(oldToken.isPresent())
+            recoveryTokenRepository.deleteById(oldToken.get().getId());
     }
 
     private String generateToken() {
@@ -42,23 +55,8 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
     }
 
-    private void deletePreviousRecoveryToken(UserEntity user) {
-        Optional<RecoveryToken> oldToken = recoveryTokenRepository.findByUser(user);
-        if(oldToken.isPresent())
-            recoveryTokenRepository.delete(RecoveryTokenMapper.domainToEntity(oldToken.get()));
-    }
-
-    private RecoveryTokenEntity createRecoveryToken(UserEntity user, String token) {
-        deletePreviousRecoveryToken(user);
-        return recoveryTokenRepository.save(
-            RecoveryTokenEntity.builder()
-                .user(user)
-                .token(token)
-                .expireDate(LocalDateTime.now().plusMinutes(EXPIRE))
-            .build());
-    }
-
     private void sendEmail(RecoveryTokenEntity resetToken) {
+        //TODO review this URL
         String url = "localhost:4200/forgotPassword/";
         String message = String.format("To reset your password, click on the following link: %s%s %n%n This link will last %d minutes",
             url, resetToken.getToken(), EXPIRE);

@@ -16,6 +16,7 @@ class EmailServiceTest extends TestContext {
 
     private final EmailServiceImpl emailService;
 
+    //TODO review this email
     private final String receiver = "jcam.test01@gmail.com";
     private final String subject = "Test Subject";
     private final String message = "Test Message";

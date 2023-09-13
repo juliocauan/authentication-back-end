@@ -14,6 +14,7 @@
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>
+		<!-- TODO atualizar versões -->
 		<java.version>17</java.version>
 		<jjwt.version>0.11.5</jjwt.version>
 		<security.version>6.0.2</security.version>

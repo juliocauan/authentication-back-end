@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public final class RecoveryTokenEntity implements RecoveryToken {
     @JoinColumn(nullable = false, unique = true, name = "user_id")
     private UserEntity user;
 
-    @NotBlank
+    @NotNull
     private LocalDateTime expireDate;
 
 }

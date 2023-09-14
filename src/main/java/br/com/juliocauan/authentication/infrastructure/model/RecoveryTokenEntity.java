@@ -3,6 +3,7 @@ package br.com.juliocauan.authentication.infrastructure.model;
 import java.time.LocalDateTime;
 
 import br.com.juliocauan.authentication.domain.model.RecoveryToken;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public final class RecoveryTokenEntity implements RecoveryToken {
     @NotBlank @Size(min = 43, max = 43)
     private String token;
 
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(nullable = false, unique = true, name = "user_id")
     private UserEntity user;
 

@@ -21,7 +21,7 @@ CREATE TABLE auth.users_roles
 CREATE TABLE auth.recovery_tokens
 (
     id SERIAL PRIMARY KEY,
-    user_id uuid REFERENCES auth.users(id) UNIQUE NOT NULL,
+    user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
     token VARCHAR(43) NOT NULL,
     expire_date timestamp NOT NULL
 );

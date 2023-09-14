@@ -32,7 +32,6 @@ class RecoveryTokenServiceTest extends TestContext {
     private UserEntity user;
     private Set<RoleEntity> roles = new HashSet<>();
 
-
     public RecoveryTokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, RecoveryTokenServiceImpl recoveryTokenService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);

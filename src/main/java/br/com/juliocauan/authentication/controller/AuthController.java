@@ -22,7 +22,7 @@ public class AuthController implements AuthApi {
 	@Override
   public ResponseEntity<OkMessage> _signupUser(@Valid SignupForm signupForm) {
     jwtService.validateAndRegisterNewUser(signupForm);
-    return ResponseEntity.status(HttpStatus.CREATED).body(new OkMessage().message("User registered successfully!"));
+    return ResponseEntity.status(HttpStatus.CREATED).body(new OkMessage().body("User registered successfully!"));
   }
 
   @Override

@@ -20,14 +20,14 @@ public class RecoveryTokenController implements ResetPasswordApi {
     @Override
     public ResponseEntity<OkMessage> _sendResetPasswordEmail(@Valid String username) {
         resetPasswordService.generateLinkAndSendEmail(username);
-        return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().message(String.format(
+        return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body(String.format(
             "Email sent to %s successfully!", username)));
     }
 
     @Override
     public ResponseEntity<OkMessage> _resetPasswordByLink(@Valid PasswordLinkUpdate passwordLinkUpdate, String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method '_resetPasswordByLink'");
+        resetPasswordService.resetPassword(passwordLinkUpdate, token);
+        return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }
 
 }

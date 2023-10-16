@@ -27,7 +27,7 @@ public class ProfileController implements ProfileApi {
     @Override
     public ResponseEntity<OkMessage> _alterUserPassword(@Valid PasswordUpdate passwordUpdate) {
         profileService.alterPassword(passwordUpdate);
-        return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().message("Password updated successfully!"));
+        return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }
 
 }

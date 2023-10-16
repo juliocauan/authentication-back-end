@@ -99,7 +99,7 @@ class ProfileControllerTest extends TestContext {
                     .content(getObjectMapper().writeValueAsString(passwordUpdate)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(updatedPasswordMessage));
+                .andExpect(jsonPath("$.body").value(updatedPasswordMessage));
         }
     }
 
@@ -113,6 +113,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
+    //TODO refactor test to passwordServiceTest
     void givenWrongOldPassword_WhenAlterUserPassword_ThenErrorMessage() throws Exception{
         token = getToken(username1, EnumRole.USER);
         PasswordUpdate passwordUpdate = new PasswordUpdate()
@@ -130,6 +131,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
+    //TODO refactor test to passwordServiceTest
     void givenWrongConfirmationPassword_WhenAlterUserPassword_ThenErrorMessage() throws Exception{
         token = getToken(username1, EnumRole.USER);
         PasswordUpdate passwordUpdate = new PasswordUpdate()

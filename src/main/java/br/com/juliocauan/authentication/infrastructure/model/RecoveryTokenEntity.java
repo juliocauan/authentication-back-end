@@ -34,7 +34,7 @@ public final class RecoveryTokenEntity implements RecoveryToken {
     @NotBlank @Size(min = 43, max = 43)
     private String token;
 
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(nullable = false, unique = true, name = "user_id")
     private UserEntity user;
 

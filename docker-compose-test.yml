@@ -1,0 +1,27 @@
+version: '3.9'
+name: authentication-back-end-test
+services:
+  postgres:
+    image: postgres:alpine
+    restart: no
+    environment:
+      - POSTGRES_USER=sa
+      - POSTGRES_PASSWORD=sa
+      - POSTGRES_DB=test-auth-db
+    ports:
+      - 5434:5432
+    volumes:
+      - ./src/test/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db:/var/lib/postgresql/data
+  
+  adminer:
+    image: adminer:latest
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 9000:8080
+
+volumes:
+  db:
+    name: test-auth-db

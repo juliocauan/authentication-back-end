@@ -1,0 +1,36 @@
+server:
+    port: 8002
+    
+spring:
+    profiles:
+        active: test
+    datasource:
+        url: jdbc:postgresql://localhost:5434/test-auth-db?useSSL=true
+        username: sa
+        password: sa
+        driver-class-name: org.postgresql.Driver
+    mustache:  
+        check-template-location: false
+    jpa:
+        hibernate:
+            ddl-auto: update
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        open-in-view: false
+        show-sql: false
+        defer-datasource-initialization: false
+    sql:
+        init:
+            mode: never
+    mail:
+        host: smtp.gmail.com
+        port: 587
+        username: jcam.test01@gmail.com
+        password: qsdbnzwwmoznzcee
+        properties:
+            mail:
+                smtp:
+                    useSSL: true
+                    auth: true
+                    starttls:
+                        enable: true
+        

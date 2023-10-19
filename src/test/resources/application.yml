@@ -1,11 +1,11 @@
 server:
-    port: 8002
+    port: 8123
     
 spring:
     profiles:
         active: test
     datasource:
-        url: jdbc:postgresql://localhost:5434/test-auth-db?useSSL=true
+        url: jdbc:postgresql://localhost:5434/auth-db-test?useSSL=true
         username: sa
         password: sa
         driver-class-name: org.postgresql.Driver

@@ -1,0 +1,12 @@
+server:
+    port: ${APP_PORT_DEV:8100}
+
+spring:
+    datasource:
+        url: jdbc:postgresql://${DB_HOST_DEV:localhost}:${DB_PORT_DEV:5432}/${DB_NAME:auth-db-dev}?useSSL=true
+        username: ${DB_USER_DEV:root}
+        password: ${DB_PASSWORD_DEV:secret}
+    mail:
+        username: jcam.test01@gmail.com
+        password: qsdbnzwwmoznzcee
+    

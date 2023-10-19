@@ -1,23 +1,28 @@
 version: '3.9'
-
+name: authentication-back-end-dev
 services:
-
   postgres:
     image: postgres:alpine
     restart: always
-    env_file:
-      - .env
     environment:
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_DB=auth-db-dev
     ports:
-      - ${DB_PORT}:5432
+      - 5432:5432
     volumes:
       - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
-
+      - db-dev:/var/lib/postgresql/data
+  
+  adminer:
+    image: adminer:standalone
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 9000:8080
+   
 volumes:
-  db:
-    name: test-auth-db
+  db-dev:
+    name: auth-db-dev
     

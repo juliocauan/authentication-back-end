@@ -7,21 +7,13 @@ services:
     environment:
       - POSTGRES_USER=sa
       - POSTGRES_PASSWORD=sa
-      - POSTGRES_DB=test-auth-db
+      - POSTGRES_DB=auth-db-test
     ports:
       - 5434:5432
     volumes:
-      - ./src/test/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
-  
-  adminer:
-    image: adminer:latest
-    restart: always
-    depends_on:
-      - postgres
-    ports:
-      - 9000:8080
+      - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-test:/var/lib/postgresql/data
 
 volumes:
-  db:
-    name: test-auth-db
+  db-test:
+    name: auth-db-test

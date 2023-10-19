@@ -3,7 +3,7 @@ server:
 
 spring:
     datasource:
-        url: jdbc:postgresql://${DB_HOST_DEV:localhost}:${DB_PORT_DEV:5432}/${DB_NAME:auth-db-dev}?useSSL=true
+        url: jdbc:postgresql://localhost:${DB_PORT_DEV:5432}/auth-db-dev?useSSL=true
         username: ${DB_USER_DEV:root}
         password: ${DB_PASSWORD_DEV:secret}
     mail:

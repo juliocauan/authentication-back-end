@@ -27,10 +27,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "users", schema = "auth")
-@Data @EqualsAndHashCode
+@Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class UserEntity implements User {
+public final class UserEntity extends User {
     
 	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue

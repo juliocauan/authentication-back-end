@@ -18,15 +18,16 @@ class UserEntityTest extends TestContext {
     private final String usernameValid = "test@email.com";
     private final String usernameInvalid = "testnotmail.com";
     private final String usernameBlank = " ";
-    private final String usernameMax = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
+    private final String usernameMaxInvalid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
     private final String usernameMaxValid = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@email.com";
 
     private final String passwordValid = "1234567890";
     private final String passwordBlank = " ";
-    private final String passwordMin = "1234567";
-    private final String passwordMax = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    private final String passwordMinInvalid = "1234567";
     private final String passwordMinValid = "12345678";
+    private final String passwordMaxInvalid = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
     private final String passwordMaxValid = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+    
     private final UserRepositoryImpl repository = getUserRepository();
 
     private UserEntity entity;
@@ -41,8 +42,8 @@ class UserEntityTest extends TestContext {
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .id(null)
-            .password(passwordValid)
             .username(usernameValid)
+            .password(passwordValid)
             .roles(null)
         .build();
     }
@@ -52,7 +53,7 @@ class UserEntityTest extends TestContext {
         entity.setUsername(usernameValid);
         Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
         getUserRepository().deleteAll();
-
+        
         entity.setUsername(usernameMaxValid);
         Assertions.assertDoesNotThrow(() -> getUserRepository().save(entity));
     }
@@ -64,14 +65,14 @@ class UserEntityTest extends TestContext {
     }
 
     @Test
-    void usernameConstraint(){
+    void usernameEmailConstraint(){
         entity.setUsername(usernameInvalid);
         Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
     @Test
     void usernameMaxConstraint(){
-        entity.setUsername(usernameMax);
+        entity.setUsername(usernameMaxInvalid);
         Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
     
@@ -97,13 +98,13 @@ class UserEntityTest extends TestContext {
 
     @Test
     void passwordMinConstraint(){
-        entity.setPassword(passwordMin);
+        entity.setPassword(passwordMinInvalid);
         Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 
     @Test
     void passwordMaxConstraint(){
-        entity.setPassword(passwordMax);
+        entity.setPassword(passwordMaxInvalid);
         Assertions.assertThrows(TransactionSystemException.class, () -> repository.save(entity));
     }
 

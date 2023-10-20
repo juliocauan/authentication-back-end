@@ -18,10 +18,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "roles", schema = "auth")
-@Getter @EqualsAndHashCode
+@Getter @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class RoleEntity implements Role {
+public final class RoleEntity extends Role {
     
 	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

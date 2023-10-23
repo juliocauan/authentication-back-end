@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.infrastructure.model;
 
 import java.time.LocalDateTime;
 
-import br.com.juliocauan.authentication.domain.model.RecoveryToken;
+import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -22,10 +22,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "recovery_tokens", schema = "auth")
-@Data @EqualsAndHashCode
+@Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class RecoveryTokenEntity implements RecoveryToken {
+public final class PasswordResetTokenEntity extends PasswordResetToken {
     
     @Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,6 +39,7 @@ public final class RecoveryTokenEntity implements RecoveryToken {
     private UserEntity user;
 
     @NotNull
-    private LocalDateTime expireDate;
+    @Builder.Default
+    private LocalDateTime expireDate = LocalDateTime.now();
 
 }

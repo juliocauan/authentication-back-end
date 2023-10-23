@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.model.RecoveryToken;
+import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RecoveryTokenRepositoryImpl;
@@ -73,7 +73,7 @@ class RecoveryTokenServiceTest extends TestContext {
     void givenUsernameWithNoToken_WhenGenerateLinkAndSendEmail_ThenCreateRecoveryToken() {
         getUserRepository().save(user);
         recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        RecoveryToken token = recoveryTokenRepository.findByUser(user).get();
+        PasswordResetToken token = recoveryTokenRepository.findByUser(user).get();
         Assertions.assertTrue(recoveryTokenRepository.findByToken(token.getToken()).isPresent());
     }
 
@@ -81,9 +81,9 @@ class RecoveryTokenServiceTest extends TestContext {
     void givenUsernameWithToken_WhenGenerateLinkAndSendEmail_ThenDeletePreviousToken() {
         getUserRepository().save(user);
         recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        RecoveryToken previousToken = recoveryTokenRepository.findByUser(user).get();
+        PasswordResetToken previousToken = recoveryTokenRepository.findByUser(user).get();
         recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        RecoveryToken newToken = recoveryTokenRepository.findByUser(user).get();
+        PasswordResetToken newToken = recoveryTokenRepository.findByUser(user).get();
         Assertions.assertNotEquals(newToken, previousToken);
         Assertions.assertFalse(recoveryTokenRepository.findByToken(previousToken.getToken()).isPresent());
     }
@@ -92,7 +92,7 @@ class RecoveryTokenServiceTest extends TestContext {
     void givenUsername_WhenGenerateLinkAndSendEmail_ThenGenerateToken() {
         getUserRepository().save(user);
         recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        RecoveryToken token = recoveryTokenRepository.findByUser(user).get();
+        PasswordResetToken token = recoveryTokenRepository.findByUser(user).get();
         Assertions.assertEquals(tokenLength, token.getToken().length());
     }
     

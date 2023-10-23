@@ -8,10 +8,10 @@ import java.util.Optional;
 import org.openapitools.model.PasswordLinkUpdate;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.model.RecoveryToken;
+import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.service.RecoveryTokenService;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredRecoveryTokenException;
-import br.com.juliocauan.authentication.infrastructure.model.RecoveryTokenEntity;
+import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RecoveryTokenRepositoryImpl;
@@ -38,7 +38,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
     @Override
     public void resetPassword(PasswordLinkUpdate passwordUpdate, String token) {
         passwordService.checkPasswordConfirmation(passwordUpdate);
-        RecoveryToken recoveryToken = recoveryTokenRepository.findByToken(token)
+        PasswordResetToken recoveryToken = recoveryTokenRepository.findByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Recovery token not found with token: " + token));
         if(recoveryToken.isExpired())
             throw new ExpiredRecoveryTokenException("Expired recovery token!");
@@ -48,18 +48,18 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
         recoveryTokenRepository.deleteById(recoveryToken.getId());
     }
 
-    private RecoveryTokenEntity createRecoveryToken(UserEntity user) {
+    private PasswordResetTokenEntity createRecoveryToken(UserEntity user) {
         deletePreviousRecoveryToken(user);
         return recoveryTokenRepository.save(
-            RecoveryTokenEntity.builder()
+            PasswordResetTokenEntity.builder()
                 .user(user)
                 .token(generateToken())
-                .expireDate(LocalDateTime.now().plusMinutes(RecoveryToken.EXPIRE_MINUTES))
+                .expireDate(LocalDateTime.now().plusMinutes(PasswordResetToken.TOKEN_EXPIRATION_MINUTES))
             .build());
     }
 
     private void deletePreviousRecoveryToken(UserEntity user) {
-        Optional<RecoveryToken> oldToken = recoveryTokenRepository.findByUser(user);
+        Optional<PasswordResetToken> oldToken = recoveryTokenRepository.findByUser(user);
         if(oldToken.isPresent())
             recoveryTokenRepository.deleteById(oldToken.get().getId());
     }
@@ -71,7 +71,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
     }
 
-    private void sendEmail(RecoveryTokenEntity resetToken) {
+    private void sendEmail(PasswordResetTokenEntity resetToken) {
         emailService.sendEmail(
             resetToken.getUser().getUsername(), 
             "Reset your password!", 
@@ -82,7 +82,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
         //TODO review this URL
         String url = "http://localhost:4200/forgotPassword/";
         return String.format("To reset your password, click on the following link: %s%s %n%n This link will last %d minutes",
-            url, token, RecoveryToken.EXPIRE_MINUTES);    
+            url, token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
     }
 
 }

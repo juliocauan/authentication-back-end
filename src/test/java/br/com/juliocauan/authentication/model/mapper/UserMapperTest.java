@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.SignupForm;
+import org.openapitools.model.UserInfo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +24,7 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
 class UserMapperTest extends TestContext {
 
@@ -78,10 +79,6 @@ class UserMapperTest extends TestContext {
         super.setup();
         roleEntities = getRoleRepository().findAll().stream().collect(Collectors.toSet());
         for(EnumRole name : EnumRole.values()) roles.add(getRole(name));
-    }
-    
-    @BeforeEach
-    public void standard(){
         entity = getUserEntity();
     }
 
@@ -92,15 +89,40 @@ class UserMapperTest extends TestContext {
     }
 
     @Test
-    void formToEntity(){
+    void signupFormToEntity(){
         SignupForm signupForm = new SignupForm();
         signupForm.username(username).password(password);
-        UserEntity mappedEntity = UserMapper.formToEntity(signupForm, roleEntities, encoder);
+        UserEntity mappedEntity = UserMapper.signupFormToEntity(signupForm, roleEntities, encoder);
         Assertions.assertEquals(null, mappedEntity.getId());
         Assertions.assertNotEquals(entity.getPassword(), mappedEntity.getPassword());
         Assertions.assertEquals(60, mappedEntity.getPassword().length());
         Assertions.assertEquals(entity.getUsername(), mappedEntity.getUsername());
         Assertions.assertEquals(entity.getRoles(), mappedEntity.getRoles());
+    }
+
+    @Test
+    void domainToUserPrincipal() {
+        UserPrincipal userPrincipal = UserMapper.domainToUserPrincipal(getUser());
+        Assertions.assertEquals(getUser().getUsername(), userPrincipal.getUsername());
+        Assertions.assertEquals(getUser().getPassword(), userPrincipal.getPassword());
+        Assertions.assertEquals(getUser().getRoles().size(), userPrincipal.getAuthorities().size());
+    }
+
+    @Test
+    void domainToUserInfo() {
+        UserInfo userInfo = UserMapper.domainToUserInfo(getUser());
+        Assertions.assertEquals(getUser().getId(), userInfo.getId());
+        Assertions.assertEquals(getUser().getUsername(), userInfo.getUsername());
+        Assertions.assertEquals(getUser().getRoles().size(), userInfo.getRoles().size());
+    }
+
+    @Test
+    void entityToDomain() {
+        User user = UserMapper.entityToDomain(entity);
+        Assertions.assertEquals(user.getId(), getUser().getId());
+        Assertions.assertEquals(user.getUsername(), getUser().getUsername());
+        Assertions.assertEquals(user.getPassword(), getUser().getPassword());
+        Assertions.assertEquals(user.getRoles().size(), getUser().getRoles().size());
     }
 
 }

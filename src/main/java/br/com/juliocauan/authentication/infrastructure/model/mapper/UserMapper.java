@@ -26,7 +26,7 @@ public interface UserMapper {
         .build();
     }
 
-    static UserEntity formToEntity(SignupForm signupForm, Set<RoleEntity> roles, PasswordEncoder encoder) {
+    static UserEntity signupFormToEntity(SignupForm signupForm, Set<RoleEntity> roles, PasswordEncoder encoder) {
         return UserEntity.builder()
             .id(null)
             .password(encoder.encode(signupForm.getPassword()))
@@ -35,7 +35,7 @@ public interface UserMapper {
         .build();
     }
 
-    static UserPrincipal domainToPrincipal(User model) {
+    static UserPrincipal domainToUserPrincipal(User model) {
         UserPrincipal userPrincipal = new UserPrincipal();
         Set<SimpleGrantedAuthority> authorities = model.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(role.getName().getValue())).collect(Collectors.toSet());
@@ -49,6 +49,7 @@ public interface UserMapper {
         return new UserInfo()
             .id(model.getId())
             .username(model.getUsername())
+            //TODO repassar para RoleMapper
             .roles(model.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
     }
 

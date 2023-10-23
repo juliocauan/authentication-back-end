@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.getByUsername(username);
-        return UserMapper.domainToPrincipal(user);
+        return UserMapper.domainToUserPrincipal(user);
     }
     
 }

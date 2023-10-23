@@ -106,6 +106,12 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>org/openapitools/**</exclude>
+						<exclude>br/com/juliocauan/authentication/AuthenticationApplication.class</exclude>
+					</excludes>
+				 </configuration>
 				<executions>
 					<execution>
 						<goals>

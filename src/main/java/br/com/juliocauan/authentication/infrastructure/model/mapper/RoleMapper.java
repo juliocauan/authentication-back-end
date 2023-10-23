@@ -23,10 +23,14 @@ public interface RoleMapper {
         return model.stream().map(RoleMapper::domainToEntity).collect(Collectors.toSet());
     }
 
-    static Set<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> authorities) {
-        return authorities.stream()
+    static Set<EnumRole> authoritiesToEnumRole(Collection<? extends GrantedAuthority> model) {
+        return model.stream()
             .map(item -> EnumRole.fromValue(item.getAuthority()))
             .collect(Collectors.toSet());
+    }
+
+    static Set<EnumRole> setRoleToSetEnumRole(Set<? extends Role> model) {
+        return model.stream().map(Role::getName).collect(Collectors.toSet());
     }
 
 }

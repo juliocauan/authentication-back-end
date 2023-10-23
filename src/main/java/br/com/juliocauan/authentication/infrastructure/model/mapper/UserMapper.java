@@ -49,8 +49,7 @@ public interface UserMapper {
         return new UserInfo()
             .id(model.getId())
             .username(model.getUsername())
-            //TODO repassar para RoleMapper
-            .roles(model.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
+            .roles(RoleMapper.setRoleToSetEnumRole(model.getRoles()));
     }
 
     static User entityToDomain(UserEntity model){

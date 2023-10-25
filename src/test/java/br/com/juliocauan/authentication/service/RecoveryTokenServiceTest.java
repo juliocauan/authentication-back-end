@@ -15,15 +15,15 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.repository.RecoveryTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.RecoveryTokenServiceImpl;
 
 class RecoveryTokenServiceTest extends TestContext {
 
-    private final RecoveryTokenServiceImpl recoveryTokenService;
-    private final RecoveryTokenRepositoryImpl recoveryTokenRepository;
+    private final RecoveryTokenServiceImpl passwordResetTokenService;
+    private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
 
     private final String invalidUsername = "notPresent@email.test";
     private final String password = "12345678";
@@ -37,10 +37,11 @@ class RecoveryTokenServiceTest extends TestContext {
     private Set<RoleEntity> roles = new HashSet<>();
 
     public RecoveryTokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, RecoveryTokenServiceImpl recoveryTokenService, RecoveryTokenRepositoryImpl recoveryTokenRepository) {
+            ObjectMapper objectMapper, MockMvc mockMvc, RecoveryTokenServiceImpl recoveryTokenService,
+            PasswordResetTokenRepositoryImpl passwordResetTokenRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.recoveryTokenService = recoveryTokenService;
-        this.recoveryTokenRepository = recoveryTokenRepository;
+        this.passwordResetTokenService = recoveryTokenService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @BeforeEach
@@ -57,7 +58,7 @@ class RecoveryTokenServiceTest extends TestContext {
     void givenNotPresentUsername_WhenGenerateLinkAndSendEmail_ThenUsernameNotFoundException() {
         UsernameNotFoundException exception = Assertions.assertThrowsExactly(
             UsernameNotFoundException.class,
-            () -> recoveryTokenService.generateLinkAndSendEmail(invalidUsername));
+            () -> passwordResetTokenService.generateLinkAndSendEmail(invalidUsername));
 
         //TODO review tests that compares message errors
         Assertions.assertTrue(exception.getMessage().contentEquals(usernameNotFoundException));
@@ -66,33 +67,33 @@ class RecoveryTokenServiceTest extends TestContext {
     @Test
     void givenUsername_WhenGenerateLinkAndSendEmail_ThenVoid() {
         getUserRepository().save(user);
-        Assertions.assertDoesNotThrow(() -> recoveryTokenService.generateLinkAndSendEmail(user.getUsername()));
+        Assertions.assertDoesNotThrow(() -> passwordResetTokenService.generateLinkAndSendEmail(user.getUsername()));
     }
 
     @Test
     void givenUsernameWithNoToken_WhenGenerateLinkAndSendEmail_ThenCreateRecoveryToken() {
         getUserRepository().save(user);
-        recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        PasswordResetToken token = recoveryTokenRepository.findByUser(user).get();
-        Assertions.assertTrue(recoveryTokenRepository.findByToken(token.getToken()).isPresent());
+        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        PasswordResetToken token = passwordResetTokenRepository.findByUser(user).get();
+        Assertions.assertTrue(passwordResetTokenRepository.findByToken(token.getToken()).isPresent());
     }
 
     @Test
     void givenUsernameWithToken_WhenGenerateLinkAndSendEmail_ThenDeletePreviousToken() {
         getUserRepository().save(user);
-        recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        PasswordResetToken previousToken = recoveryTokenRepository.findByUser(user).get();
-        recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        PasswordResetToken newToken = recoveryTokenRepository.findByUser(user).get();
+        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        PasswordResetToken previousToken = passwordResetTokenRepository.findByUser(user).get();
+        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        PasswordResetToken newToken = passwordResetTokenRepository.findByUser(user).get();
         Assertions.assertNotEquals(newToken, previousToken);
-        Assertions.assertFalse(recoveryTokenRepository.findByToken(previousToken.getToken()).isPresent());
+        Assertions.assertFalse(passwordResetTokenRepository.findByToken(previousToken.getToken()).isPresent());
     }
 
     @Test
     void givenUsername_WhenGenerateLinkAndSendEmail_ThenGenerateToken() {
         getUserRepository().save(user);
-        recoveryTokenService.generateLinkAndSendEmail(user.getUsername());
-        PasswordResetToken token = recoveryTokenRepository.findByUser(user).get();
+        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        PasswordResetToken token = passwordResetTokenRepository.findByUser(user).get();
         Assertions.assertEquals(tokenLength, token.getToken().length());
     }
     

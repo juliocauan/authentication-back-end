@@ -13,13 +13,13 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.repository.RecoveryTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
 class PasswordResetTokenEntityTest extends TestContext {
 
-    private final RecoveryTokenRepositoryImpl passwordResetTokenRepository;
+    private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
 
     private final String password = "12345678";
     private final String username = "test@email.com";
@@ -29,7 +29,7 @@ class PasswordResetTokenEntityTest extends TestContext {
     private PasswordResetTokenEntity passwordResetToken;
 
     public PasswordResetTokenEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, RecoveryTokenRepositoryImpl passwordResetTokenRepository) {
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetTokenRepositoryImpl passwordResetTokenRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetTokenRepository = passwordResetTokenRepository;
     }

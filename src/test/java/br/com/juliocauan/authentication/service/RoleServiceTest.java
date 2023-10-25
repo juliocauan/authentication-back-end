@@ -8,7 +8,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
@@ -25,11 +24,6 @@ class RoleServiceTest extends TestContext {
     }
 
     @Test
-    void whenGetRepository_ThenInstanceOfRoleRepository(){
-        Assertions.assertInstanceOf(RoleRepository.class, roleService.getRepository());
-    }
-
-    @Test
     void givenValidName_WhenGetByName_ThenEqualsName(){
         for(EnumRole name : EnumRole.values())
             Assertions.assertEquals(name, roleService.getByName(name).getName());
@@ -37,7 +31,9 @@ class RoleServiceTest extends TestContext {
 
     @Test
     void givenInvalidName_WhenGetByName_ThenThrowsEntityNotFoundException(){
-        Assertions.assertThrows(EntityNotFoundException.class, () -> roleService.getByName(null), "Role Not Found with name: null");
+        EntityNotFoundException expection = Assertions
+            .assertThrowsExactly(EntityNotFoundException.class, () -> roleService.getByName(null));
+        Assertions.assertEquals("Role Not Found with name: null", expection.getMessage());
     }
 
 }

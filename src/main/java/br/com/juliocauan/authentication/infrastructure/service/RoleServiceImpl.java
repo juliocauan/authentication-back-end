@@ -9,12 +9,12 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl extends RoleService {
     
     private final RoleRepositoryImpl roleRepository;
 
     @Override
-    public RoleRepository getRepository() {
+    protected RoleRepository getRepository() {
         return roleRepository;
     }
 

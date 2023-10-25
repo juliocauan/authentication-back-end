@@ -1,5 +1,6 @@
 package br.com.juliocauan.authentication.model;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
 import org.junit.jupiter.api.Assertions;
@@ -61,6 +62,13 @@ class PasswordResetTokenEntityTest extends TestContext {
         Assertions.assertTrue(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
         getUserRepository().deleteById(userEntity.getId());
         Assertions.assertFalse(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
+    }
+
+    @Test
+    void isExpired() {
+        Assertions.assertFalse(passwordResetToken.isExpired());
+        passwordResetToken.setExpireDate(LocalDateTime.now().minusSeconds(1));
+        Assertions.assertTrue(passwordResetToken.isExpired());
     }
     
 }

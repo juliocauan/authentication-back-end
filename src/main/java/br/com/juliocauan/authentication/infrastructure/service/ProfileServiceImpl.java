@@ -9,6 +9,7 @@ import br.com.juliocauan.authentication.domain.service.ProfileService;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
+import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -16,7 +17,7 @@ import lombok.AllArgsConstructor;
 public class ProfileServiceImpl implements ProfileService {
 
     private final UserServiceImpl userService;
-    private final PasswordServiceImpl passwordService;
+    private final PasswordService passwordService;
     
     @Override
     public Profile getProfileContent() {
@@ -29,8 +30,8 @@ public class ProfileServiceImpl implements ProfileService {
         UserEntity entity = UserMapper.domainToEntity(userService.getByUsername(
             SecurityContextHolder.getContext().getAuthentication().getName()));
 
-        passwordService.checkPasswordConfirmation(passwordUpdateForm);
-        passwordService.checkOldPassword(entity, passwordUpdateForm);
+        passwordService.checkPasswordConfirmation(passwordUpdateForm.getNewPasswordMatch());
+        passwordService.checkCurrentPassword(entity.getPassword(), passwordUpdateForm.getOldPassword());
         
         entity.setPassword(passwordService.encodePassword(passwordUpdateForm.getNewPasswordMatch().getPassword()));
         userService.save(entity);

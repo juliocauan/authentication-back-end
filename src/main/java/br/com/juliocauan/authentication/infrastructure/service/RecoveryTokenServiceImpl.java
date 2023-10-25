@@ -15,6 +15,7 @@ import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenE
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -27,7 +28,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
     private final EmailServiceImpl emailService;
-    private final PasswordServiceImpl passwordService;
+    private final PasswordService passwordService;
 
     @Override
     public void generateLinkAndSendEmail(String username) {
@@ -37,7 +38,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
 
     @Override
     public void resetPassword(NewPasswordForm newPasswordForm, String token) {
-        passwordService.checkPasswordConfirmation(newPasswordForm);
+        passwordService.checkPasswordConfirmation(newPasswordForm.getNewPasswordMatch());
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Recovery token not found with token: " + token));
         if(passwordResetToken.isExpired())

@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "test.mail.receiver",
+  "type": "java.lang.String",
+  "description": "Email that will receive test emails."
+}]}

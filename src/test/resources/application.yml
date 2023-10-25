@@ -33,4 +33,7 @@ spring:
                     auth: true
                     starttls:
                         enable: true
-        
+
+test:
+    mail:
+        receiver: jcam.test01@gmail.com

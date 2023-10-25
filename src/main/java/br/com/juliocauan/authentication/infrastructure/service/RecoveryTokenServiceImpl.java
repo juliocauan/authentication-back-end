@@ -15,6 +15,7 @@ import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenE
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.service.util.EmailService;
 import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
 
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
-    private final EmailServiceImpl emailService;
+    private final EmailService emailService;
     private final PasswordService passwordService;
 
     @Override

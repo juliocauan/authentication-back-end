@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.ProfileApi;
 import org.openapitools.model.OkMessage;
-import org.openapitools.model.PasswordUpdate;
+import org.openapitools.model.PasswordUpdateForm;
 import org.openapitools.model.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +25,8 @@ public class ProfileController implements ProfileApi {
     }
 
     @Override
-    public ResponseEntity<OkMessage> _alterUserPassword(@Valid PasswordUpdate passwordUpdate) {
-        profileService.alterPassword(passwordUpdate);
+    public ResponseEntity<OkMessage> _alterUserPassword(@Valid PasswordUpdateForm passwordUpdateForm) {
+        profileService.alterPassword(passwordUpdateForm);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }
 

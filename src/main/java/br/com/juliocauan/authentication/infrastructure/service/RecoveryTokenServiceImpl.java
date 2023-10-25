@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Optional;
 
-import org.openapitools.model.PasswordLinkUpdate;
+import org.openapitools.model.NewPasswordForm;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
@@ -36,14 +36,14 @@ public class RecoveryTokenServiceImpl implements RecoveryTokenService {
     }
 
     @Override
-    public void resetPassword(PasswordLinkUpdate passwordUpdate, String token) {
-        passwordService.checkPasswordConfirmation(passwordUpdate);
+    public void resetPassword(NewPasswordForm newPasswordForm, String token) {
+        passwordService.checkPasswordConfirmation(newPasswordForm);
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Recovery token not found with token: " + token));
         if(passwordResetToken.isExpired())
             throw new ExpiredRecoveryTokenException("Expired recovery token!");
         UserEntity user = UserMapper.domainToEntity(passwordResetToken.getUser());
-        user.setPassword(passwordUpdate.getNewPassword());
+        user.setPassword(newPasswordForm.getNewPasswordMatch().getPassword());
         userService.save(user);
         passwordResetTokenRepository.deleteById(passwordResetToken.getId());
     }

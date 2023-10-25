@@ -1,6 +1,6 @@
 package br.com.juliocauan.authentication.infrastructure.service;
 
-import org.openapitools.model.PasswordUpdate;
+import org.openapitools.model.PasswordUpdateForm;
 import org.openapitools.model.Profile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,14 +25,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void alterPassword(PasswordUpdate passwordUpdate) {
+    public void alterPassword(PasswordUpdateForm passwordUpdateForm) {
         UserEntity entity = UserMapper.domainToEntity(userService.getByUsername(
             SecurityContextHolder.getContext().getAuthentication().getName()));
 
-        passwordService.checkPasswordConfirmation(passwordUpdate);
-        passwordService.checkOldPassword(entity, passwordUpdate);
+        passwordService.checkPasswordConfirmation(passwordUpdateForm);
+        passwordService.checkOldPassword(entity, passwordUpdateForm);
         
-        entity.setPassword(passwordService.encodePassword(passwordUpdate.getNewPassword()));
+        entity.setPassword(passwordService.encodePassword(passwordUpdateForm.getNewPasswordMatch().getPassword()));
         userService.save(entity);
     }
     

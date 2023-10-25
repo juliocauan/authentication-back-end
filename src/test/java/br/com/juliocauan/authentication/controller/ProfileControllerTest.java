@@ -10,7 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
-import org.openapitools.model.PasswordUpdate;
+import org.openapitools.model.PasswordMatch;
+import org.openapitools.model.PasswordUpdateForm;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -85,10 +86,11 @@ class ProfileControllerTest extends TestContext {
 
     @Test
     void givenAnyLoggedUser_WhenAlterUserPassword_ThenMessage() throws Exception{
-        PasswordUpdate passwordUpdate = new PasswordUpdate()
+        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .oldPassword(password)
-            .newPassword(newPassword)
-            .newPasswordConfirmation(newPassword);
+            .newPasswordMatch(new PasswordMatch()
+                .password(newPassword)
+                .passwordConfirmation(newPassword));
         for(EnumRole role : EnumRole.values()){
             getUserRepository().deleteAll();
             token = getToken(username1, role);
@@ -96,7 +98,7 @@ class ProfileControllerTest extends TestContext {
                 patch(urlProfile)
                     .header(headerAuthorization, token)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(getObjectMapper().writeValueAsString(passwordUpdate)))
+                    .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.body").value(updatedPasswordMessage));
@@ -116,15 +118,16 @@ class ProfileControllerTest extends TestContext {
     //TODO refactor test to passwordServiceTest
     void givenWrongOldPassword_WhenAlterUserPassword_ThenErrorMessage() throws Exception{
         token = getToken(username1, EnumRole.USER);
-        PasswordUpdate passwordUpdate = new PasswordUpdate()
+        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .oldPassword(newPassword)
-            .newPassword(newPassword)
-            .newPasswordConfirmation(newPassword);
+            .newPasswordMatch(new PasswordMatch()
+                .password(newPassword)
+                .passwordConfirmation(newPassword));
         getMockMvc().perform(
             patch(urlProfile)
                 .header(headerAuthorization, token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordUpdate)))
+                .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(oldPasswordError));
@@ -134,15 +137,16 @@ class ProfileControllerTest extends TestContext {
     //TODO refactor test to passwordServiceTest
     void givenWrongConfirmationPassword_WhenAlterUserPassword_ThenErrorMessage() throws Exception{
         token = getToken(username1, EnumRole.USER);
-        PasswordUpdate passwordUpdate = new PasswordUpdate()
+        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .oldPassword(password)
-            .newPassword(newPassword)
-            .newPasswordConfirmation(password);
+            .newPasswordMatch(new PasswordMatch()
+                .password(newPassword)
+                .passwordConfirmation(password));
         getMockMvc().perform(
             patch(urlProfile)
                 .header(headerAuthorization, token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordUpdate)))
+                .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(newPasswordError));

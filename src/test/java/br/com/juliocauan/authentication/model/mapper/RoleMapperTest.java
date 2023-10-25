@@ -37,7 +37,6 @@ class RoleMapperTest extends TestContext {
             public EnumRole getName() {return role;}
         };
     }
-
     private final RoleEntity getRoleEntity(EnumRole role){
         return RoleEntity.builder()
             .id(id)

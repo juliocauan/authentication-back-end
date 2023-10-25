@@ -10,5 +10,5 @@ import br.com.juliocauan.authentication.domain.model.User;
 public interface UserRepository {
     boolean existsByUsername(String username);
     Optional<User> findByUsername(String username);
-    List<User> findAllByUsernameContainingAndRole(String username, EnumRole role);
+    List<User> findAllByUsernameContainsAndRole(String username, EnumRole role);
 }

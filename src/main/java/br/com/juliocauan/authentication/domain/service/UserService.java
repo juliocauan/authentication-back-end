@@ -25,7 +25,7 @@ public interface UserService {
     }
 
 	default List<User> getAllUsers(String username, EnumRole role){
-		return getRepository().findAllByUsernameContainingAndRole(username, role);
+		return getRepository().findAllByUsernameContainsAndRole(username, role);
 	}
 	
 }

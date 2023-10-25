@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.model;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,6 @@ class PasswordResetTokenEntityTest extends TestContext {
     private final String token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
     private UserEntity userEntity;
-    private Set<RoleEntity> roles = new HashSet<>();
     private PasswordResetTokenEntity passwordResetToken;
 
     public PasswordResetTokenEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -43,7 +41,7 @@ class PasswordResetTokenEntityTest extends TestContext {
         userEntity = getUserRepository().save(UserEntity.builder()
             .password(password)
             .username(username)
-            .roles(roles)
+            .roles(new HashSet<RoleEntity>())
         .build());
 
         passwordResetToken = passwordResetTokenRepository.save(PasswordResetTokenEntity.builder()

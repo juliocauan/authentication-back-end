@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.infrastructure.model.mapper;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.openapitools.model.SignupForm;
@@ -10,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
@@ -50,19 +48,6 @@ public interface UserMapper {
             .id(model.getId())
             .username(model.getUsername())
             .roles(RoleMapper.setRoleToSetEnumRole(model.getRoles()));
-    }
-
-    static User entityToDomain(UserEntity model){
-        return new User() {
-            @Override
-            public UUID getId(){return model.getId();}
-            @Override
-            public String getUsername(){return model.getUsername();}
-            @Override
-            public String getPassword(){return model.getPassword();}
-            @Override
-            public Set<? extends Role> getRoles(){return model.getRoles();}
-        };
     }
     
 }

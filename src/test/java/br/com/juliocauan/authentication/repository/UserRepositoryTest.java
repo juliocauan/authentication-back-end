@@ -1,19 +1,23 @@
 package br.com.juliocauan.authentication.repository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.EnumRole;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
+import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
@@ -21,6 +25,10 @@ class UserRepositoryTest extends TestContext {
 
     private final String password = "12345678";
     private final String username = "test@email.com";
+    private final String usernameContains = "test";
+    private final String usernameNotContains = "asd";
+    private final EnumRole rolePresent = EnumRole.MANAGER;
+    private final EnumRole roleNotPresent = EnumRole.ADMIN;
 
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
@@ -33,7 +41,7 @@ class UserRepositoryTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        getRoleRepository().findAll().forEach(role -> roles.add(role));
+        roles.add(RoleMapper.domainToEntity(getRoleRepository().findByName(rolePresent).get()));
     }
 
     @BeforeEach
@@ -66,6 +74,45 @@ class UserRepositoryTest extends TestContext {
     @Test
     void givenNotPresentUsername_WhenFindByUsername_ThenUserNotPresent(){
         Assertions.assertFalse(getUserRepository().findByUsername(username).isPresent());
+    }
+
+    @Test
+    void givenUsernameContainsAndRole_WhenFindAllByUsernameContainsAndRole_ThenUserList() {
+        getUserRepository().save(entity);
+        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, rolePresent);
+        Assertions.assertEquals(1, userList.size());
+        Assertions.assertEquals(entity, userList.get(0));
+        
+        entity = UserEntity.builder()
+            .username(username + "2")
+            .password(password)
+            .roles(roles)
+        .build();
+        getUserRepository().save(entity);
+        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, rolePresent);
+        Assertions.assertEquals(2, userList.size());
+        Assertions.assertTrue(userList.contains(entity));
+    }
+
+    @Test
+    void givenUsernameNotContainsAndRole_WhenFindAllByUsernameContainsAndRole_ThenEmptyUserList() {
+        getUserRepository().save(entity);
+        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameNotContains, rolePresent);
+        Assertions.assertTrue(userList.isEmpty());
+    }
+
+    @Test
+    void givenUsernameContainsAndNotPresentRole_WhenFindAllByUsernameContainsAndRole_ThenEmptyUserList() {
+        getUserRepository().save(entity);
+        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, roleNotPresent);
+        Assertions.assertTrue(userList.isEmpty());
+    }
+
+    @Test
+    void givenUsernameNotContainsAndNotPresentRole_WhenFindAllByUsernameContainsAndRole_ThenEmptyUserList() {
+        getUserRepository().save(entity);
+        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameNotContains, roleNotPresent);
+        Assertions.assertTrue(userList.isEmpty());
     }
 
 }

@@ -11,17 +11,17 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl implements UserService {
+public final class UserServiceImpl extends UserService {
     
     private final UserRepositoryImpl userRepository;
 
     @Override
-    public User save(User user) {
+    public final User save(User user) {
         return userRepository.save(UserMapper.domainToEntity(user));
     }
 
     @Override
-    public UserRepository getRepository() {
+    protected final UserRepository getRepository() {
         return userRepository;
     }
     

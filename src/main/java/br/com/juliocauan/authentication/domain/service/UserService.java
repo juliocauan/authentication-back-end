@@ -9,22 +9,22 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import jakarta.persistence.EntityExistsException;
 
-public interface UserService {
+public abstract class UserService {
 	
-	UserRepository getRepository();
-	User save(User user);
+	protected abstract UserRepository getRepository();
+	public abstract User save(User user);
 
-    default User getByUsername(String username){
+    public final User getByUsername(String username){
         return getRepository().findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 	}
 
-	default void checkDuplicatedUsername(String username) {
+	public final void checkDuplicatedUsername(String username) {
 		if (getRepository().existsByUsername(username))
 			throw new EntityExistsException("Username is already taken!");
     }
 
-	default List<User> getAllUsers(String username, EnumRole role){
+	public final List<User> getAllUsers(String username, EnumRole role){
 		return getRepository().findAllByUsernameContainsAndRole(username, role);
 	}
 	

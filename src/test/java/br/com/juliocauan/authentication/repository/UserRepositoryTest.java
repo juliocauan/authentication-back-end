@@ -92,6 +92,15 @@ class UserRepositoryTest extends TestContext {
         userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, rolePresent);
         Assertions.assertEquals(2, userList.size());
         Assertions.assertTrue(userList.contains(entity));
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(null, null);
+        Assertions.assertEquals(2, userList.size());
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(null, rolePresent);
+        Assertions.assertEquals(2, userList.size());
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, null);
+        Assertions.assertEquals(2, userList.size());
     }
 
     @Test

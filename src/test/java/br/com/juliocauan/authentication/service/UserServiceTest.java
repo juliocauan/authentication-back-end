@@ -1,21 +1,24 @@
 package br.com.juliocauan.authentication.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.EnumRole;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.repository.UserRepository;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
+import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
@@ -27,6 +30,10 @@ class UserServiceTest extends TestContext {
 
     private final String password = "12345678";
     private final String username = "test@email.com";
+    private final String usernameContains = "test";
+    private final String usernameNotContains = "asd";
+    private final EnumRole rolePresent = EnumRole.MANAGER;
+    private final EnumRole roleNotPresent = EnumRole.ADMIN;
 
     private final String errorUsernameNotFound =  "User Not Found with username: " + username;
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -43,7 +50,7 @@ class UserServiceTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        getRoleRepository().findAll().forEach(role -> roles.add(role));
+        roles.add(RoleMapper.domainToEntity(getRoleRepository().findByName(rolePresent).get()));
     }
 
     @BeforeEach
@@ -57,8 +64,8 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void whenGetRepository_ThenInstanceOfUserRepository(){
-        Assertions.assertInstanceOf(UserRepository.class, userService.getRepository());
+    void givenValidUserEntity_WhenSave_ThenVoid(){
+        Assertions.assertDoesNotThrow(() -> userService.save(entity));
     }
 
     @Test
@@ -69,13 +76,17 @@ class UserServiceTest extends TestContext {
 
     @Test
     void givenNotPresentUsername_WhenGetByUsername_ThenUsernameNotFoundException(){
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> userService.getByUsername(username), errorUsernameNotFound);
+        UsernameNotFoundException exception = Assertions
+            .assertThrowsExactly(UsernameNotFoundException.class, () -> userService.getByUsername(username));
+        Assertions.assertEquals(errorUsernameNotFound, exception.getMessage());
     }
 
     @Test
     void givenDuplicatedUsername_WhenCheckDuplicatedUsername_ThenEntityExistsException(){
         getUserRepository().save(entity);
-        Assertions.assertThrows(EntityExistsException.class, () -> userService.checkDuplicatedUsername(username), errorDuplicatedUsername);
+        EntityExistsException exception = Assertions
+            .assertThrowsExactly(EntityExistsException.class, () -> userService.checkDuplicatedUsername(username));
+        Assertions.assertEquals(errorDuplicatedUsername, exception.getMessage());
     }
 
     @Test
@@ -84,8 +95,37 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void givenValidUserEntity_WhenSave_ThenVoid(){
-        Assertions.assertDoesNotThrow(() -> userService.save(entity));
+    void getAllUsers(){
+        getUserRepository().save(entity);
+        List<User> userList = userService.getAllUsers(usernameContains, rolePresent);
+        Assertions.assertEquals(1, userList.size());
+        Assertions.assertEquals(entity, userList.get(0));
+        
+        entity = UserEntity.builder()
+            .username(username + "2")
+            .password(password)
+            .roles(roles)
+        .build();
+        getUserRepository().save(entity);
+
+        userList = userService.getAllUsers(usernameContains, rolePresent);
+        Assertions.assertEquals(2, userList.size());
+        Assertions.assertTrue(userList.contains(entity));
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(null, null);
+        Assertions.assertEquals(2, userList.size());
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(null, rolePresent);
+        Assertions.assertEquals(2, userList.size());
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, null);
+        Assertions.assertEquals(2, userList.size());
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameNotContains, null);
+        Assertions.assertTrue(userList.isEmpty());
+
+        userList = getUserRepository().findAllByUsernameContainsAndRole(null, roleNotPresent);
+        Assertions.assertTrue(userList.isEmpty());
     }
     
 }

@@ -39,7 +39,7 @@ public final class PasswordResetTokenEntity extends PasswordResetToken {
     private UserEntity user;
 
     @NotNull
-    @Builder.Default
+    @Builder.Default @EqualsAndHashCode.Exclude
     private LocalDateTime expireDate = LocalDateTime.now();
 
 }

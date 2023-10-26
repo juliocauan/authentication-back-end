@@ -1,8 +1,5 @@
 package br.com.juliocauan.authentication.infrastructure.service;
 
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.Optional;
 
 import org.openapitools.model.NewPasswordForm;
@@ -22,8 +19,6 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
-
-    private static final int TOKEN_LENGTH = 32;
 
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
@@ -51,25 +46,13 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     private PasswordResetTokenEntity createRecoveryToken(UserEntity user) {
         deletePreviousRecoveryToken(user);
-        return passwordResetTokenRepository.save(
-            PasswordResetTokenEntity.builder()
-                .user(user)
-                .token(generateToken())
-                .expireDate(LocalDateTime.now().plusMinutes(PasswordResetToken.TOKEN_EXPIRATION_MINUTES))
-            .build());
+        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user));
     }
 
     private void deletePreviousRecoveryToken(UserEntity user) {
         Optional<PasswordResetToken> oldToken = passwordResetTokenRepository.findByUser(user);
         if(oldToken.isPresent())
             passwordResetTokenRepository.deleteById(oldToken.get().getId());
-    }
-
-    private String generateToken() {
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] tokenBytes = new byte[TOKEN_LENGTH];
-        secureRandom.nextBytes(tokenBytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
     }
 
     private void sendEmail(PasswordResetTokenEntity resetToken) {

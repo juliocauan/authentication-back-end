@@ -1,8 +1,11 @@
 package br.com.juliocauan.authentication.infrastructure.model;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
+import br.com.juliocauan.authentication.domain.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,5 +44,18 @@ public final class PasswordResetTokenEntity extends PasswordResetToken {
     @NotNull
     @Builder.Default @EqualsAndHashCode.Exclude
     private LocalDateTime expireDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_MINUTES);
+
+    public PasswordResetTokenEntity(User user) {
+        this();
+        this.token = generateToken();
+        this.user = new UserEntity(user);
+    }
+
+    private final String generateToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] tokenBytes = new byte[TOKEN_LENGTH];
+        secureRandom.nextBytes(tokenBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
+    }
 
 }

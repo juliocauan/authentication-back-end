@@ -31,4 +31,9 @@ public final class RoleEntity extends Role {
 	@Column(length = 20, nullable = false)
     private EnumRole name;
 
+	public RoleEntity(Role role) {
+		this.id = role.getId();
+		this.name = role.getName();
+	}
+
 }

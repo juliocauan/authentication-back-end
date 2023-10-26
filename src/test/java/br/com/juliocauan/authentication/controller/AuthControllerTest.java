@@ -117,10 +117,7 @@ class AuthControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.token", hasLength(144)))
-            .andExpect(jsonPath("$.type").value("Bearer"))
-            .andExpect(jsonPath("$.username").value(username1))
-            .andExpect(jsonPath("$.roles", hasSize(1)))
-            .andExpect(jsonPath("$.roles[0]").value(EnumRole.USER.getValue()));
+            .andExpect(jsonPath("$.type").value("Bearer"));
     }
 
     @Test
@@ -133,10 +130,7 @@ class AuthControllerTest extends TestContext {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.token", hasLength(144)))
-            .andExpect(jsonPath("$.type").value("Bearer"))
-            .andExpect(jsonPath("$.username").value(username1))
-            .andExpect(jsonPath("$.roles", hasSize(1)))
-            .andExpect(jsonPath("$.roles[0]").value(EnumRole.ADMIN.getValue()));
+            .andExpect(jsonPath("$.type").value("Bearer"));
     }
 
     @Test

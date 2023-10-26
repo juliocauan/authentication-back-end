@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.service.application.AdminService;
+import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
@@ -31,7 +32,7 @@ public class AdminServiceImpl extends AdminService {
         UserEntity user = UserMapper.domainToEntity(userService.getByUsername(alterUserRolesForm.getUsername()));
         Set<Role> roles = alterUserRolesForm.getRoles().stream().map(roleService::getByName).collect(Collectors.toSet());
         
-        user.setRoles(RoleMapper.domainToEntity(roles));
+        user.setRoles(roles.stream().map(RoleEntity::new).collect(Collectors.toSet()));
         user = UserMapper.domainToEntity(userService.save(user));
         
         alterUserRolesForm

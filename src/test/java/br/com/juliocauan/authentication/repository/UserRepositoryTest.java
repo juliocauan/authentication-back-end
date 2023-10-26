@@ -17,7 +17,6 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
@@ -41,7 +40,7 @@ class UserRepositoryTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        roles.add(RoleMapper.domainToEntity(getRoleRepository().findByName(rolePresent).get()));
+        roles.add(new RoleEntity(getRoleRepository().findByName(rolePresent).get()));
     }
 
     @BeforeEach

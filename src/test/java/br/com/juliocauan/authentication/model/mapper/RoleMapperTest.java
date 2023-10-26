@@ -15,14 +15,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
 class RoleMapperTest extends TestContext {
-
-    private final Short id = 2;
 
     public RoleMapperTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
@@ -32,34 +29,10 @@ class RoleMapperTest extends TestContext {
     private final Role getRole(EnumRole role){
         return new Role() {
             @Override
-            public Short getId() {return id;}
+            public Short getId() {return null;}
             @Override
             public EnumRole getName() {return role;}
         };
-    }
-    private final RoleEntity getRoleEntity(EnumRole role){
-        return RoleEntity.builder()
-            .id(id)
-            .name(role)
-        .build();
-    }
-
-    @Test
-    void oneDomainRoleToOneEntity(){
-        RoleEntity entity = getRoleEntity(EnumRole.ADMIN);
-        Role role = getRole(EnumRole.ADMIN);
-        Assertions.assertEquals(entity, RoleMapper.domainToEntity(role));
-    }
-
-    @Test
-    void setDomainRoleToSetEntity(){
-        Set<RoleEntity> entities = new HashSet<>();
-        Set<Role> roles = new HashSet<>();
-        for(EnumRole name : EnumRole.values()){
-            entities.add(getRoleEntity(name));
-            roles.add(getRole(name));
-        }
-        Assertions.assertEquals(entities, RoleMapper.domainToEntity(roles));
     }
 
     @Test

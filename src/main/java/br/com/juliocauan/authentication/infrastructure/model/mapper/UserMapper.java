@@ -7,6 +7,7 @@ import org.openapitools.model.UserInfo;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import br.com.juliocauan.authentication.domain.model.User;
+import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
@@ -17,7 +18,7 @@ public interface UserMapper {
             .id(model.getId())
             .password(model.getPassword())
             .username(model.getUsername())
-            .roles(RoleMapper.domainToEntity(model.getRoles()))
+            .roles(model.getRoles().stream().map(RoleEntity::new).collect(Collectors.toSet()))
         .build();
     }
 

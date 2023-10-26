@@ -15,7 +15,6 @@ import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.service.application.JwtService;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtProvider;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
@@ -59,7 +58,7 @@ public final class JwtServiceImpl extends JwtService {
   private final Set<RoleEntity> buildRoleSet(EnumRole formRole) {
     Role role = roleService.getByName(formRole == null ? EnumRole.USER : formRole);
     Set<RoleEntity> roleSet = new HashSet<>();
-    roleSet.add(RoleMapper.domainToEntity(role));
+    roleSet.add(new RoleEntity(role));
     return roleSet;
   }
 

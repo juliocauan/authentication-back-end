@@ -5,12 +5,10 @@ import java.util.Set;
 
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
-import org.openapitools.model.SigninForm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.Role;
@@ -35,13 +33,11 @@ public final class JwtServiceImpl extends JwtService {
   private final RoleServiceImpl roleService;
 
   @Override
-  public final JWTResponse authenticate(SigninForm signinForm) {
-    Authentication auth = authenticationManager.authenticate(parseAsAuthToken(signinForm));
+  public final JWTResponse authenticate(String username, String password) {
+    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+    Authentication auth = authenticationManager.authenticate(authenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);
-    String token = jwtProvider.generateToken(auth);
-    UserDetails userPrincipal = (UserDetails) auth.getPrincipal();
-    Set<EnumRole> roles = RoleMapper.authoritiesToEnumRole(userPrincipal.getAuthorities());
-    return parseAsJWTResponse(token, userPrincipal, roles);
+    return new JWTResponse().token(jwtProvider.generateToken(auth));
   }
 
   @Override
@@ -49,17 +45,6 @@ public final class JwtServiceImpl extends JwtService {
     userService.checkDuplicatedUsername(username);
     UserEntity userEntity = buildUserEntity(username, password, role);
     userService.save(userEntity);
-  }
-
-  private final UsernamePasswordAuthenticationToken parseAsAuthToken(SigninForm signinForm) {
-    return new UsernamePasswordAuthenticationToken(signinForm.getUsername(), signinForm.getPassword());
-  }
-
-  private final JWTResponse parseAsJWTResponse(String token, UserDetails userPrincipal, Set<EnumRole> roles) {
-    return new JWTResponse()
-        .token(token)
-        .username(userPrincipal.getUsername())
-        .roles(roles);
   }
 
   private final UserEntity buildUserEntity(String username, String password, EnumRole role) {

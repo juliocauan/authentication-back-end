@@ -30,7 +30,9 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<JWTResponse> _signinUser(@Valid SigninForm signinForm) {
-    JWTResponse response = jwtService.authenticate(signinForm);
+    JWTResponse response = jwtService.authenticate(
+      signinForm.getUsername(),
+      signinForm.getPassword());
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 

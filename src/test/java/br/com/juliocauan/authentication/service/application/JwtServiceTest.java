@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
-import org.openapitools.model.SigninForm;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,11 +22,11 @@ class JwtServiceTest extends TestContext {
 
     private final JwtServiceImpl jwtService;
     private final PasswordEncoder encoder;
-    private final SigninForm signinForm = new SigninForm();
 
     private final String password = "12345678";
     private final String username = "test@email.com";
     private final String errorUsernameDuplicated = "Username is already taken!";
+    private final String errorBadCredentials = "Bad credentials";
 
     public JwtServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, JwtServiceImpl jwtService, PasswordEncoder encoder) {
@@ -38,7 +38,6 @@ class JwtServiceTest extends TestContext {
     @BeforeEach
     public void standard(){
         getUserRepository().deleteAll();
-        signinForm.username(username).password(password);
     }
 
     @Test
@@ -61,7 +60,7 @@ class JwtServiceTest extends TestContext {
     }
     
     @Test
-    void givenInvalidSignupForm_WhenValidateAndRegisterNewUser_ThenDuplicatedUsername(){
+    void validateAndRegisterNewUser_DuplicatedUserError(){
         getUserRepository().save(UserEntity.builder()
             .id(null)
             .username(username)
@@ -75,14 +74,18 @@ class JwtServiceTest extends TestContext {
     }
 
     @Test
-    void givenValidSigninForm_WhenAuthenticate_ThenJWTResponse(){
+    void authenticate(){
         jwtService.validateAndRegisterNewUser(username, password, null);
-        Assertions.assertInstanceOf(JWTResponse.class, jwtService.authenticate(signinForm));
+        JWTResponse response = jwtService.authenticate(username, password);
+        Assertions.assertEquals("Bearer", response.getType());
+        Assertions.assertNotNull(response.getToken());
     }
 
     @Test
-    void givenInvalidSigninForm_WhenAuthenticate_ThenUnauthorized(){
-        Assertions.assertThrows(Exception.class, () -> jwtService.authenticate(signinForm));
+    void authenticate_BadCredentialsError(){
+        BadCredentialsException exception = Assertions.assertThrowsExactly(BadCredentialsException.class,
+            () -> jwtService.authenticate(username, password));
+        Assertions.assertEquals(errorBadCredentials, exception.getMessage());
     }
 
 }

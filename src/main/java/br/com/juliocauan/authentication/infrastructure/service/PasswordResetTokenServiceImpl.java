@@ -9,7 +9,7 @@ import org.openapitools.model.NewPasswordForm;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
-import br.com.juliocauan.authentication.domain.service.RecoveryTokenService;
+import br.com.juliocauan.authentication.domain.service.PasswordResetTokenService;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredRecoveryTokenException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class RecoveryTokenServiceImpl implements RecoveryTokenService {
+public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
 
     private static final int TOKEN_LENGTH = 32;
 

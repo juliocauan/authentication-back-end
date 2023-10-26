@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.service.RecoveryTokenServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.PasswordResetTokenServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RecoveryTokenController implements PasswordResetApi {
 
-    private final RecoveryTokenServiceImpl resetPasswordService;
+    private final PasswordResetTokenServiceImpl resetPasswordService;
     
     @Override
     public ResponseEntity<OkMessage> _sendResetPasswordEmail(@Valid String username) {

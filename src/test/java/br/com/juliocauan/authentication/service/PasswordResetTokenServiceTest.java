@@ -18,11 +18,11 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.service.RecoveryTokenServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.PasswordResetTokenServiceImpl;
 
-class RecoveryTokenServiceTest extends TestContext {
+class PasswordResetTokenServiceTest extends TestContext {
 
-    private final RecoveryTokenServiceImpl passwordResetTokenService;
+    private final PasswordResetTokenServiceImpl passwordResetTokenService;
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
 
     private final String invalidUsername = "notPresent@email.test";
@@ -36,8 +36,8 @@ class RecoveryTokenServiceTest extends TestContext {
     private UserEntity user;
     private Set<RoleEntity> roles = new HashSet<>();
 
-    public RecoveryTokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, RecoveryTokenServiceImpl recoveryTokenService,
+    public PasswordResetTokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetTokenServiceImpl recoveryTokenService,
             PasswordResetTokenRepositoryImpl passwordResetTokenRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetTokenService = recoveryTokenService;

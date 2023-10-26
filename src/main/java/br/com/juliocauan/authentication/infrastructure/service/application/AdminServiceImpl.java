@@ -27,7 +27,7 @@ public class AdminServiceImpl extends AdminService {
     private final RoleServiceImpl roleService;
     
     @Override
-    public AlterUserRolesForm alterUserRole(AlterUserRolesForm alterUserRolesForm) {
+    public final AlterUserRolesForm alterUserRole(AlterUserRolesForm alterUserRolesForm) {
         UserEntity user = UserMapper.domainToEntity(userService.getByUsername(alterUserRolesForm.getUsername()));
         Set<Role> roles = alterUserRolesForm.getRoles().stream().map(roleService::getByName).collect(Collectors.toSet());
         
@@ -41,7 +41,7 @@ public class AdminServiceImpl extends AdminService {
     }
 
     @Override
-    public List<UserInfo> getUserInfos(String username, EnumRole role) {
+    public final List<UserInfo> getUserInfos(String username, EnumRole role) {
         List<User> users = userService.getAllUsers(username, role);
         return users.stream().map(UserMapper::domainToUserInfo).collect(Collectors.toList());
     }

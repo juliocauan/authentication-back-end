@@ -25,7 +25,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
 
-class AdminServiceServiceTest extends TestContext {
+class AdminServiceTest extends TestContext {
 
     private final AdminServiceImpl adminService;
 
@@ -40,7 +40,7 @@ class AdminServiceServiceTest extends TestContext {
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
 
-    public AdminServiceServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public AdminServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AdminServiceImpl adminService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.adminService = adminService;

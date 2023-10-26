@@ -3,6 +3,7 @@ package br.com.juliocauan.authentication.infrastructure.model;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.UuidGenerator.Style;
@@ -50,5 +51,12 @@ public final class UserEntity extends User {
         inverseJoinColumns = @JoinColumn(referencedColumnName = "id", name = "role_id"))
 	@Builder.Default @EqualsAndHashCode.Exclude
 	private Set<RoleEntity> roles = new HashSet<>();
+
+	public UserEntity(User user) {
+		this.id = user.getId();
+		this.username = user.getUsername();
+		this.password = user.getPassword();
+		this.roles = user.getRoles().stream().map(RoleEntity::new).collect(Collectors.toSet());
+	}
 
 }

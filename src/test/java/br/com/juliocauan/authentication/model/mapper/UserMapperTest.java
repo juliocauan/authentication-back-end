@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -42,20 +41,6 @@ class UserMapperTest extends TestContext {
             @Override
             public Set<Role> getRoles() {return new HashSet<>();}
         };
-    }
-    private final UserEntity getUserEntity(){
-        return UserEntity.builder()
-            .id(idUUID)
-            .password(password)
-            .username(username)
-            .roles(new HashSet<>())
-        .build();
-    }
-
-    @Test
-    void domainToEntity(){
-        UserEntity mappedEntity = UserMapper.domainToEntity(getUser());
-        Assertions.assertEquals(getUserEntity(), mappedEntity);
     }
 
     @Test

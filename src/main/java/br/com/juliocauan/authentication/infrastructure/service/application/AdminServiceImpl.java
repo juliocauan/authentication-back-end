@@ -29,11 +29,11 @@ public class AdminServiceImpl extends AdminService {
     
     @Override
     public final AlterUserRolesForm alterUserRole(AlterUserRolesForm alterUserRolesForm) {
-        UserEntity user = UserMapper.domainToEntity(userService.getByUsername(alterUserRolesForm.getUsername()));
+        UserEntity user = new UserEntity(userService.getByUsername(alterUserRolesForm.getUsername()));
         Set<Role> roles = alterUserRolesForm.getRoles().stream().map(roleService::getByName).collect(Collectors.toSet());
         
         user.setRoles(roles.stream().map(RoleEntity::new).collect(Collectors.toSet()));
-        user = UserMapper.domainToEntity(userService.save(user));
+        user = new UserEntity(userService.save(user));
         
         alterUserRolesForm
             .username(user.getUsername())

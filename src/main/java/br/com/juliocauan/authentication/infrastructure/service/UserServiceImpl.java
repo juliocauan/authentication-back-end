@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import br.com.juliocauan.authentication.domain.service.UserService;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
+import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import lombok.AllArgsConstructor;
 
@@ -17,7 +17,7 @@ public final class UserServiceImpl extends UserService {
 
     @Override
     public final User save(User user) {
-        return userRepository.save(UserMapper.domainToEntity(user));
+        return userRepository.save(new UserEntity(user));
     }
 
     @Override

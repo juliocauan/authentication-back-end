@@ -13,7 +13,6 @@ import br.com.juliocauan.authentication.domain.service.PasswordResetTokenService
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredRecoveryTokenException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.util.EmailService;
 import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
@@ -33,7 +32,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
 
     @Override
     public void generateLinkAndSendEmail(String username) {
-        UserEntity user = UserMapper.domainToEntity(userService.getByUsername(username));
+        UserEntity user = new UserEntity(userService.getByUsername(username));
         sendEmail(createRecoveryToken(user));
     }
 
@@ -44,7 +43,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
             .orElseThrow(() -> new EntityNotFoundException("Recovery token not found with token: " + token));
         if(passwordResetToken.isExpired())
             throw new ExpiredRecoveryTokenException("Expired recovery token!");
-        UserEntity user = UserMapper.domainToEntity(passwordResetToken.getUser());
+        UserEntity user = new UserEntity(passwordResetToken.getUser());
         user.setPassword(newPasswordForm.getNewPasswordMatch().getPassword());
         userService.save(user);
         passwordResetTokenRepository.deleteById(passwordResetToken.getId());

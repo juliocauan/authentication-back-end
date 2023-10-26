@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.service.application.ProfileService;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
@@ -29,7 +28,7 @@ public final class ProfileServiceImpl extends ProfileService {
     @Override
     public final void alterPassword(PasswordUpdateForm passwordUpdateForm) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity entity = UserMapper.domainToEntity(userService.getByUsername(username));
+        UserEntity entity = new UserEntity(userService.getByUsername(username));
 
         passwordService.checkPasswordConfirmation(passwordUpdateForm.getNewPasswordMatch());
         passwordService.checkCurrentPassword(entity.getPassword(), passwordUpdateForm.getOldPassword());

@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.security.service.JwtServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.application.JwtServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -21,7 +21,10 @@ public class AuthController implements AuthApi {
 
 	@Override
   public ResponseEntity<OkMessage> _signupUser(@Valid SignupForm signupForm) {
-    jwtService.validateAndRegisterNewUser(signupForm);
+    jwtService.validateAndRegisterNewUser(
+        signupForm.getUsername(),
+        signupForm.getPassword(),
+        signupForm.getRole());
     return ResponseEntity.status(HttpStatus.CREATED).body(new OkMessage().body("User registered successfully!"));
   }
 

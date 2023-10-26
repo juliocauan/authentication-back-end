@@ -26,7 +26,7 @@ public final class PasswordService {
             throw new InvalidOldPasswordException("Wrong current password!");
     }
 
-    public final String encodePassword(String password) {
+    public final String encode(String password) {
         return encoder.encode(password);
     }
 

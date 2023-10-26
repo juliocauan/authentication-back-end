@@ -6,9 +6,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.SignupForm;
 import org.openapitools.model.UserInfo;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,16 +22,13 @@ import br.com.juliocauan.authentication.infrastructure.security.model.UserPrinci
 
 class UserMapperTest extends TestContext {
 
-    private final PasswordEncoder encoder;
-
     private final UUID idUUID = UUID.randomUUID();
     private final String username = "test@email.com";
     private final String password = "1234567890";
 
     public UserMapperTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder) {
+            ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.encoder = encoder;
     }
     
     private final User getUser(){
@@ -61,17 +56,6 @@ class UserMapperTest extends TestContext {
     void domainToEntity(){
         UserEntity mappedEntity = UserMapper.domainToEntity(getUser());
         Assertions.assertEquals(getUserEntity(), mappedEntity);
-    }
-
-    @Test
-    void signupFormToEntity(){
-        SignupForm signupForm = new SignupForm();
-        signupForm.username(username).password(password);
-        UserEntity mappedEntity = UserMapper.signupFormToEntity(signupForm, getUserEntity().getRoles(), encoder);
-        Assertions.assertEquals(null, mappedEntity.getId());
-        Assertions.assertTrue(encoder.matches(getUserEntity().getPassword(), mappedEntity.getPassword()));
-        Assertions.assertEquals(getUserEntity().getUsername(), mappedEntity.getUsername());
-        Assertions.assertEquals(getUserEntity().getRoles(), mappedEntity.getRoles());
     }
 
     @Test

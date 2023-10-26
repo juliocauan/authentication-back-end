@@ -15,7 +15,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class ProfileServiceImpl extends ProfileService {
+public final class ProfileServiceImpl extends ProfileService {
 
     private final UserServiceImpl userService;
     private final PasswordService passwordService;
@@ -34,7 +34,7 @@ public class ProfileServiceImpl extends ProfileService {
         passwordService.checkPasswordConfirmation(passwordUpdateForm.getNewPasswordMatch());
         passwordService.checkCurrentPassword(entity.getPassword(), passwordUpdateForm.getOldPassword());
         
-        String newPassword = passwordService.encodePassword(passwordUpdateForm.getNewPasswordMatch().getPassword());
+        String newPassword = passwordService.encode(passwordUpdateForm.getNewPasswordMatch().getPassword());
         entity.setPassword(newPassword);
         userService.save(entity);
     }

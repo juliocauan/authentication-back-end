@@ -51,14 +51,14 @@ class PasswordServiceTest extends TestContext {
 
     @Test
     void encodePassword() {
-        String encodedPassword = passwordService.encodePassword(password1);
+        String encodedPassword = passwordService.encode(password1);
         Assertions.assertNotEquals(password1, encodedPassword);
         Assertions.assertTrue(encoder.matches(password1, encodedPassword));
     }
 
     @Test
     void checkCurrentPassword() {
-        String encodedPassword = passwordService.encodePassword(password1);
+        String encodedPassword = passwordService.encode(password1);
         Assertions.assertDoesNotThrow(() -> passwordService.checkCurrentPassword(encodedPassword, password1));
         InvalidOldPasswordException exception = Assertions.assertThrowsExactly(InvalidOldPasswordException.class,
             () -> passwordService.checkCurrentPassword(encodedPassword, password2));

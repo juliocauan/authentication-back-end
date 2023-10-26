@@ -54,7 +54,7 @@ class ProfileServiceTest extends TestContext {
         userEntity = getUserRepository().save(UserEntity
             .builder()
                 .username(username)
-                .password(passwordService.encodePassword(password))
+                .password(passwordService.encode(password))
                 .roles(new HashSet<>())
             .build());
         deauthenticate();

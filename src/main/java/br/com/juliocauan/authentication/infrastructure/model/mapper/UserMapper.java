@@ -3,13 +3,10 @@ package br.com.juliocauan.authentication.infrastructure.model.mapper;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.openapitools.model.SignupForm;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
@@ -21,15 +18,6 @@ public interface UserMapper {
             .password(model.getPassword())
             .username(model.getUsername())
             .roles(RoleMapper.domainToEntity(model.getRoles()))
-        .build();
-    }
-
-    static UserEntity signupFormToEntity(SignupForm signupForm, Set<RoleEntity> roles, PasswordEncoder encoder) {
-        return UserEntity.builder()
-            .id(null)
-            .password(encoder.encode(signupForm.getPassword()))
-            .username(signupForm.getUsername())
-            .roles(roles)
         .build();
     }
 

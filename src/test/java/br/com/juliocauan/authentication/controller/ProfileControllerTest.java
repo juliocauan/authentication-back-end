@@ -35,7 +35,7 @@ class ProfileControllerTest extends TestContext {
     private final String username1 = "test1@email.com";
 
     private final String updatedPasswordMessage = "Password updated successfully!";
-    private final String oldPasswordError = "Wrong old password!";
+    private final String oldPasswordError = "Wrong current password!";
     private final String newPasswordError = "Confirmation and new password are different!";
     private final String notAllowedError = "Not Allowed!";
 

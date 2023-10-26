@@ -112,19 +112,19 @@ class UserServiceTest extends TestContext {
         Assertions.assertEquals(2, userList.size());
         Assertions.assertTrue(userList.contains(entity));
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(null, null);
+        userList = userService.getAllUsers(null, null);
         Assertions.assertEquals(2, userList.size());
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(null, rolePresent);
+        userList = userService.getAllUsers(null, rolePresent);
         Assertions.assertEquals(2, userList.size());
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, null);
+        userList = userService.getAllUsers(usernameContains, null);
         Assertions.assertEquals(2, userList.size());
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameNotContains, null);
+        userList = userService.getAllUsers(usernameNotContains, null);
         Assertions.assertTrue(userList.isEmpty());
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(null, roleNotPresent);
+        userList = userService.getAllUsers(null, roleNotPresent);
         Assertions.assertTrue(userList.isEmpty());
     }
     

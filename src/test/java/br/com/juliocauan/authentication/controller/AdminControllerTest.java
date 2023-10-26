@@ -13,9 +13,9 @@ import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.AlterUserRolesForm;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
-import org.openapitools.model.ProfileRoles;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -83,12 +83,12 @@ class AdminControllerTest extends TestContext {
         token = getToken(username1, EnumRole.ADMIN);
         Set<EnumRole> roles = new HashSet<>();
         roles.add(EnumRole.USER);
-        ProfileRoles profileRoles = new ProfileRoles().username(username2).roles(roles);
+        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(username2).roles(roles);
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(headerAuthorization, token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(profileRoles)))
+                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(userNotFoundError + username2))
@@ -102,12 +102,12 @@ class AdminControllerTest extends TestContext {
         token = getToken(username2, EnumRole.ADMIN);
         Set<EnumRole> roles = new HashSet<>();
         for(EnumRole role : EnumRole.values()) roles.add(role);
-        ProfileRoles profileRoles = new ProfileRoles().username(username1).roles(roles);
+        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(username1).roles(roles);
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(headerAuthorization, token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(profileRoles)))
+                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.username").value(username1))

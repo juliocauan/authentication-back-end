@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.service.PasswordResetTokenService;
-import br.com.juliocauan.authentication.infrastructure.exception.ExpiredRecoveryTokenException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordResetTokenException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
@@ -65,7 +65,7 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Password Reset Token not found with token: " + token));
         if(passwordResetToken.isExpired())
-            throw new ExpiredRecoveryTokenException("Expired Password Reset Token!");
+            throw new PasswordResetTokenException("Expired Password Reset Token!");
         return passwordResetToken;
     }
     private final void updateUserPassword(User user, String newPassword) {

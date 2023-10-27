@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.ExpiredRecoveryTokenException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordResetTokenException;
 import br.com.juliocauan.authentication.infrastructure.exception.PasswordConfirmationException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
@@ -48,10 +48,10 @@ class PasswordResetTokenServiceTest extends TestContext {
     private UserEntity user;
 
     public PasswordResetTokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetTokenServiceImpl recoveryTokenService,
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetTokenServiceImpl passwordResetTokenService,
             PasswordResetTokenRepositoryImpl passwordResetTokenRepository, UserServiceImpl userService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.passwordResetTokenService = recoveryTokenService;
+        this.passwordResetTokenService = passwordResetTokenService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.userService = userService;
     }
@@ -140,7 +140,7 @@ class PasswordResetTokenServiceTest extends TestContext {
                 .token(tokenMock)
                 .user(user)
             .build());
-        ExpiredRecoveryTokenException exception = Assertions.assertThrowsExactly(ExpiredRecoveryTokenException.class,
+        PasswordResetTokenException exception = Assertions.assertThrowsExactly(PasswordResetTokenException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
         Assertions.assertEquals(expiredPasswordResetTokenException, exception.getMessage());
     }

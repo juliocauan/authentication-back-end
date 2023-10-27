@@ -13,20 +13,20 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-public class RecoveryTokenController implements PasswordResetApi {
+public class PasswordResetTokenController implements PasswordResetApi {
 
-    private final PasswordResetTokenServiceImpl resetPasswordService;
+    private final PasswordResetTokenServiceImpl passwordResetTokenService;
     
     @Override
     public ResponseEntity<OkMessage> _sendResetPasswordEmail(@Valid String username) {
-        resetPasswordService.buildTokenAndSendEmail(username);
+        passwordResetTokenService.buildTokenAndSendEmail(username);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body(String.format(
             "Email sent to %s successfully!", username)));
     }
 
     @Override
     public ResponseEntity<OkMessage> _resetPasswordByLink(@Valid PasswordMatch passwordMatch, String token) {
-        resetPasswordService.resetPassword(passwordMatch, token);
+        passwordResetTokenService.resetPassword(passwordMatch, token);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }
 

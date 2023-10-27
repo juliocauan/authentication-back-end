@@ -22,8 +22,8 @@ public class AdminController implements AdminApi {
 
     @Override
     public ResponseEntity<AlterUserRolesForm> _alterUserRole(@Valid AlterUserRolesForm alterUserRolesForm) {
-      AlterUserRolesForm response = adminService.alterUserRole(alterUserRolesForm);
-      return ResponseEntity.status(HttpStatus.OK).body(response);
+      adminService.alterUserRole(alterUserRolesForm);
+      return ResponseEntity.status(HttpStatus.OK).body(null);
     }
   
     @Override

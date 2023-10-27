@@ -9,12 +9,9 @@ import org.openapitools.model.EnumRole;
 import org.openapitools.model.UserInfo;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.model.Role;
-import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.service.application.AdminService;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.RoleMapper;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
@@ -22,29 +19,28 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class AdminServiceImpl extends AdminService {
+public final class AdminServiceImpl extends AdminService {
 
     private final UserServiceImpl userService;
     private final RoleServiceImpl roleService;
     
     @Override
-    public final AlterUserRolesForm alterUserRole(AlterUserRolesForm alterUserRolesForm) {
+    public final void alterUserRole(AlterUserRolesForm alterUserRolesForm) {
         UserEntity user = new UserEntity(userService.getByUsername(alterUserRolesForm.getUsername()));
-        Set<Role> roles = alterUserRolesForm.getRoles().stream().map(roleService::getByName).collect(Collectors.toSet());
+        Set<RoleEntity> roles = alterUserRolesForm.getRoles().stream()
+            .map(roleService::getByName)
+            .map(RoleEntity::new)
+            .collect(Collectors.toSet());
         
-        user.setRoles(roles.stream().map(RoleEntity::new).collect(Collectors.toSet()));
-        user = new UserEntity(userService.save(user));
-        
-        alterUserRolesForm
-            .username(user.getUsername())
-            .roles(RoleMapper.setRoleToSetEnumRole(user.getRoles()));
-        return alterUserRolesForm;
+        user.setRoles(roles);
+        userService.save(user);
     }
 
     @Override
     public final List<UserInfo> getUserInfos(String username, EnumRole role) {
-        List<User> users = userService.getAllUsers(username, role);
-        return users.stream().map(UserMapper::domainToUserInfo).collect(Collectors.toList());
+        return userService.getAllUsers(username, role).stream()
+            .map(UserMapper::domainToUserInfo)
+            .collect(Collectors.toList());
     }
     
 }

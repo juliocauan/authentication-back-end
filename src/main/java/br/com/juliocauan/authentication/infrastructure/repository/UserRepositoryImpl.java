@@ -18,8 +18,8 @@ public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEn
 
     @Override
     default List<User> findAllByUsernameContainsAndRole(String username, EnumRole role) {
-        List<UserEntity> users = findAll(Specification.where(
-            UserSpecification.usernameContains(username)
+        List<UserEntity> users = findAll(Specification
+            .where(UserSpecification.usernameContains(username)
             .and(UserSpecification.role(role))));
         List<User> list = new ArrayList<>();
         users.forEach(list::add);

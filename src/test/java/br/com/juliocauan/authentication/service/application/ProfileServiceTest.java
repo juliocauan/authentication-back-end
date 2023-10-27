@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidOldPasswordException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordConfirmationException;
+import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -106,7 +106,7 @@ class ProfileServiceTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(password)
                 .passwordConfirmation(newPassword));
-        PasswordConfirmationException confirmationException = Assertions.assertThrowsExactly(PasswordConfirmationException.class,
+        PasswordMatchException confirmationException = Assertions.assertThrowsExactly(PasswordMatchException.class,
             () -> profileService.alterPassword(passwordUpdateForm));
         Assertions.assertEquals(confirmationPasswordError, confirmationException.getMessage());
 
@@ -115,7 +115,7 @@ class ProfileServiceTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
-        InvalidOldPasswordException currentPasswordException = Assertions.assertThrowsExactly(InvalidOldPasswordException.class,
+        InvalidPasswordException currentPasswordException = Assertions.assertThrowsExactly(InvalidPasswordException.class,
             () -> profileService.alterPassword(passwordUpdateForm));
         Assertions.assertEquals(currentPasswordError, currentPasswordException.getMessage());
 

@@ -9,8 +9,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidOldPasswordException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordConfirmationException;
+import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
@@ -39,12 +39,12 @@ class PasswordServiceTest extends TestContext {
         Assertions.assertDoesNotThrow(() -> passwordService.checkPasswordConfirmation(passwordMatch));
         
         passwordMatch.password(password1).passwordConfirmation(password2);
-        PasswordConfirmationException exception = Assertions.assertThrowsExactly(PasswordConfirmationException.class,
+        PasswordMatchException exception = Assertions.assertThrowsExactly(PasswordMatchException.class,
             () -> passwordService.checkPasswordConfirmation(passwordMatch));
         Assertions.assertEquals(confirmationPasswordError, exception.getMessage());
 
         passwordMatch.password(password2).passwordConfirmation(password1);
-        exception = Assertions.assertThrowsExactly(PasswordConfirmationException.class,
+        exception = Assertions.assertThrowsExactly(PasswordMatchException.class,
             () -> passwordService.checkPasswordConfirmation(passwordMatch));
         Assertions.assertEquals(confirmationPasswordError, exception.getMessage());
     }
@@ -60,7 +60,7 @@ class PasswordServiceTest extends TestContext {
     void checkCurrentPassword() {
         String encodedPassword = passwordService.encode(password1);
         Assertions.assertDoesNotThrow(() -> passwordService.checkCurrentPassword(encodedPassword, password1));
-        InvalidOldPasswordException exception = Assertions.assertThrowsExactly(InvalidOldPasswordException.class,
+        InvalidPasswordException exception = Assertions.assertThrowsExactly(InvalidPasswordException.class,
             () -> passwordService.checkCurrentPassword(encodedPassword, password2));
         Assertions.assertEquals(currentPasswordError, exception.getMessage());
     }

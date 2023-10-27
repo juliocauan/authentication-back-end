@@ -4,8 +4,8 @@ import org.openapitools.model.PasswordMatch;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidOldPasswordException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordConfirmationException;
+import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -18,12 +18,12 @@ public final class PasswordService {
         String newPassword = passwordMatch.getPassword();
         String confirmationPassword = passwordMatch.getPasswordConfirmation();
         if(!newPassword.equals(confirmationPassword))
-            throw new PasswordConfirmationException("Confirmation and new password are different!");
+            throw new PasswordMatchException("Confirmation and new password are different!");
     }
 
     public final void checkCurrentPassword(String encodedPassword, String rawPassword){
         if(!encoder.matches(rawPassword, encodedPassword))
-            throw new InvalidOldPasswordException("Wrong current password!");
+            throw new InvalidPasswordException("Wrong current password!");
     }
 
     public final String encode(String password) {

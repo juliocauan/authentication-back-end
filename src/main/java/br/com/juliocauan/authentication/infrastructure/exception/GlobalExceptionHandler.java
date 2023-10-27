@@ -57,14 +57,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
-    @ExceptionHandler(InvalidOldPasswordException.class)
-    public ResponseEntity<Object> handleInvalidOldPassword(InvalidOldPasswordException ex){
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<Object> handleInvalidOldPassword(InvalidPasswordException ex){
         responseError = init(ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }
 
-    @ExceptionHandler(PasswordConfirmationException.class)
-    public ResponseEntity<Object> handlePasswordConfirmation(PasswordConfirmationException ex){
+    @ExceptionHandler(PasswordMatchException.class)
+    public ResponseEntity<Object> handlePasswordConfirmation(PasswordMatchException ex){
         responseError = init(ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
     }

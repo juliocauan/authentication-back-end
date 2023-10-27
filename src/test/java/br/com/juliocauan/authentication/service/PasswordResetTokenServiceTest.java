@@ -16,8 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordResetTokenException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordConfirmationException;
+import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetTokenException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
@@ -118,7 +118,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void resetPassword_error_checkPasswordConfirmation() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation("differentPassword");
-        PasswordConfirmationException exception = Assertions.assertThrowsExactly(PasswordConfirmationException.class,
+        PasswordMatchException exception = Assertions.assertThrowsExactly(PasswordMatchException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
         Assertions.assertEquals(passwordConfirmationException, exception.getMessage());
     }
@@ -140,7 +140,7 @@ class PasswordResetTokenServiceTest extends TestContext {
                 .token(tokenMock)
                 .user(user)
             .build());
-        PasswordResetTokenException exception = Assertions.assertThrowsExactly(PasswordResetTokenException.class,
+        ExpiredPasswordResetTokenException exception = Assertions.assertThrowsExactly(ExpiredPasswordResetTokenException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
         Assertions.assertEquals(expiredPasswordResetTokenException, exception.getMessage());
     }

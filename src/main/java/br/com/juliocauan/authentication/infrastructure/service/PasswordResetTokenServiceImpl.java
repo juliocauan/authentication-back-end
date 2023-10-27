@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.infrastructure.service;
 
 import java.util.Optional;
 
-import org.openapitools.model.NewPasswordForm;
+import org.openapitools.model.PasswordMatch;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
@@ -27,22 +27,18 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
     private final PasswordService passwordService;
 
     @Override
-    public void buildTokenAndSendEmail(String username) {
+    public final String buildTokenAndSendEmail(String username) {
         User user = userService.getByUsername(username);
         String token = createPasswordResetToken(user);
         sendEmail(username, token);
+        return token;
     }
 
     @Override
-    public void resetPassword(NewPasswordForm newPasswordForm, String token) {
-        passwordService.checkPasswordConfirmation(newPasswordForm.getNewPasswordMatch());
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
-            .orElseThrow(() -> new EntityNotFoundException("Recovery token not found with token: " + token));
-        if(passwordResetToken.isExpired())
-            throw new ExpiredRecoveryTokenException("Expired recovery token!");
-        UserEntity user = new UserEntity(passwordResetToken.getUser());
-        user.setPassword(newPasswordForm.getNewPasswordMatch().getPassword());
-        userService.save(user);
+    public final void resetPassword(PasswordMatch passwordMatch, String token) {
+        passwordService.checkPasswordConfirmation(passwordMatch);
+        PasswordResetToken passwordResetToken = checkToken(token);
+        updateUserPassword(passwordResetToken.getUser(), passwordMatch.getPassword());
         passwordResetTokenRepository.deleteById(passwordResetToken.getId());
     }
 
@@ -65,5 +61,16 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
         return String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
             token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
     }
-
+    private final PasswordResetToken checkToken(String token) {
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
+            .orElseThrow(() -> new EntityNotFoundException("Password Reset Token not found with token: " + token));
+        if(passwordResetToken.isExpired())
+            throw new ExpiredRecoveryTokenException("Expired Password Reset Token!");
+        return passwordResetToken;
+    }
+    private final void updateUserPassword(User user, String newPassword) {
+        UserEntity userEntity = new UserEntity(user);
+        userEntity.setPassword(passwordService.encode(newPassword));
+        userService.save(userEntity);
+    }
 }

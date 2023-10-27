@@ -1,8 +1,8 @@
 package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.PasswordResetApi;
-import org.openapitools.model.NewPasswordForm;
 import org.openapitools.model.OkMessage;
+import org.openapitools.model.PasswordMatch;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,8 +25,8 @@ public class RecoveryTokenController implements PasswordResetApi {
     }
 
     @Override
-    public ResponseEntity<OkMessage> _resetPasswordByLink(@Valid NewPasswordForm newPasswordForm, String token) {
-        resetPasswordService.resetPassword(newPasswordForm, token);
+    public ResponseEntity<OkMessage> _resetPasswordByLink(@Valid PasswordMatch passwordMatch, String token) {
+        resetPasswordService.resetPassword(passwordMatch, token);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }
 

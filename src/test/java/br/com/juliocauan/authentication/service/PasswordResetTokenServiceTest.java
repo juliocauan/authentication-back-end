@@ -58,7 +58,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     void givenNotPresentUsername_WhenGenerateLinkAndSendEmail_ThenUsernameNotFoundException() {
         UsernameNotFoundException exception = Assertions.assertThrowsExactly(
             UsernameNotFoundException.class,
-            () -> passwordResetTokenService.generateLinkAndSendEmail(invalidUsername));
+            () -> passwordResetTokenService.buildTokenAndSendEmail(invalidUsername));
 
         //TODO review tests that compares message errors
         Assertions.assertTrue(exception.getMessage().contentEquals(usernameNotFoundException));
@@ -67,13 +67,13 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void givenUsername_WhenGenerateLinkAndSendEmail_ThenVoid() {
         getUserRepository().save(user);
-        Assertions.assertDoesNotThrow(() -> passwordResetTokenService.generateLinkAndSendEmail(user.getUsername()));
+        Assertions.assertDoesNotThrow(() -> passwordResetTokenService.buildTokenAndSendEmail(user.getUsername()));
     }
 
     @Test
     void givenUsernameWithNoToken_WhenGenerateLinkAndSendEmail_ThenCreateRecoveryToken() {
         getUserRepository().save(user);
-        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        passwordResetTokenService.buildTokenAndSendEmail(user.getUsername());
         PasswordResetToken token = passwordResetTokenRepository.findByUser(user).get();
         Assertions.assertTrue(passwordResetTokenRepository.findByToken(token.getToken()).isPresent());
     }
@@ -81,9 +81,9 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void givenUsernameWithToken_WhenGenerateLinkAndSendEmail_ThenDeletePreviousToken() {
         getUserRepository().save(user);
-        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        passwordResetTokenService.buildTokenAndSendEmail(user.getUsername());
         PasswordResetToken previousToken = passwordResetTokenRepository.findByUser(user).get();
-        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        passwordResetTokenService.buildTokenAndSendEmail(user.getUsername());
         PasswordResetToken newToken = passwordResetTokenRepository.findByUser(user).get();
         Assertions.assertNotEquals(newToken, previousToken);
         Assertions.assertFalse(passwordResetTokenRepository.findByToken(previousToken.getToken()).isPresent());
@@ -92,7 +92,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void givenUsername_WhenGenerateLinkAndSendEmail_ThenGenerateToken() {
         getUserRepository().save(user);
-        passwordResetTokenService.generateLinkAndSendEmail(user.getUsername());
+        passwordResetTokenService.buildTokenAndSendEmail(user.getUsername());
         PasswordResetToken token = passwordResetTokenRepository.findByUser(user).get();
         Assertions.assertEquals(tokenLength, token.getToken().length());
     }

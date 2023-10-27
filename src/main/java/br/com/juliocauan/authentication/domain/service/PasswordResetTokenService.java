@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.domain.service;
 
 import org.openapitools.model.NewPasswordForm;
 
-public interface PasswordResetTokenService {
-    void generateLinkAndSendEmail(String username);
-    void resetPassword(NewPasswordForm newPasswordForm, String token);
+public abstract class PasswordResetTokenService {
+    public abstract void buildTokenAndSendEmail(String username);
+    public abstract void resetPassword(NewPasswordForm newPasswordForm, String token);
 }

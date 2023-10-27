@@ -19,7 +19,7 @@ public class RecoveryTokenController implements PasswordResetApi {
     
     @Override
     public ResponseEntity<OkMessage> _sendResetPasswordEmail(@Valid String username) {
-        resetPasswordService.generateLinkAndSendEmail(username);
+        resetPasswordService.buildTokenAndSendEmail(username);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body(String.format(
             "Email sent to %s successfully!", username)));
     }

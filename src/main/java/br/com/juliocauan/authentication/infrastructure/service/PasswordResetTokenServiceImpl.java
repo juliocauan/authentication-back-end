@@ -6,6 +6,7 @@ import org.openapitools.model.NewPasswordForm;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.service.PasswordResetTokenService;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredRecoveryTokenException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
@@ -18,7 +19,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
+public final class PasswordResetTokenServiceImpl extends PasswordResetTokenService {
 
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
@@ -26,9 +27,10 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
     private final PasswordService passwordService;
 
     @Override
-    public void generateLinkAndSendEmail(String username) {
-        UserEntity user = new UserEntity(userService.getByUsername(username));
-        sendEmail(createRecoveryToken(user));
+    public void buildTokenAndSendEmail(String username) {
+        User user = userService.getByUsername(username);
+        String token = createPasswordResetToken(user);
+        sendEmail(username, token);
     }
 
     @Override
@@ -44,29 +46,24 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService 
         passwordResetTokenRepository.deleteById(passwordResetToken.getId());
     }
 
-    private PasswordResetTokenEntity createRecoveryToken(UserEntity user) {
-        deletePreviousRecoveryToken(user);
-        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user));
+    private final String createPasswordResetToken(User user) {
+        deletePreviousPasswordResetToken(user);
+        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user)).getToken();
     }
-
-    private void deletePreviousRecoveryToken(UserEntity user) {
+    private final void deletePreviousPasswordResetToken(User user) {
         Optional<PasswordResetToken> oldToken = passwordResetTokenRepository.findByUser(user);
         if(oldToken.isPresent())
             passwordResetTokenRepository.deleteById(oldToken.get().getId());
     }
-
-    private void sendEmail(PasswordResetTokenEntity resetToken) {
+    private final void sendEmail(String username, String token) {
         emailService.sendEmail(
-            resetToken.getUser().getUsername(), 
+            username, 
             "Reset your password!", 
-            emailBody(resetToken.getToken()));
+            buildEmailBody(token));
     }
-
-    private String emailBody(String token) {
-        //TODO review this URL
-        String url = "http://localhost:4200/forgotPassword/";
-        return String.format("To reset your password, click on the following link: %s%s %n%n This link will last %d minutes",
-            url, token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
+    private final String buildEmailBody(String token) {
+        return String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
+            token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
     }
 
 }

@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.mail.MailSendException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,20 +23,17 @@ import jakarta.persistence.EntityExistsException;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private ApiError responseError;
-
-    private ApiError init(Exception ex){
-        ApiError error = new ApiError();
-        error.setTimestamp(OffsetDateTime.now());
-        error.setMessage(ex.getMessage());
-        return error;
+    private ApiError standardError(Exception ex){
+        return new ApiError()
+            .timestamp(OffsetDateTime.now())
+            .message(ex.getMessage());
     }
 
     @Override
     @Nullable
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
             HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        responseError = init(ex);
+        ApiError responseError = standardError(ex);
 
         List<String> fieldErrors = ex.getBindingResult()
             .getFieldErrors()
@@ -53,38 +49,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<Object> handleEntityExists(EntityExistsException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<Object> handleInvalidOldPassword(InvalidPasswordException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
     @ExceptionHandler(PasswordMatchException.class)
     public ResponseEntity<Object> handlePasswordConfirmation(PasswordMatchException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseError);
-    }
-
-    @ExceptionHandler(MailSendException.class)
-    public ResponseEntity<Object> handleMailSend(MailSendException ex){
-        responseError = init(ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseError);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));
     }
 
 }

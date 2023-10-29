@@ -42,17 +42,13 @@ public final class JwtServiceImpl extends JwtService {
   @Override
   public final void validateAndRegisterNewUser(String username, String password, EnumRole role) {
     userService.checkDuplicatedUsername(username);
-    UserEntity userEntity = buildUserEntity(username, password, role);
-    userService.save(userEntity);
-  }
-
-  private final UserEntity buildUserEntity(String username, String password, EnumRole role) {
-    return UserEntity.builder()
-      .id(null)
-      .username(username)
-      .password(passwordService.encode(password))
-      .roles(buildRoleSet(role))
-    .build();
+    userService.save(UserEntity
+      .builder()
+        .id(null)
+        .username(username)
+        .password(passwordService.encode(password))
+        .roles(buildRoleSet(role))
+      .build());
   }
 
   private final Set<RoleEntity> buildRoleSet(EnumRole formRole) {

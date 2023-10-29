@@ -9,10 +9,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,64 +24,71 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class AuthControllerTest extends TestContext {
 
-    private final AuthController authController;
+    private final PasswordEncoder encoder;
 
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
 
     private final String password = "1234567890";
-    private final String username1 = "test1@email.com";
-    private final String username2 = "test2@email.com";
+    private final String username = "test1@email.com";
 
-    private final String messageOk = "User registered successfully!";
+    private final String okMessage = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
-    private final String validationError = "Input validation error!";
-    private final String badCredentialsError = "Bad credentials";
+    private final String errorValidation = "Input validation error!";
+    private final String errorBadCredentials = "Bad credentials";
 
     private final SigninForm signinForm = new SigninForm();
     private final SignupForm signupForm = new SignupForm();
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AuthController authController) {
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.authController = authController;
+        this.encoder = encoder;
     }
 
     @BeforeEach
     public void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username1).password(password).role(EnumRole.USER);
-        signinForm.username(username1).password(password);
+        signupForm.username(username).password(password);
+        signinForm.username(username).password(password);
+    }
+
+    private final void saveUser() {
+        getUserRepository().save(UserEntity.builder()
+            .password(encoder.encode(password))
+            .username(username)
+            .roles(null)
+        .build());
     }
 
     @Test
-    void givenInvalidSignupForm_WhenSignupUser_Then400AndResponse() throws Exception{
-        signupForm.username("aaaaaaaaaaaaa").password("12345").role(null);
-        getMockMvc().perform(
-            post(urlSignup)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signupForm)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(validationError))
-            .andExpect(jsonPath("$.timestamp").isNotEmpty())
-            .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
-    }
-
-    @Test
-    void givenSignupForm_WhenSignupUser_Then200AndMessage() throws Exception{
+    void signupUser() throws Exception{
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.body").value(messageOk));
+            .andExpect(jsonPath("$.body").value(okMessage));
     }
 
     @Test
-    void givenDuplicatedUsername_WhenSignupUser_ThenEntityExistsException() throws Exception{
-        getUserRepository().save(UserEntity.builder().password(password).username(username1).roles(null).build());
+    void signupUser_error_invalidSignupForm() throws Exception{
+        signupForm.username("aaaaaaaaaaaaa").password("12345");
+        getMockMvc().perform(
+            post(urlSignup)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signupForm)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value(errorValidation))
+            .andExpect(jsonPath("$.timestamp").isNotEmpty())
+            .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
+    }
+
+    @Test
+    void signupUser_error_duplicatedUsername() throws Exception{
+        saveUser();
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -94,7 +101,20 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void givenInvalidSigninForm_WhenSigninUser_Then400AndResponse() throws Exception{
+    void signinUser() throws Exception{
+        saveUser();
+        getMockMvc().perform(
+            post(urlSignin)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(signinForm)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token", hasLength(144)))
+            .andExpect(jsonPath("$.type").value("Bearer"));
+    }
+
+    @Test
+    void signinUser_error_invalidSigninForm() throws Exception{
         signinForm.username("aaaaaaaaaaaaa").password("12345");
         getMockMvc().perform(
             post(urlSignin)
@@ -102,47 +122,22 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(validationError))
+            .andExpect(jsonPath("$.message").value(errorValidation))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
     }
 
     @Test
-    void givenSigninForm_WhenSigninUser_ThenJwtResponseWithUserRole() throws Exception{
-        authController._signupUser(signupForm);
-        getMockMvc().perform(
-            post(urlSignin)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signinForm)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(144)))
-            .andExpect(jsonPath("$.type").value("Bearer"));
-    }
-
-    @Test
-    void givenCustomSigninForm_WhenSigninUser_ThenJwtResponseWithAdminRole() throws Exception{
-        authController._signupUser(signupForm.role(EnumRole.ADMIN));
-        getMockMvc().perform(
-            post(urlSignin)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signinForm)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(144)))
-            .andExpect(jsonPath("$.type").value("Bearer"));
-    }
-
-    @Test
-    void givenNotPresentUsernameSigninForm_WhenSigninUser_ThenUnauthorized() throws Exception{
-        signinForm.username(username2).password(password);
+    void signinUser_error_badCredentials() throws Exception{
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(badCredentialsError));
+            .andExpect(jsonPath("$.message").value(errorBadCredentials))
+            .andExpect(jsonPath("$.timestamp").isNotEmpty())
+            .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
 
 }

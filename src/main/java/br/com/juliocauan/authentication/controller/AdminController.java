@@ -5,6 +5,7 @@ import java.util.List;
 import org.openapitools.api.AdminApi;
 import org.openapitools.model.AlterUserRolesForm;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.OkMessage;
 import org.openapitools.model.UserInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +22,9 @@ public class AdminController implements AdminApi {
     private final AdminServiceImpl adminService;
 
     @Override
-    public ResponseEntity<AlterUserRolesForm> _alterUserRole(@Valid AlterUserRolesForm alterUserRolesForm) {
+    public ResponseEntity<OkMessage> _alterUserRole(@Valid AlterUserRolesForm alterUserRolesForm) {
       adminService.alterUserRole(alterUserRolesForm);
-      return ResponseEntity.status(HttpStatus.OK).body(null);
+      return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Patched User Roles successfully!"));
     }
   
     @Override

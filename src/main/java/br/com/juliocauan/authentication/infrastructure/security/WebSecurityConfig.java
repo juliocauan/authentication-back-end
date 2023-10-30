@@ -83,7 +83,12 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http.cors(withDefaults()).csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/signin").permitAll()
+                .requestMatchers(HttpMethod.POST,
+                        "/api/auth/signup",
+                        "/api/auth/signin",
+                        "/api/auth/forgotpassword")
+                    .permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/api/auth/forgotpassword/**").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/api/auth/admin").hasAuthority(admin)
                 .requestMatchers(HttpMethod.GET, "/api/auth/admin").hasAuthority(admin)
             .anyRequest().authenticated());

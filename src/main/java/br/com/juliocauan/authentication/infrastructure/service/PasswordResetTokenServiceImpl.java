@@ -41,26 +41,30 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
         updateUserPassword(passwordResetToken.getUser(), passwordMatch.getPassword());
         passwordResetTokenRepository.deleteById(passwordResetToken.getId());
     }
-
-    private final String createPasswordResetToken(User user) {
-        deletePreviousPasswordResetToken(user);
-        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user)).getToken();
-    }
+    
     private final void deletePreviousPasswordResetToken(User user) {
         Optional<PasswordResetToken> oldToken = passwordResetTokenRepository.findByUser(user);
         if(oldToken.isPresent())
             passwordResetTokenRepository.deleteById(oldToken.get().getId());
     }
+
+    private final String createPasswordResetToken(User user) {
+        deletePreviousPasswordResetToken(user);
+        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user)).getToken();
+    }
+
+    private final String buildEmailBody(String token) {
+        return String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
+            token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
+    }
+
     private final void sendEmail(String username, String token) {
         emailService.sendEmail(
             username, 
             "Reset your password!", 
             buildEmailBody(token));
     }
-    private final String buildEmailBody(String token) {
-        return String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
-            token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
-    }
+
     private final PasswordResetToken checkToken(String token) {
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Password Reset Token not found with token: " + token));
@@ -68,6 +72,7 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
             throw new ExpiredPasswordResetTokenException("Expired Password Reset Token!");
         return passwordResetToken;
     }
+
     private final void updateUserPassword(User user, String newPassword) {
         UserEntity userEntity = new UserEntity(user);
         userEntity.setPassword(passwordService.encode(newPassword));

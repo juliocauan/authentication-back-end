@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-    private void authenticateUser(String token, HttpServletRequest request) {
+    private final void authenticateUser(String token, HttpServletRequest request) {
 		String username = jwtProvider.getUsernameFromJWT(token);
 		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-	private String getJwtFromRequest(HttpServletRequest request) {
+	private final String getJwtFromRequest(HttpServletRequest request) {
 		String token = request.getHeader("Authorization");
         if(token == null || token.isEmpty() || !token.startsWith("Bearer ")) return null;
         return token.substring(7);

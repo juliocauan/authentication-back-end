@@ -40,7 +40,7 @@ class ProfileControllerTest extends TestContext {
     private final String updatedPasswordMessage = "Password updated successfully!";
     private final String errorPassword = "Wrong current password!";
     private final String errorPasswordMatch = "Confirmation and new password are different!";
-    private final String errorNotAllowed = "Not Allowed!";
+    private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     public ProfileControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, JwtServiceImpl jwtService, PasswordEncoder encoder) {
@@ -82,7 +82,7 @@ class ProfileControllerTest extends TestContext {
             get(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(errorNotAllowed));
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test
@@ -108,7 +108,7 @@ class ProfileControllerTest extends TestContext {
             patch(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(errorNotAllowed));
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.juliocauan</groupId>
 	<artifactId>authentication</artifactId>
-	<version>0.7.4</version>
+	<version>0.8.1</version>
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>

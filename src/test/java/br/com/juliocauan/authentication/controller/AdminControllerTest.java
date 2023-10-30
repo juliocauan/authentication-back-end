@@ -45,7 +45,7 @@ class AdminControllerTest extends TestContext {
     
     private final String okAlterUserRole = "Patched User Roles successfully!";
     private final String errorUserNotFound = "User Not Found with username: ";
-    private final String errorNotAllowed = "Not Allowed!";
+    private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     public AdminControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, JwtServiceImpl jwtService, PasswordEncoder encoder) {
@@ -98,7 +98,7 @@ class AdminControllerTest extends TestContext {
         getMockMvc().perform(
             patch(urlAdmin))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(errorNotAllowed));
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test
@@ -199,7 +199,7 @@ class AdminControllerTest extends TestContext {
         getMockMvc().perform(
             get(urlAdmin))
             .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(errorNotAllowed));
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test

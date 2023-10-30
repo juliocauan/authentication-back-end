@@ -15,10 +15,10 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtProvider {
 
-	private static final long EXPIRATION = 86400000L;
+	private static final long EXPIRATION = (20 * 60 * 1000);
 	private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-	public String generateToken(Authentication authentication) {
+	public final String generateToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + EXPIRATION);
@@ -30,13 +30,13 @@ public class JwtProvider {
 				.compact();
 	}
 
-	public String getUsernameFromJWT(String token) {
+	public final String getUsernameFromJWT(String token) {
 		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
 	}
 
-	public boolean isTokenValid(String authToken) {
+	public final boolean isTokenValid(String token) {
 		try {
-			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
+			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
 		} catch (Exception e) {
 			return false;

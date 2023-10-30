@@ -34,6 +34,8 @@ spring:
                     starttls:
                         enable: true
 
+domain: http://localhost:4200
+
 test:
     mail:
         receiver: jcam.test01@gmail.com

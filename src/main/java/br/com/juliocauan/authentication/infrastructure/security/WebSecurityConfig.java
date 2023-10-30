@@ -1,11 +1,10 @@
 package br.com.juliocauan.authentication.infrastructure.security;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.openapitools.model.EnumRole;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,11 +30,7 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(
-    //TODO review
-    // securedEnabled = true,
-    // jsr250Enabled = true,
-    prePostEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
 public class WebSecurityConfig {
     
@@ -43,8 +38,11 @@ public class WebSecurityConfig {
     private final AuthEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
     
-    private final String admin = EnumRole.ADMIN.getValue();
-    
+    private static final String URI_ROOT = "/api/auth";
+    private static final String URI_SIGNUP = URI_ROOT + "/signup";
+    private static final String URI_SIGNIN = URI_ROOT + "/signin";
+    private static final String URI_FORGOT_PASSWORD = URI_ROOT + "/forgotpassword/**";
+
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -64,11 +62,11 @@ public class WebSecurityConfig {
     }
     
     @Bean
-    public CorsFilter corsFilter() {
+    CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        config.setAllowedOrigins(Collections.singletonList("${domain}"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         source.registerCorsConfiguration("/**", config);
@@ -84,13 +82,11 @@ public class WebSecurityConfig {
         http.cors(withDefaults()).csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST,
-                        "/api/auth/signup",
-                        "/api/auth/signin",
-                        "/api/auth/forgotpassword")
+                        URI_SIGNUP,
+                        URI_SIGNIN,
+                        URI_FORGOT_PASSWORD)
                     .permitAll()
-                .requestMatchers(HttpMethod.PATCH, "/api/auth/forgotpassword/**").permitAll()
-                .requestMatchers(HttpMethod.PATCH, "/api/auth/admin").hasAuthority(admin)
-                .requestMatchers(HttpMethod.GET, "/api/auth/admin").hasAuthority(admin)
+                .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD).permitAll()
             .anyRequest().authenticated());
         return http.build();
     }

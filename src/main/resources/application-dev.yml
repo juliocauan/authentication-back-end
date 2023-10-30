@@ -7,3 +7,4 @@ spring:
         username: ${DB_USER_DEV:root}
         password: ${DB_PASSWORD_DEV:secret}
         
+domain: http://localhost:4200

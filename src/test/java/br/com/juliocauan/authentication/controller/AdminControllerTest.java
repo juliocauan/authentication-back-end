@@ -103,16 +103,25 @@ class AdminControllerTest extends TestContext {
 
     @Test
     void alterUserRole_error_forbidden() throws Exception{
+        Set<EnumRole> roles = new HashSet<>();
+        for(EnumRole role : EnumRole.values()) roles.add(role);
+
+        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(roles);
         buildAndSaveUser(usernameManager, EnumRole.MANAGER);
         getMockMvc().perform(
             patch(urlAdmin)
-                .header(authorizationHeader, getToken(usernameManager)))
+                .header(authorizationHeader, getToken(usernameManager))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
             .andExpect(status().isForbidden());
         
+        alterUserRolesForm.username(usernameUser);
         buildAndSaveUser(usernameUser, EnumRole.USER);
         getMockMvc().perform(
             patch(urlAdmin)
-                .header(authorizationHeader, getToken(usernameUser)))
+                .header(authorizationHeader, getToken(usernameUser))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
             .andExpect(status().isForbidden());
     }
 

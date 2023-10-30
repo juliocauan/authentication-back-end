@@ -15,12 +15,12 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.service.application.JwtServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 import jakarta.persistence.EntityExistsException;
 
-class JwtServiceTest extends TestContext {
+class AuthenticationServiceTest extends TestContext {
 
-    private final JwtServiceImpl jwtService;
+    private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
     private final String password = "12345678";
@@ -28,10 +28,10 @@ class JwtServiceTest extends TestContext {
     private final String errorUsernameDuplicated = "Username is already taken!";
     private final String errorBadCredentials = "Bad credentials";
 
-    public JwtServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, JwtServiceImpl jwtService, PasswordEncoder encoder) {
+    public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.jwtService = jwtService;
+        this.authenticationService = authenticationService;
         this.encoder = encoder;
     }
 
@@ -42,7 +42,7 @@ class JwtServiceTest extends TestContext {
 
     @Test
     void validateAndRegisterNewUser(){
-        Assertions.assertDoesNotThrow(() -> jwtService.validateAndRegisterNewUser(username, password, EnumRole.MANAGER));
+        Assertions.assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, EnumRole.MANAGER));
         Assertions.assertEquals(1, getUserRepository().findAll().size());
 
         UserEntity user = getUserRepository().findAll().get(0);
@@ -53,7 +53,7 @@ class JwtServiceTest extends TestContext {
 
     @Test
     void validateAndRegisterNewUser_NullRole(){
-        Assertions.assertDoesNotThrow(() -> jwtService.validateAndRegisterNewUser(username, password, null));
+        Assertions.assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, null));
 
         UserEntity user = getUserRepository().findAll().get(0);
         Assertions.assertEquals(EnumRole.USER, user.getRoles().iterator().next().getName());
@@ -69,14 +69,14 @@ class JwtServiceTest extends TestContext {
         .build());
 
         EntityExistsException exception = Assertions.assertThrowsExactly(EntityExistsException.class,
-            () -> jwtService.validateAndRegisterNewUser(username, password, null));
+            () -> authenticationService.validateAndRegisterNewUser(username, password, null));
         Assertions.assertEquals(errorUsernameDuplicated, exception.getMessage());
     }
 
     @Test
     void authenticate(){
-        jwtService.validateAndRegisterNewUser(username, password, null);
-        JWTResponse response = jwtService.authenticate(username, password);
+        authenticationService.validateAndRegisterNewUser(username, password, null);
+        JWTResponse response = authenticationService.authenticate(username, password);
         Assertions.assertEquals("Bearer", response.getType());
         Assertions.assertNotNull(response.getToken());
     }
@@ -84,7 +84,7 @@ class JwtServiceTest extends TestContext {
     @Test
     void authenticate_BadCredentialsError(){
         BadCredentialsException exception = Assertions.assertThrowsExactly(BadCredentialsException.class,
-            () -> jwtService.authenticate(username, password));
+            () -> authenticationService.authenticate(username, password));
         Assertions.assertEquals(errorBadCredentials, exception.getMessage());
     }
 

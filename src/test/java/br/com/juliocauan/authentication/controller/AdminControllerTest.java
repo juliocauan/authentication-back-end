@@ -27,11 +27,11 @@ import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.service.application.JwtServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 
 class AdminControllerTest extends TestContext {
 
-    private final JwtServiceImpl jwtService;
+    private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
     private final String urlAdmin = "/api/auth/admin";
@@ -48,9 +48,9 @@ class AdminControllerTest extends TestContext {
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     public AdminControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, JwtServiceImpl jwtService, PasswordEncoder encoder) {
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.jwtService = jwtService;
+        this.authenticationService = authenticationService;
         this.encoder = encoder;
     }
 
@@ -73,7 +73,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final String getToken(String username){
-        JWTResponse jwt = jwtService.authenticate(username, password);
+        JWTResponse jwt = authenticationService.authenticate(username, password);
         return jwt.getType() + " " + jwt.getToken();
     }
 

@@ -3,8 +3,10 @@ package br.com.juliocauan.authentication.model;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -36,7 +38,7 @@ class PasswordResetTokenEntityTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
         passwordResetTokenRepository.deleteAll();
         userEntity = getUserRepository().save(UserEntity.builder()
@@ -54,21 +56,21 @@ class PasswordResetTokenEntityTest extends TestContext {
     @Test
     void deleteCascadeDoesNotDeleteUser() {
         passwordResetTokenRepository.deleteAll();
-        Assertions.assertEquals(userEntity, getUserRepository().findById(passwordResetToken.getUser().getId()).get());
+        assertEquals(userEntity, getUserRepository().findById(passwordResetToken.getUser().getId()).get());
     }
 
     @Test
     void ifDeleteUser_ThenDeletePasswordResetToken() {
-        Assertions.assertTrue(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
+        assertTrue(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
         getUserRepository().deleteById(userEntity.getId());
-        Assertions.assertFalse(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
+        assertFalse(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
     }
 
     @Test
     void isExpired() {
-        Assertions.assertFalse(passwordResetToken.isExpired());
+        assertFalse(passwordResetToken.isExpired());
         passwordResetToken.setExpireDate(LocalDateTime.now().minusSeconds(1));
-        Assertions.assertTrue(passwordResetToken.isExpired());
+        assertTrue(passwordResetToken.isExpired());
     }
     
 }

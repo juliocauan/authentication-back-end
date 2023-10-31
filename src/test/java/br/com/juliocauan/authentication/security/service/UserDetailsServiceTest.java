@@ -3,8 +3,11 @@ package br.com.juliocauan.authentication.security.service;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,7 +47,7 @@ class UserDetailsServiceTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .password(password)
@@ -57,14 +60,14 @@ class UserDetailsServiceTest extends TestContext {
     void givenPresentUsername_WhenLoadUserByUsername_ThenUserDetails(){
         getUserRepository().save(entity);
         UserDetails user = userDetailsService.loadUserByUsername(username);
-        Assertions.assertEquals(username, user.getUsername());
-        Assertions.assertEquals(password, user.getPassword());
-        Assertions.assertEquals(roles.size(), user.getAuthorities().size());
+        assertEquals(username, user.getUsername());
+        assertEquals(password, user.getPassword());
+        assertEquals(roles.size(), user.getAuthorities().size());
     }
     
     @Test
     void givenNotPresentUsername_WhenLoadUserByUsername_ThenUsernameNotFoundException(){
-        Assertions.assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username), errorUsernameNotFound);
+        assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username), errorUsernameNotFound);
     }
 
 }

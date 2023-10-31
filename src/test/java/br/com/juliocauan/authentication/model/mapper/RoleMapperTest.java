@@ -5,8 +5,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.openapitools.model.EnumRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
@@ -40,7 +41,7 @@ class RoleMapperTest extends TestContext {
         Set<SimpleGrantedAuthority> authorities = Stream.of(EnumRole.values())
             .map(role -> new SimpleGrantedAuthority(role.getValue())).collect(Collectors.toSet());
         Set<EnumRole> roles = Stream.of(EnumRole.values()).collect(Collectors.toSet());
-        Assertions.assertEquals(roles, RoleMapper.authoritiesToEnumRole(authorities));
+        assertEquals(roles, RoleMapper.authoritiesToEnumRole(authorities));
     }
 
     @Test
@@ -48,7 +49,7 @@ class RoleMapperTest extends TestContext {
         Set<EnumRole> expectedSet = Stream.of(EnumRole.values()).collect(Collectors.toSet());
         Set<Role> roles = new HashSet<>();
         for(EnumRole name : EnumRole.values()) roles.add(getRole(name));
-        Assertions.assertEquals(expectedSet, RoleMapper.setRoleToSetEnumRole(roles));
+        assertEquals(expectedSet, RoleMapper.setRoleToSetEnumRole(roles));
     }
     
 }

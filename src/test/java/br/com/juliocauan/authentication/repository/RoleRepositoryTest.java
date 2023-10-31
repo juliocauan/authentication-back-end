@@ -1,10 +1,12 @@
 package br.com.juliocauan.authentication.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
@@ -21,12 +23,12 @@ class RoleRepositoryTest extends TestContext {
     @Test
     void givenPresentName_WhenFindByName_ThenRole(){
         RoleEntity expectedEntity = getRoleRepository().findAll().get(0);
-        Assertions.assertEquals(expectedEntity, getRoleRepository().getByName(expectedEntity.getName()).get());
+        assertEquals(expectedEntity, getRoleRepository().getByName(expectedEntity.getName()).get());
     }
 
     @Test
     void givenNotPresentName_WhenFindByName_ThenRoleNotPresent(){
-        Assertions.assertFalse(getRoleRepository().getByName(null).isPresent());
+        assertFalse(getRoleRepository().getByName(null).isPresent());
     }
 
 }

@@ -2,8 +2,11 @@ package br.com.juliocauan.authentication.repository;
 
 import java.util.HashSet;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,7 +50,7 @@ class PasswordResetTokenRepositoryTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         passwordResetTokenRepository.deleteAll();
         expectedEntity = passwordResetTokenRepository.save(PasswordResetTokenEntity.builder()
             .id(null)
@@ -58,22 +61,22 @@ class PasswordResetTokenRepositoryTest extends TestContext {
 
     @Test
     void givenPresentToken_WhenFindByToken_ThenPasswordResetToken() {
-        Assertions.assertEquals(expectedEntity, passwordResetTokenRepository.getByToken(tokenPresent).get());
+        assertEquals(expectedEntity, passwordResetTokenRepository.getByToken(tokenPresent).get());
     }
 
     @Test
     void givenNotPresentToken_WhenFindByToken_ThenPasswordResetTokenNotPresent() {
-        Assertions.assertFalse(passwordResetTokenRepository.getByToken(tokenNotPresent).isPresent());
+        assertFalse(passwordResetTokenRepository.getByToken(tokenNotPresent).isPresent());
     }
 
     @Test
     void givenPresentUser_WhenFindByUser_ThenPasswordResetToken() {
-        Assertions.assertEquals(expectedEntity, passwordResetTokenRepository.getByUser(userEntity).get());
+        assertEquals(expectedEntity, passwordResetTokenRepository.getByUser(userEntity).get());
     }
 
     @Test
     void givenNotPresentUser_WhenFindByUser_ThenPasswordResetTokenNotPresent() {
-        Assertions.assertFalse(passwordResetTokenRepository.getByUser(null).isPresent());
+        assertFalse(passwordResetTokenRepository.getByUser(null).isPresent());
     }
     
 }

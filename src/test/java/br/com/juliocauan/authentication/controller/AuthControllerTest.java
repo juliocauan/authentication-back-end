@@ -47,7 +47,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
         signupForm.username(username).password(password);
         signinForm.username(username).password(password);

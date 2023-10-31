@@ -1,6 +1,5 @@
 package br.com.juliocauan.authentication.service.application;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
@@ -10,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
@@ -36,27 +37,27 @@ class AuthenticationServiceTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
     }
 
     @Test
     void validateAndRegisterNewUser(){
-        Assertions.assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, EnumRole.MANAGER));
-        Assertions.assertEquals(1, getUserRepository().findAll().size());
+        assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, EnumRole.MANAGER));
+        assertEquals(1, getUserRepository().findAll().size());
 
         UserEntity user = getUserRepository().findAll().get(0);
-        Assertions.assertEquals(username, user.getUsername());
-        Assertions.assertTrue(encoder.matches(password, user.getPassword()));
-        Assertions.assertEquals(EnumRole.MANAGER, user.getRoles().iterator().next().getName());
+        assertEquals(username, user.getUsername());
+        assertTrue(encoder.matches(password, user.getPassword()));
+        assertEquals(EnumRole.MANAGER, user.getRoles().iterator().next().getName());
     }
 
     @Test
     void validateAndRegisterNewUser_NullRole(){
-        Assertions.assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, null));
+        assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, null));
 
         UserEntity user = getUserRepository().findAll().get(0);
-        Assertions.assertEquals(EnumRole.USER, user.getRoles().iterator().next().getName());
+        assertEquals(EnumRole.USER, user.getRoles().iterator().next().getName());
     }
     
     @Test
@@ -68,24 +69,24 @@ class AuthenticationServiceTest extends TestContext {
             .roles(null)
         .build());
 
-        EntityExistsException exception = Assertions.assertThrowsExactly(EntityExistsException.class,
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
             () -> authenticationService.validateAndRegisterNewUser(username, password, null));
-        Assertions.assertEquals(errorUsernameDuplicated, exception.getMessage());
+        assertEquals(errorUsernameDuplicated, exception.getMessage());
     }
 
     @Test
     void authenticate(){
         authenticationService.validateAndRegisterNewUser(username, password, null);
         JWTResponse response = authenticationService.authenticate(username, password);
-        Assertions.assertEquals("Bearer", response.getType());
-        Assertions.assertNotNull(response.getToken());
+        assertEquals("Bearer", response.getType());
+        assertNotNull(response.getToken());
     }
 
     @Test
     void authenticate_BadCredentialsError(){
-        BadCredentialsException exception = Assertions.assertThrowsExactly(BadCredentialsException.class,
+        BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
             () -> authenticationService.authenticate(username, password));
-        Assertions.assertEquals(errorBadCredentials, exception.getMessage());
+        assertEquals(errorBadCredentials, exception.getMessage());
     }
 
 }

@@ -5,19 +5,19 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.4</version>
+		<version>3.1.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.juliocauan</groupId>
 	<artifactId>authentication</artifactId>
-	<version>0.11.0</version>
+	<version>0.11.1</version>
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>
 		<!-- TODO atualizar versões -->
 		<java.version>17</java.version>
 		<jjwt.version>0.11.5</jjwt.version>
-		<security.version>6.0.2</security.version>
+		<security.version>6.1.5</security.version>
 		<jackson.version>0.2.6</jackson.version>
 		<jacoco.version>0.8.8</jacoco.version>
 		<openapi.version>6.2.1</openapi.version>

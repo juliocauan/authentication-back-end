@@ -58,8 +58,8 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
     }
     
     private final String buildEmailBody(String token) {
-        return String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
-            token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
+        return "To reset your password, use the following token: %s %n%n This token will last %d minutes".formatted(
+                token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
     }
 
     private final PasswordResetToken checkToken(String token) {

@@ -1,11 +1,13 @@
 package br.com.juliocauan.authentication.service;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
@@ -26,14 +28,13 @@ class RoleServiceTest extends TestContext {
     @Test
     void givenValidName_WhenGetByName_ThenEqualsName(){
         for(EnumRole name : EnumRole.values())
-            Assertions.assertEquals(name, roleService.getByName(name).getName());
+            assertEquals(name, roleService.getByName(name).getName());
     }
 
     @Test
     void givenInvalidName_WhenGetByName_ThenThrowsEntityNotFoundException(){
-        EntityNotFoundException expection = Assertions
-            .assertThrowsExactly(EntityNotFoundException.class, () -> roleService.getByName(null));
-        Assertions.assertEquals("Role Not Found with name: null", expection.getMessage());
+        EntityNotFoundException expection = assertThrowsExactly(EntityNotFoundException.class, () -> roleService.getByName(null));
+        assertEquals("Role Not Found with name: null", expection.getMessage());
     }
 
 }

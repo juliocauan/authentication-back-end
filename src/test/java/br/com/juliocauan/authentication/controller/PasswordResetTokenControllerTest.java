@@ -52,7 +52,7 @@ class PasswordResetTokenControllerTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard() {
+    void standard() {
         getUserRepository().deleteAll();
         passwordMatch.password(newPassword).passwordConfirmation(newPassword);
     }

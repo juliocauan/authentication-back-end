@@ -3,8 +3,10 @@ package br.com.juliocauan.authentication.service.application;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
@@ -47,7 +49,7 @@ class AdminServiceTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .password(password)
@@ -63,12 +65,12 @@ class AdminServiceTest extends TestContext {
             .username(username)
             .addRolesItem(roleManager)
             .addRolesItem(roleUser);
-        Assertions.assertDoesNotThrow(() -> adminService.updateUserRole(alterUserRolesForm));
+        assertDoesNotThrow(() -> adminService.updateUserRole(alterUserRolesForm));
         UserEntity userAfterUpdate = getUserRepository().findById(userBeforeUpdate.getId()).get();
 
-        Assertions.assertNotEquals(userBeforeUpdate.getRoles(), userAfterUpdate.getRoles());
-        Assertions.assertEquals(1, userBeforeUpdate.getRoles().size());
-        Assertions.assertEquals(2, userAfterUpdate.getRoles().size());
+        assertNotEquals(userBeforeUpdate.getRoles(), userAfterUpdate.getRoles());
+        assertEquals(1, userBeforeUpdate.getRoles().size());
+        assertEquals(2, userAfterUpdate.getRoles().size());
     }
 
     @Test
@@ -77,9 +79,9 @@ class AdminServiceTest extends TestContext {
             .username(username)
             .addRolesItem(roleManager)
             .addRolesItem(roleUser);
-        UsernameNotFoundException exception = Assertions.assertThrowsExactly(UsernameNotFoundException.class,
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> adminService.updateUserRole(alterUserRolesForm));
-        Assertions.assertEquals(usernameNotFoundException, exception.getMessage());
+        assertEquals(usernameNotFoundException, exception.getMessage());
     }
     
 }

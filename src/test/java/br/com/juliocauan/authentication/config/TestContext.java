@@ -26,7 +26,7 @@ public class TestContext {
     private final RoleRepositoryImpl roleRepository;
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
-    
+
     @BeforeAll
     public void setup(){
         userRepository.deleteAll();

@@ -55,7 +55,7 @@ class AdminControllerTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
         buildAndSaveUser(usernameAdmin, EnumRole.ADMIN);
     }

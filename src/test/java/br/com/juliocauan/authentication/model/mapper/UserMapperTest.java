@@ -4,8 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.openapitools.model.UserInfo;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -46,17 +47,17 @@ class UserMapperTest extends TestContext {
     @Test
     void domainToUserPrincipal() {
         UserPrincipal userPrincipal = UserMapper.domainToUserPrincipal(getUser());
-        Assertions.assertEquals(getUser().getUsername(), userPrincipal.getUsername());
-        Assertions.assertEquals(getUser().getPassword(), userPrincipal.getPassword());
-        Assertions.assertEquals(getUser().getRoles().size(), userPrincipal.getAuthorities().size());
+        assertEquals(getUser().getUsername(), userPrincipal.getUsername());
+        assertEquals(getUser().getPassword(), userPrincipal.getPassword());
+        assertEquals(getUser().getRoles().size(), userPrincipal.getAuthorities().size());
     }
 
     @Test
     void domainToUserInfo() {
         UserInfo userInfo = UserMapper.domainToUserInfo(getUser());
-        Assertions.assertEquals(getUser().getId(), userInfo.getId());
-        Assertions.assertEquals(getUser().getUsername(), userInfo.getUsername());
-        Assertions.assertEquals(getUser().getRoles().size(), userInfo.getRoles().size());
+        assertEquals(getUser().getId(), userInfo.getId());
+        assertEquals(getUser().getUsername(), userInfo.getUsername());
+        assertEquals(getUser().getRoles().size(), userInfo.getRoles().size());
     }
 
 }

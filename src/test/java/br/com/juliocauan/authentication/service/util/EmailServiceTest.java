@@ -1,12 +1,13 @@
 package br.com.juliocauan.authentication.service.util;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
@@ -32,15 +33,15 @@ class EmailServiceTest extends TestContext {
 
     @Test
     void givenValidArgs_whenSendEmail_ThenVoid() {
-        Assertions.assertDoesNotThrow(() -> emailService.sendEmail(receiver, subject, message));
+        assertDoesNotThrow(() -> emailService.sendEmail(receiver, subject, message));
     }
 
     @Test
     void givenInvalidArgs_whenSendEmail_ThenMailException() {
-        MailSendException exception = Assertions.assertThrowsExactly(MailSendException.class,
+        MailSendException exception = assertThrowsExactly(MailSendException.class,
             () -> emailService.sendEmail("null", "null", null));
         
-        Assertions.assertEquals(errorMailSend, exception.getMessage());
+        assertEquals(errorMailSend, exception.getMessage());
     }
 
 }

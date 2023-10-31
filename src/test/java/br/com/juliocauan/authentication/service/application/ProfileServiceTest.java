@@ -2,8 +2,10 @@ package br.com.juliocauan.authentication.service.application;
 
 import java.util.HashSet;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.PasswordUpdateForm;
@@ -49,7 +51,7 @@ class ProfileServiceTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard(){
+    void standard(){
         getUserRepository().deleteAll();
         userEntity = getUserRepository().save(UserEntity
             .builder()
@@ -74,13 +76,13 @@ class ProfileServiceTest extends TestContext {
         Profile expectedProfile = new Profile().username(username);
 
         authenticate();
-        Assertions.assertEquals(expectedProfile, profileService.getProfileContent());
+        assertEquals(expectedProfile, profileService.getProfileContent());
     }
 
     @Test
     void getProfileContent_Errors() {
         deauthenticate();
-        Assertions.assertThrowsExactly(NullPointerException.class, () -> profileService.getProfileContent());
+        assertThrowsExactly(NullPointerException.class, () -> profileService.getProfileContent());
     }
 
     @Test
@@ -94,8 +96,8 @@ class ProfileServiceTest extends TestContext {
         
         profileService.updatePassword(passwordUpdateForm);
         UserEntity userWithAlteredPassword = getUserRepository().findById(userEntity.getId()).get();
-        Assertions.assertNotEquals(userEntity.getPassword(), userWithAlteredPassword.getPassword());
-        Assertions.assertEquals(userEntity.getPassword().length(), userWithAlteredPassword.getPassword().length());
+        assertNotEquals(userEntity.getPassword(), userWithAlteredPassword.getPassword());
+        assertEquals(userEntity.getPassword().length(), userWithAlteredPassword.getPassword().length());
     }
 
     @Test
@@ -106,21 +108,21 @@ class ProfileServiceTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(password)
                 .passwordConfirmation(newPassword));
-        PasswordMatchException confirmationException = Assertions.assertThrowsExactly(PasswordMatchException.class,
+        PasswordMatchException confirmationException = assertThrowsExactly(PasswordMatchException.class,
             () -> profileService.updatePassword(passwordUpdateForm));
-        Assertions.assertEquals(confirmationPasswordError, confirmationException.getMessage());
+        assertEquals(confirmationPasswordError, confirmationException.getMessage());
 
         passwordUpdateForm
             .currentPassword(newPassword)
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
-        InvalidPasswordException currentPasswordException = Assertions.assertThrowsExactly(InvalidPasswordException.class,
+        InvalidPasswordException currentPasswordException = assertThrowsExactly(InvalidPasswordException.class,
             () -> profileService.updatePassword(passwordUpdateForm));
-        Assertions.assertEquals(currentPasswordError, currentPasswordException.getMessage());
+        assertEquals(currentPasswordError, currentPasswordException.getMessage());
 
         deauthenticate();
-        Assertions.assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));
+        assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));
     }
     
 }

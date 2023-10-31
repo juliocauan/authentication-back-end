@@ -43,7 +43,7 @@ class AdminServiceTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        roles.add(new RoleEntity(getRoleRepository().findByName(roleManager).get()));
+        roles.add(new RoleEntity(getRoleRepository().getByName(roleManager).get()));
     }
 
     @BeforeEach

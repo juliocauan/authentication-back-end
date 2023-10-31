@@ -50,7 +50,7 @@ class UserServiceTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        roles.add(new RoleEntity(getRoleRepository().findByName(rolePresent).get()));
+        roles.add(new RoleEntity(getRoleRepository().getByName(rolePresent).get()));
     }
 
     @BeforeEach

@@ -11,7 +11,7 @@ public abstract class RoleService {
 	protected abstract RoleRepository getRepository();
 
 	public final Role getByName(EnumRole name) {
-        return getRepository().findByName(name)
+        return getRepository().getByName(name)
             .orElseThrow(() -> new EntityNotFoundException("Role Not Found with name: " + name));
     }
 

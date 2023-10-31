@@ -7,5 +7,5 @@ import org.openapitools.model.EnumRole;
 import br.com.juliocauan.authentication.domain.model.Role;
 
 public interface RoleRepository {
-    Optional<Role> findByName(EnumRole name);
+    Optional<Role> getByName(EnumRole name);
 }

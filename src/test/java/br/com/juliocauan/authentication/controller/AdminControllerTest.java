@@ -62,7 +62,7 @@ class AdminControllerTest extends TestContext {
 
     private final void buildAndSaveUser(String username, EnumRole enumRole) {
         Set<RoleEntity> roles = new HashSet<>();
-        roles.add( new RoleEntity(getRoleRepository().findByName(enumRole).get()) );
+        roles.add( new RoleEntity(getRoleRepository().getByName(enumRole).get()) );
         getUserRepository().save(UserEntity
             .builder()
                 .id(null)

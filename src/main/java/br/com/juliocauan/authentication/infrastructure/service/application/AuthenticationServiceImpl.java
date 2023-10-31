@@ -33,10 +33,10 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
 
   @Override
   public final JWTResponse authenticate(String username, String password) {
-    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-    Authentication auth = authenticationManager.authenticate(authenticationToken);
+    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+    Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);
-    return new JWTResponse().token(jwtProvider.generateToken(auth));
+    return new JWTResponse().type("Bearer").token(jwtProvider.generateToken(auth));
   }
 
   @Override

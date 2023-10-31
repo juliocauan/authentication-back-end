@@ -1,6 +1,6 @@
 package br.com.juliocauan.authentication.security.jwt;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,7 +30,7 @@ class JwtAuthenticationFilterTest extends TestContext {
     @Test
     void doFilterInternal_error_tokenNull() throws Exception{
         getMockMvc().perform(
-            patch(urlSecured))
+            get(urlSecured))
             .andExpect(status().isUnauthorized())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(errorNotAuthorized));
@@ -39,7 +39,7 @@ class JwtAuthenticationFilterTest extends TestContext {
     @Test
     void doFilterInternal_error_tokenNotBearer() throws Exception{
         getMockMvc().perform(
-            patch(urlSecured)
+            get(urlSecured)
                 .header(authorizationHeader, "NotBearer"))
             .andExpect(status().isUnauthorized())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

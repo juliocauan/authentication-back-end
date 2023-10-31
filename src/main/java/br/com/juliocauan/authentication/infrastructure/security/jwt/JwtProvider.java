@@ -9,36 +9,34 @@ import org.springframework.stereotype.Component;
 
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtProvider {
 
 	private static final long EXPIRATION = (20 * 60 * 1000);
-	private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+	private static final SecretKey KEY = Jwts.SIG.HS256.key().build();
 
 	public final String generateToken(Authentication authentication) {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + EXPIRATION);
 		return Jwts.builder()
-				.setSubject(userPrincipal.getUsername())
-				.setIssuedAt(now)
-				.setExpiration(expiryDate)
-				.signWith(key)
+				.subject(userPrincipal.getUsername())
+				.issuedAt(now)
+				.expiration(expiryDate)
+				.signWith(KEY)
 				.compact();
 	}
 
 	public final String getUsernameFromJWT(String token) {
-		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+		return Jwts.parser().verifyWith(KEY).build().parseSignedClaims(token).getPayload().getSubject();
 	}
 
 	public final boolean isTokenValid(String token) {
-		try {
-			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+		try{
+			Jwts.parser().verifyWith(KEY).build().parseSignedClaims(token);
 			return true;
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			return false;
 		}
 	}

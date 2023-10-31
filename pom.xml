@@ -14,12 +14,10 @@
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>
-		<!-- TODO atualizar versões -->
 		<java.version>17</java.version>
-		<jjwt.version>0.11.5</jjwt.version>
-		<security.version>6.1.5</security.version>
+		<jjwt.version>0.12.3</jjwt.version>
 		<jackson.version>0.2.6</jackson.version>
-		<jacoco.version>0.8.8</jacoco.version>
+		<jacoco.version>0.8.11</jacoco.version>
 		<openapi.version>6.2.1</openapi.version>
 	</properties>
 	<dependencies>
@@ -28,24 +26,9 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<version>${security.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,6 +45,15 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

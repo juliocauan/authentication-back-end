@@ -21,9 +21,9 @@ public final class AdminServiceImpl extends AdminService {
     private final RoleServiceImpl roleService;
     
     @Override
-    public final void updateUserRole(AlterUserRolesForm alterUserRolesForm) {
-        UserEntity user = new UserEntity(userService.getByUsername(alterUserRolesForm.getUsername()));
-        Set<RoleEntity> roles = alterUserRolesForm.getRoles().stream()
+    public final void updateUserRole(AlterUserRolesForm updateUserRolesForm) {
+        UserEntity user = new UserEntity(userService.getByUsername(updateUserRolesForm.getUsername()));
+        Set<RoleEntity> roles = updateUserRolesForm.getRoles().stream()
             .map(roleService::getByName)
             .map(RoleEntity::new)
             .collect(Collectors.toSet());

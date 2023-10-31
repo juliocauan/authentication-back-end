@@ -43,7 +43,7 @@ class AdminControllerTest extends TestContext {
     private final String password = "1234567890";
     private final int uuidSize = 36;
     
-    private final String okAlterUserRole = "Patched User Roles successfully!";
+    private final String okAlterUserRole = "Patched user roles successfully!";
     private final String errorUserNotFound = "User Not Found with username: ";
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
@@ -77,12 +77,16 @@ class AdminControllerTest extends TestContext {
         return jwt.getType() + " " + jwt.getToken();
     }
 
-    @Test
-    void alterUserRole() throws Exception{
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+    private final Set<EnumRole> getRoles() {
         Set<EnumRole> roles = new HashSet<>();
         for(EnumRole role : EnumRole.values()) roles.add(role);
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(roles);
+        return roles;
+    }
+
+    @Test
+    void updateUserRole() throws Exception{
+        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(getRoles());
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(authorizationHeader, getToken(usernameAdmin))
@@ -103,10 +107,7 @@ class AdminControllerTest extends TestContext {
 
     @Test
     void alterUserRole_error_forbidden() throws Exception{
-        Set<EnumRole> roles = new HashSet<>();
-        for(EnumRole role : EnumRole.values()) roles.add(role);
-
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(roles);
+        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(getRoles());
         buildAndSaveUser(usernameManager, EnumRole.MANAGER);
         getMockMvc().perform(
             patch(urlAdmin)
@@ -127,9 +128,7 @@ class AdminControllerTest extends TestContext {
 
     @Test
     void alterUserRole_error_usernameNotFound() throws Exception{
-        Set<EnumRole> roles = new HashSet<>();
-        for(EnumRole role : EnumRole.values()) roles.add(role);
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameUser).roles(roles);
+        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameUser).roles(getRoles());
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(authorizationHeader, getToken(usernameAdmin))

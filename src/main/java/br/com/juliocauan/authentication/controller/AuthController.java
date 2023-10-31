@@ -20,7 +20,7 @@ public class AuthController implements AuthApi {
 	private final AuthenticationServiceImpl authenticationService;
 
 	@Override
-  public ResponseEntity<OkMessage> _signupUser(@Valid SignupForm signupForm) {
+  public ResponseEntity<OkMessage> _signup(@Valid SignupForm signupForm) {
     authenticationService.validateAndRegisterNewUser(
         signupForm.getUsername(),
         signupForm.getPassword(),
@@ -29,7 +29,7 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<JWTResponse> _signinUser(@Valid SigninForm signinForm) {
+  public ResponseEntity<JWTResponse> _signin(@Valid SigninForm signinForm) {
     JWTResponse response = authenticationService.authenticate(
       signinForm.getUsername(),
       signinForm.getPassword());

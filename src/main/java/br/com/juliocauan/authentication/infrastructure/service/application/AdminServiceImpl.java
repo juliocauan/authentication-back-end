@@ -3,7 +3,7 @@ package br.com.juliocauan.authentication.infrastructure.service.application;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.openapitools.model.AlterUserRolesForm;
+import org.openapitools.model.UpdateUserRolesForm;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.service.application.AdminService;
@@ -21,7 +21,7 @@ public final class AdminServiceImpl extends AdminService {
     private final RoleServiceImpl roleService;
     
     @Override
-    public final void updateUserRole(AlterUserRolesForm updateUserRolesForm) {
+    public final void updateUserRole(UpdateUserRolesForm updateUserRolesForm) {
         UserEntity user = new UserEntity(userService.getByUsername(updateUserRolesForm.getUsername()));
         Set<RoleEntity> roles = updateUserRolesForm.getRoles().stream()
             .map(roleService::getByName)

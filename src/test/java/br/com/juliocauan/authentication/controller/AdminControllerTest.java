@@ -13,9 +13,9 @@ import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.AlterUserRolesForm;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWTResponse;
+import org.openapitools.model.UpdateUserRolesForm;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -86,12 +86,12 @@ class AdminControllerTest extends TestContext {
     @Test
     void updateUserRole() throws Exception{
         buildAndSaveUser(usernameManager, EnumRole.MANAGER);
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(getRoles());
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm().username(usernameManager).roles(getRoles());
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(authorizationHeader, getToken(usernameAdmin))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
+                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.body").value(okAlterUserRole));
@@ -107,33 +107,33 @@ class AdminControllerTest extends TestContext {
 
     @Test
     void updateUserRole_error_forbidden() throws Exception{
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(getRoles());
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm().username(usernameManager).roles(getRoles());
         buildAndSaveUser(usernameManager, EnumRole.MANAGER);
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(authorizationHeader, getToken(usernameManager))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
+                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isForbidden());
         
-        alterUserRolesForm.username(usernameUser);
+        updateUserRolesForm.username(usernameUser);
         buildAndSaveUser(usernameUser, EnumRole.USER);
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(authorizationHeader, getToken(usernameUser))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
+                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isForbidden());
     }
 
     @Test
     void updateUserRole_error_usernameNotFound() throws Exception{
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameUser).roles(getRoles());
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm().username(usernameUser).roles(getRoles());
         getMockMvc().perform(
             patch(urlAdmin)
                 .header(authorizationHeader, getToken(usernameAdmin))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(alterUserRolesForm)))
+                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(errorUserNotFound + usernameUser))

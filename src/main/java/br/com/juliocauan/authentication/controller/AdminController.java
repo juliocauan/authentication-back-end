@@ -3,9 +3,9 @@ package br.com.juliocauan.authentication.controller;
 import java.util.List;
 
 import org.openapitools.api.AdminApi;
-import org.openapitools.model.AlterUserRolesForm;
 import org.openapitools.model.EnumRole;
 import org.openapitools.model.OkMessage;
+import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class AdminController implements AdminApi {
     private final UserServiceImpl userService;
 
     @Override @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<OkMessage> _updateUserRoles(@Valid AlterUserRolesForm updateUserRolesForm) {
+    public ResponseEntity<OkMessage> _updateUserRoles(@Valid UpdateUserRolesForm updateUserRolesForm) {
       adminService.updateUserRole(updateUserRolesForm);
       return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Patched user roles successfully!"));
     }

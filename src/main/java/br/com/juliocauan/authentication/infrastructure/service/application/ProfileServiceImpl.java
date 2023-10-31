@@ -31,7 +31,7 @@ public final class ProfileServiceImpl extends ProfileService {
         UserEntity entity = new UserEntity(userService.getByUsername(username));
 
         passwordService.checkPasswordConfirmation(passwordUpdateForm.getNewPasswordMatch());
-        passwordService.checkCurrentPassword(entity.getPassword(), passwordUpdateForm.getOldPassword());
+        passwordService.checkCurrentPassword(entity.getPassword(), passwordUpdateForm.getCurrentPassword());
         
         String newPassword = passwordService.encode(passwordUpdateForm.getNewPasswordMatch().getPassword());
         entity.setPassword(newPassword);

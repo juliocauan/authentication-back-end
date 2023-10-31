@@ -87,7 +87,7 @@ class ProfileServiceTest extends TestContext {
     void alterPassword() {
         authenticate();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .oldPassword(password)
+            .currentPassword(password)
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
@@ -102,7 +102,7 @@ class ProfileServiceTest extends TestContext {
     void alterPassword_Errors() {
         authenticate();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .oldPassword(password)
+            .currentPassword(password)
             .newPasswordMatch(new PasswordMatch()
                 .password(password)
                 .passwordConfirmation(newPassword));
@@ -111,7 +111,7 @@ class ProfileServiceTest extends TestContext {
         Assertions.assertEquals(confirmationPasswordError, confirmationException.getMessage());
 
         passwordUpdateForm
-            .oldPassword(newPassword)
+            .currentPassword(newPassword)
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));

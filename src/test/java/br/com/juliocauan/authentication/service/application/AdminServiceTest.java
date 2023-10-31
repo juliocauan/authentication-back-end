@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.AlterUserRolesForm;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.UpdateUserRolesForm;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -59,7 +59,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void updateUserRoles() {
         UserEntity userBeforeUpdate = getUserRepository().save(entity);
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm()
+        UpdateUserRolesForm alterUserRolesForm = new UpdateUserRolesForm()
             .username(username)
             .addRolesItem(roleManager)
             .addRolesItem(roleUser);
@@ -73,7 +73,7 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void updateUserRoles_error_getByUsername() {
-        AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm()
+        UpdateUserRolesForm alterUserRolesForm = new UpdateUserRolesForm()
             .username(username)
             .addRolesItem(roleManager)
             .addRolesItem(roleUser);

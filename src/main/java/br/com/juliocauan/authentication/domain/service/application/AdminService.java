@@ -1,7 +1,7 @@
 package br.com.juliocauan.authentication.domain.service.application;
 
-import org.openapitools.model.AlterUserRolesForm;
+import org.openapitools.model.UpdateUserRolesForm;
 
 public abstract class AdminService {
-    public abstract void updateUserRole(AlterUserRolesForm alterUserRoleForm);
+    public abstract void updateUserRole(UpdateUserRolesForm alterUserRoleForm);
 }

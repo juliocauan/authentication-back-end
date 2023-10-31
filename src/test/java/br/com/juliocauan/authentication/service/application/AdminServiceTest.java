@@ -57,7 +57,7 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void alterUserRole() {
+    void updateUserRoles() {
         UserEntity userBeforeUpdate = getUserRepository().save(entity);
         AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm()
             .username(username)
@@ -72,7 +72,7 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void alterUserRole_error_getByUsername() {
+    void updateUserRoles_error_getByUsername() {
         AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm()
             .username(username)
             .addRolesItem(roleManager)

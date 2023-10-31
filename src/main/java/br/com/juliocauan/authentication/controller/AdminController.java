@@ -25,7 +25,7 @@ public class AdminController implements AdminApi {
     private final UserServiceImpl userService;
 
     @Override @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<OkMessage> _alterUserRole(@Valid AlterUserRolesForm updateUserRolesForm) {
+    public ResponseEntity<OkMessage> _updateUserRoles(@Valid AlterUserRolesForm updateUserRolesForm) {
       adminService.updateUserRole(updateUserRolesForm);
       return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Patched user roles successfully!"));
     }

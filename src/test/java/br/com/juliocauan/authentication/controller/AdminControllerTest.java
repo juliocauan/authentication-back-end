@@ -98,7 +98,7 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserRole_error_unauthorized() throws Exception{
+    void updateUserRole_error_unauthorized() throws Exception{
         getMockMvc().perform(
             patch(urlAdmin))
             .andExpect(status().isUnauthorized())
@@ -106,7 +106,7 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserRole_error_forbidden() throws Exception{
+    void updateUserRole_error_forbidden() throws Exception{
         AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameManager).roles(getRoles());
         buildAndSaveUser(usernameManager, EnumRole.MANAGER);
         getMockMvc().perform(
@@ -127,7 +127,7 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserRole_error_usernameNotFound() throws Exception{
+    void updateUserRole_error_usernameNotFound() throws Exception{
         AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm().username(usernameUser).roles(getRoles());
         getMockMvc().perform(
             patch(urlAdmin)

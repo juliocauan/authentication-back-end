@@ -67,18 +67,18 @@ class UserRepositoryTest extends TestContext {
     @Test
     void givenPresentUsername_WhenFindByUsername_ThenUser(){
         getUserRepository().save(entity);
-        Assertions.assertEquals(entity, getUserRepository().findByUsername(username).get());
+        Assertions.assertEquals(entity, getUserRepository().getByUsername(username).get());
     }
 
     @Test
     void givenNotPresentUsername_WhenFindByUsername_ThenUserNotPresent(){
-        Assertions.assertFalse(getUserRepository().findByUsername(username).isPresent());
+        Assertions.assertFalse(getUserRepository().getByUsername(username).isPresent());
     }
 
     @Test
     void givenUsernameContainsAndRole_WhenFindAllByUsernameContainsAndRole_ThenUserList() {
         getUserRepository().save(entity);
-        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, rolePresent);
+        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, rolePresent);
         Assertions.assertEquals(1, userList.size());
         Assertions.assertEquals(entity, userList.get(0));
         
@@ -88,38 +88,38 @@ class UserRepositoryTest extends TestContext {
             .roles(roles)
         .build();
         getUserRepository().save(entity);
-        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, rolePresent);
+        userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, rolePresent);
         Assertions.assertEquals(2, userList.size());
         Assertions.assertTrue(userList.contains(entity));
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(null, null);
+        userList = getUserRepository().getAllByUsernameSubstringAndRole(null, null);
         Assertions.assertEquals(2, userList.size());
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(null, rolePresent);
+        userList = getUserRepository().getAllByUsernameSubstringAndRole(null, rolePresent);
         Assertions.assertEquals(2, userList.size());
 
-        userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, null);
+        userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, null);
         Assertions.assertEquals(2, userList.size());
     }
 
     @Test
     void givenUsernameNotContainsAndRole_WhenFindAllByUsernameContainsAndRole_ThenEmptyUserList() {
         getUserRepository().save(entity);
-        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameNotContains, rolePresent);
+        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, rolePresent);
         Assertions.assertTrue(userList.isEmpty());
     }
 
     @Test
     void givenUsernameContainsAndNotPresentRole_WhenFindAllByUsernameContainsAndRole_ThenEmptyUserList() {
         getUserRepository().save(entity);
-        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameContains, roleNotPresent);
+        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleNotPresent);
         Assertions.assertTrue(userList.isEmpty());
     }
 
     @Test
     void givenUsernameNotContainsAndNotPresentRole_WhenFindAllByUsernameContainsAndRole_ThenEmptyUserList() {
         getUserRepository().save(entity);
-        List<User> userList = getUserRepository().findAllByUsernameContainsAndRole(usernameNotContains, roleNotPresent);
+        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
         Assertions.assertTrue(userList.isEmpty());
     }
 

@@ -9,15 +9,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
+import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
@@ -70,13 +71,13 @@ class UserServiceTest extends TestContext {
     @Test
     void givenPresentUsername_WhenGetByUsername_ThenEqualsUser(){
         getUserRepository().save(entity);
-        Assertions.assertEquals(entity, userService.getByUsername(username));
+        Assertions.assertEquals(entity, userService.findByUsername(username));
     }
 
     @Test
     void givenNotPresentUsername_WhenGetByUsername_ThenUsernameNotFoundException(){
         UsernameNotFoundException exception = Assertions
-            .assertThrowsExactly(UsernameNotFoundException.class, () -> userService.getByUsername(username));
+            .assertThrowsExactly(UsernameNotFoundException.class, () -> userService.findByUsername(username));
         Assertions.assertEquals(errorUsernameNotFound, exception.getMessage());
     }
 
@@ -95,35 +96,37 @@ class UserServiceTest extends TestContext {
 
     @Test
     void getAllUsers(){
-        getUserRepository().save(entity);
-        List<User> userList = userService.getAllUsers(usernameContains, rolePresent);
+        entity = getUserRepository().save(entity);
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
+        List<UserInfo> userList = userService.getUserInfos(usernameContains, rolePresent);
         Assertions.assertEquals(1, userList.size());
-        Assertions.assertEquals(entity, userList.get(0));
+        Assertions.assertEquals(expectedUserInfo, userList.get(0));
         
-        entity = UserEntity.builder()
-            .username(username + "2")
-            .password(password)
-            .roles(roles)
-        .build();
-        getUserRepository().save(entity);
+        entity = getUserRepository().save(UserEntity
+            .builder()
+                .username(username + "2")
+                .password(password)
+                .roles(roles)
+            .build());
+        expectedUserInfo = UserMapper.domainToUserInfo(entity);
 
-        userList = userService.getAllUsers(usernameContains, rolePresent);
+        userList = userService.getUserInfos(usernameContains, rolePresent);
         Assertions.assertEquals(2, userList.size());
-        Assertions.assertTrue(userList.contains(entity));
+        Assertions.assertTrue(userList.contains(expectedUserInfo));
 
-        userList = userService.getAllUsers(null, null);
-        Assertions.assertEquals(2, userList.size());
-
-        userList = userService.getAllUsers(null, rolePresent);
+        userList = userService.getUserInfos(null, null);
         Assertions.assertEquals(2, userList.size());
 
-        userList = userService.getAllUsers(usernameContains, null);
+        userList = userService.getUserInfos(null, rolePresent);
         Assertions.assertEquals(2, userList.size());
 
-        userList = userService.getAllUsers(usernameNotContains, null);
+        userList = userService.getUserInfos(usernameContains, null);
+        Assertions.assertEquals(2, userList.size());
+
+        userList = userService.getUserInfos(usernameNotContains, null);
         Assertions.assertTrue(userList.isEmpty());
 
-        userList = userService.getAllUsers(null, roleNotPresent);
+        userList = userService.getUserInfos(null, roleNotPresent);
         Assertions.assertTrue(userList.isEmpty());
     }
     

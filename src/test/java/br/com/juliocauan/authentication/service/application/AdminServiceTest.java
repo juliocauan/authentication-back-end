@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.service.application;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.AlterUserRolesForm;
 import org.openapitools.model.EnumRole;
-import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -19,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
@@ -30,11 +27,8 @@ class AdminServiceTest extends TestContext {
 
     private final String password = "12345678";
     private final String username = "test@email.com";
-    private final String usernameContains = "test";
-    private final String usernameNotContains = "asd";
-    private final EnumRole role1 = EnumRole.MANAGER;
-    private final EnumRole role2 = EnumRole.USER;
-    private final EnumRole roleNotPresent = EnumRole.ADMIN;
+    private final EnumRole roleManager = EnumRole.MANAGER;
+    private final EnumRole roleUser = EnumRole.USER;
     private final String usernameNotFoundException = "User Not Found with username: " + username;
 
     private UserEntity entity;
@@ -49,7 +43,7 @@ class AdminServiceTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        roles.add(new RoleEntity(getRoleRepository().findByName(role1).get()));
+        roles.add(new RoleEntity(getRoleRepository().findByName(roleManager).get()));
     }
 
     @BeforeEach
@@ -63,48 +57,13 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void getUserInfos(){
-        getUserRepository().save(entity);
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> userInfoList = adminService.getUserInfos(usernameContains, role1);
-        Assertions.assertEquals(1, userInfoList.size());
-        Assertions.assertEquals(expectedUserInfo, userInfoList.get(0));
-        
-        entity = UserEntity.builder()
-            .username(username + "2")
-            .password(password)
-            .roles(roles)
-        .build();
-        getUserRepository().save(entity);
-
-        userInfoList = adminService.getUserInfos(usernameContains, role1);
-        Assertions.assertEquals(2, userInfoList.size());
-        Assertions.assertTrue(userInfoList.contains(expectedUserInfo));
-
-        userInfoList = adminService.getUserInfos(null, null);
-        Assertions.assertEquals(2, userInfoList.size());
-
-        userInfoList = adminService.getUserInfos(null, role1);
-        Assertions.assertEquals(2, userInfoList.size());
-
-        userInfoList = adminService.getUserInfos(usernameContains, null);
-        Assertions.assertEquals(2, userInfoList.size());
-
-        userInfoList = adminService.getUserInfos(usernameNotContains, null);
-        Assertions.assertTrue(userInfoList.isEmpty());
-
-        userInfoList = adminService.getUserInfos(null, roleNotPresent);
-        Assertions.assertTrue(userInfoList.isEmpty());
-    }
-
-    @Test
     void alterUserRole() {
         UserEntity userBeforeUpdate = getUserRepository().save(entity);
         AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm()
             .username(username)
-            .addRolesItem(role1)
-            .addRolesItem(role2);
-        Assertions.assertDoesNotThrow(() -> adminService.alterUserRole(alterUserRolesForm));
+            .addRolesItem(roleManager)
+            .addRolesItem(roleUser);
+        Assertions.assertDoesNotThrow(() -> adminService.updateUserRole(alterUserRolesForm));
         UserEntity userAfterUpdate = getUserRepository().findById(userBeforeUpdate.getId()).get();
 
         Assertions.assertNotEquals(userBeforeUpdate.getRoles(), userAfterUpdate.getRoles());
@@ -116,10 +75,10 @@ class AdminServiceTest extends TestContext {
     void alterUserRole_error_getByUsername() {
         AlterUserRolesForm alterUserRolesForm = new AlterUserRolesForm()
             .username(username)
-            .addRolesItem(role1)
-            .addRolesItem(role2);
+            .addRolesItem(roleManager)
+            .addRolesItem(roleUser);
         UsernameNotFoundException exception = Assertions.assertThrowsExactly(UsernameNotFoundException.class,
-            () -> adminService.alterUserRole(alterUserRolesForm));
+            () -> adminService.updateUserRole(alterUserRolesForm));
         Assertions.assertEquals(usernameNotFoundException, exception.getMessage());
     }
     

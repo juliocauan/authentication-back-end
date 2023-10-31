@@ -28,7 +28,7 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
 
     @Override
     public final String buildTokenAndSendEmail(String username) {
-        User user = userService.getByUsername(username);
+        User user = userService.findByUsername(username);
         String token = createPasswordResetToken(user);
         sendEmail(username, token);
         return token;

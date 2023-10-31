@@ -17,13 +17,13 @@ import br.com.juliocauan.authentication.infrastructure.repository.specification.
 public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEntity, UUID>, JpaSpecificationExecutor<UserEntity> {
 
     @Override
-    default List<User> findAllByUsernameContainsAndRole(String username, EnumRole role) {
+    default List<User> getAllByUsernameSubstringAndRole(String username, EnumRole role) {
         List<UserEntity> users = findAll(Specification
             .where(UserSpecification.usernameContains(username)
             .and(UserSpecification.role(role))));
-        List<User> list = new ArrayList<>();
-        users.forEach(list::add);
-        return list;
+        List<User> mappedUsers = new ArrayList<>();
+        users.forEach(mappedUsers::add);
+        return mappedUsers;
     }
 
 }

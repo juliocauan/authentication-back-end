@@ -110,7 +110,7 @@ class PasswordResetTokenServiceTest extends TestContext {
             .build());
         Assertions.assertDoesNotThrow(() -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
 
-        User userAfterUpdate = userService.getByUsername(username);
+        User userAfterUpdate = userService.findByUsername(username);
         Assertions.assertNotEquals(passwordResetTokenBeforeUpdate.getUser().getPassword(), userAfterUpdate.getPassword());
         Assertions.assertFalse(passwordResetTokenRepository.findByToken(tokenMock).isPresent());
     }

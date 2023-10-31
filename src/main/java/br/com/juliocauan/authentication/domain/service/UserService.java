@@ -17,7 +17,7 @@ public abstract class UserService {
 	protected abstract UserRepository getRepository();
 	public abstract User save(User user);
 
-    public final User findByUsername(String username){
+    public final User getByUsername(String username){
         return getRepository().getByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 	}

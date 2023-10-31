@@ -27,11 +27,20 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
     private final PasswordService passwordService;
 
     @Override
-    public final String buildTokenAndSendEmail(String username) {
-        User user = userService.findByUsername(username);
-        String token = createPasswordResetToken(user);
-        sendEmail(username, token);
-        return token;
+    public final String generateToken(String username) {
+        User user = userService.getByUsername(username);
+        deletePreviousPasswordResetToken(user);
+        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user)).getToken();
+    }
+
+    @Override
+    public final String sendEmail(String username, String token) {
+        String emailBody = buildEmailBody(token);
+        emailService.sendEmail(
+            username, 
+            "Reset your password!", 
+            emailBody);
+        return emailBody;
     }
 
     @Override
@@ -43,36 +52,23 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
     }
     
     private final void deletePreviousPasswordResetToken(User user) {
-        Optional<PasswordResetToken> oldToken = passwordResetTokenRepository.findByUser(user);
+        Optional<PasswordResetToken> oldToken = passwordResetTokenRepository.getByUser(user);
         if(oldToken.isPresent())
             passwordResetTokenRepository.deleteById(oldToken.get().getId());
     }
-
-    private final String createPasswordResetToken(User user) {
-        deletePreviousPasswordResetToken(user);
-        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user)).getToken();
-    }
-
+    
     private final String buildEmailBody(String token) {
         return String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
             token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
     }
 
-    private final void sendEmail(String username, String token) {
-        emailService.sendEmail(
-            username, 
-            "Reset your password!", 
-            buildEmailBody(token));
-    }
-
     private final PasswordResetToken checkToken(String token) {
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token)
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.getByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Password Reset Token not found with token: " + token));
         if(passwordResetToken.isExpired())
             throw new ExpiredPasswordResetTokenException("Expired Password Reset Token!");
         return passwordResetToken;
     }
-
     private final void updateUserPassword(User user, String newPassword) {
         UserEntity userEntity = new UserEntity(user);
         userEntity.setPassword(passwordService.encode(newPassword));

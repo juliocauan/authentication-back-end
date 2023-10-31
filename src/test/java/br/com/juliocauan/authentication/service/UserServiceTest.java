@@ -71,13 +71,13 @@ class UserServiceTest extends TestContext {
     @Test
     void givenPresentUsername_WhenGetByUsername_ThenEqualsUser(){
         getUserRepository().save(entity);
-        Assertions.assertEquals(entity, userService.findByUsername(username));
+        Assertions.assertEquals(entity, userService.getByUsername(username));
     }
 
     @Test
     void givenNotPresentUsername_WhenGetByUsername_ThenUsernameNotFoundException(){
         UsernameNotFoundException exception = Assertions
-            .assertThrowsExactly(UsernameNotFoundException.class, () -> userService.findByUsername(username));
+            .assertThrowsExactly(UsernameNotFoundException.class, () -> userService.getByUsername(username));
         Assertions.assertEquals(errorUsernameNotFound, exception.getMessage());
     }
 

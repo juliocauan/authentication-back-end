@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.PasswordMatch;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,6 +44,8 @@ class PasswordResetTokenServiceTest extends TestContext {
     private final String passwordConfirmationException = "Confirmation and new password are different!";
     private final String entityNotFoundException = "Password Reset Token not found with token: " + tokenMock;
     private final String expiredPasswordResetTokenException = "Expired Password Reset Token!";
+    private final String errorMailSend = "The recipient address is not a valid address!";
+
     private final int tokenLength = 43;
 
     private UserEntity user;
@@ -69,9 +72,9 @@ class PasswordResetTokenServiceTest extends TestContext {
     }
 
     @Test
-    void buildTokenAndSendEmail() {
-        String token = Assertions.assertDoesNotThrow(() -> passwordResetTokenService.buildTokenAndSendEmail(user.getUsername()));
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.findByToken(token).get();
+    void generateToken() {
+        String token = Assertions.assertDoesNotThrow(() -> passwordResetTokenService.generateToken(user.getUsername()));
+        PasswordResetToken passwordResetToken = passwordResetTokenRepository.getByToken(token).get();
         
         Assertions.assertEquals(user, passwordResetToken.getUser());
         Assertions.assertEquals(token, passwordResetToken.getToken());
@@ -80,24 +83,36 @@ class PasswordResetTokenServiceTest extends TestContext {
     }
     
     @Test
-    void buildTokenAndSendEmail_branch_deletePreviousPasswordResetToken() {
+    void generateToken_branch_deletePreviousPasswordResetToken() {
         PasswordResetToken passwordResetTokenBefore = passwordResetTokenRepository.save(PasswordResetTokenEntity.builder()
             .token(tokenMock)
             .user(user)
         .build());
-        String token = Assertions.assertDoesNotThrow(() -> passwordResetTokenService.buildTokenAndSendEmail(user.getUsername()));
-        PasswordResetToken passwordResetTokenAfter = passwordResetTokenRepository.findByToken(token).get();
+        String token = Assertions.assertDoesNotThrow(() -> passwordResetTokenService.generateToken(user.getUsername()));
+        PasswordResetToken passwordResetTokenAfter = passwordResetTokenRepository.getByToken(token).get();
         
         Assertions.assertNotEquals(passwordResetTokenBefore, passwordResetTokenAfter);
-        Assertions.assertFalse(passwordResetTokenRepository.findByToken(passwordResetTokenBefore.getToken()).isPresent());
+        Assertions.assertFalse(passwordResetTokenRepository.getByToken(passwordResetTokenBefore.getToken()).isPresent());
     }
 
     @Test
-    void buildTokenAndSendEmail_error_getByUsername() {
+    void generateToken_error_getByUsername() {
         UsernameNotFoundException exception = Assertions.assertThrowsExactly(
             UsernameNotFoundException.class,
-            () -> passwordResetTokenService.buildTokenAndSendEmail(usernameNotPresent));
+            () -> passwordResetTokenService.generateToken(usernameNotPresent));
         Assertions.assertTrue(exception.getMessage().contentEquals(usernameNotFoundException));
+    }
+
+    @Test
+    void sendEmail() {
+        Assertions.assertDoesNotThrow(() -> passwordResetTokenService.sendEmail(username, tokenMock));
+    }
+
+    @Test
+    void sendEmail_error_mailSend() {
+        MailSendException exception = Assertions.assertThrowsExactly(MailSendException.class, () -> 
+            passwordResetTokenService.sendEmail("notAnEmail", tokenMock));
+        Assertions.assertEquals(errorMailSend, exception.getMessage());
     }
 
     @Test
@@ -110,9 +125,9 @@ class PasswordResetTokenServiceTest extends TestContext {
             .build());
         Assertions.assertDoesNotThrow(() -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
 
-        User userAfterUpdate = userService.findByUsername(username);
+        User userAfterUpdate = userService.getByUsername(username);
         Assertions.assertNotEquals(passwordResetTokenBeforeUpdate.getUser().getPassword(), userAfterUpdate.getPassword());
-        Assertions.assertFalse(passwordResetTokenRepository.findByToken(tokenMock).isPresent());
+        Assertions.assertFalse(passwordResetTokenRepository.getByToken(tokenMock).isPresent());
     }
 
     @Test

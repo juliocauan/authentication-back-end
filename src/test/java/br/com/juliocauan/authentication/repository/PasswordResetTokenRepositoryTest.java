@@ -58,22 +58,22 @@ class PasswordResetTokenRepositoryTest extends TestContext {
 
     @Test
     void givenPresentToken_WhenFindByToken_ThenPasswordResetToken() {
-        Assertions.assertEquals(expectedEntity, passwordResetTokenRepository.findByToken(tokenPresent).get());
+        Assertions.assertEquals(expectedEntity, passwordResetTokenRepository.getByToken(tokenPresent).get());
     }
 
     @Test
     void givenNotPresentToken_WhenFindByToken_ThenPasswordResetTokenNotPresent() {
-        Assertions.assertFalse(passwordResetTokenRepository.findByToken(tokenNotPresent).isPresent());
+        Assertions.assertFalse(passwordResetTokenRepository.getByToken(tokenNotPresent).isPresent());
     }
 
     @Test
     void givenPresentUser_WhenFindByUser_ThenPasswordResetToken() {
-        Assertions.assertEquals(expectedEntity, passwordResetTokenRepository.findByUser(userEntity).get());
+        Assertions.assertEquals(expectedEntity, passwordResetTokenRepository.getByUser(userEntity).get());
     }
 
     @Test
     void givenNotPresentUser_WhenFindByUser_ThenPasswordResetTokenNotPresent() {
-        Assertions.assertFalse(passwordResetTokenRepository.findByUser(null).isPresent());
+        Assertions.assertFalse(passwordResetTokenRepository.getByUser(null).isPresent());
     }
     
 }

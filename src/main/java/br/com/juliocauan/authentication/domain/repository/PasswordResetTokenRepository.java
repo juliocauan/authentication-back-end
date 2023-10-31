@@ -6,6 +6,6 @@ import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
 
 public interface PasswordResetTokenRepository {
-    Optional<PasswordResetToken> findByToken(String token);
-    Optional<PasswordResetToken> findByUser(User user);
+    Optional<PasswordResetToken> getByToken(String token);
+    Optional<PasswordResetToken> getByUser(User user);
 }

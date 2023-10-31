@@ -105,7 +105,10 @@ class PasswordResetTokenServiceTest extends TestContext {
 
     @Test
     void sendEmail() {
-        Assertions.assertDoesNotThrow(() -> passwordResetTokenService.sendEmail(username, tokenMock));
+        String expectedEmailBody = String.format("To reset your password, use the following token: %s %n%n This token will last %d minutes",
+            tokenMock, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);
+        String emailBody = Assertions.assertDoesNotThrow(() -> passwordResetTokenService.sendEmail(username, tokenMock));
+        Assertions.assertEquals(expectedEmailBody, emailBody);
     }
 
     @Test

@@ -36,7 +36,7 @@ class PasswordResetTokenControllerTest extends TestContext {
     private final String newPassword = "0987654321";
     private final String tokenMock = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 
-    private final String okSendPasswordResetTokenEmail = "Email sent to " + username + " successfully!";
+    private final String okEmailPasswordResetToken = "Email sent to " + username + " successfully!";
     private final String okResetUserPassword = "Password updated successfully!";
     private final String errorUsernameNotFound = "User Not Found with username: " + username;
     private final String errorPasswordMatch = "Confirmation and new password are different!";
@@ -76,7 +76,7 @@ class PasswordResetTokenControllerTest extends TestContext {
     }
 
     @Test
-    void sendPasswordResetTokenEmail() throws Exception {
+    void emailPasswordResetToken() throws Exception {
         buildAndSaveUser();
         getMockMvc().perform(
             post(urlForgotPassword)
@@ -84,11 +84,11 @@ class PasswordResetTokenControllerTest extends TestContext {
                 .content(username))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body").value(okSendPasswordResetTokenEmail));
+            .andExpect(jsonPath("$.body").value(okEmailPasswordResetToken));
     }
 
     @Test
-    void sendPasswordResetTokenEmail_error_userNotFound() throws Exception {
+    void emailPasswordResetToken_error_userNotFound() throws Exception {
         getMockMvc().perform(
             post(urlForgotPassword)
                 .contentType(MediaType.APPLICATION_JSON)

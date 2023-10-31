@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final String getJwtFromRequest(HttpServletRequest request) {
 		String token = request.getHeader("Authorization");
-        if(token == null || token.isEmpty() || !token.startsWith("Bearer ")) return null;
+        if(token == null || !token.startsWith("Bearer ")) return null;
         return token.substring(7);
 	}
 }

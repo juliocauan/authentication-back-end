@@ -5,5 +5,5 @@ import org.openapitools.model.Profile;
 
 public abstract class ProfileService {
     public abstract Profile getProfileContent();
-    public abstract void alterPassword(PasswordUpdateForm passwordUpdateForm);
+    public abstract void updatePassword(PasswordUpdateForm passwordUpdateForm);
 }

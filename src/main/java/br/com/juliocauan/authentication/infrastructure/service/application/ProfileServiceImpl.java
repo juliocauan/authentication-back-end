@@ -26,7 +26,7 @@ public final class ProfileServiceImpl extends ProfileService {
     }
 
     @Override
-    public final void alterPassword(PasswordUpdateForm passwordUpdateForm) {
+    public final void updatePassword(PasswordUpdateForm passwordUpdateForm) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity entity = new UserEntity(userService.getByUsername(username));
 

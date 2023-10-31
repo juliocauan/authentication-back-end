@@ -86,7 +86,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserPassword() throws Exception{
+    void updateUserPassword() throws Exception{
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .oldPassword(password)
             .newPasswordMatch(new PasswordMatch()
@@ -103,7 +103,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserPassword_error_notLogged() throws Exception{
+    void updateUserPassword_error_notLogged() throws Exception{
         getMockMvc().perform(
             patch(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -112,7 +112,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserPassword_error_passwordMatch() throws Exception{
+    void updateUserPassword_error_passwordMatch() throws Exception{
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .oldPassword(password)
             .newPasswordMatch(new PasswordMatch()
@@ -129,7 +129,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
-    void alterUserPassword_error_invalidPassword() throws Exception{
+    void updateUserPassword_error_invalidPassword() throws Exception{
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .oldPassword(newPassword)
             .newPasswordMatch(new PasswordMatch()

@@ -92,7 +92,7 @@ class ProfileServiceTest extends TestContext {
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
         
-        profileService.alterPassword(passwordUpdateForm);
+        profileService.updatePassword(passwordUpdateForm);
         UserEntity userWithAlteredPassword = getUserRepository().findById(userEntity.getId()).get();
         Assertions.assertNotEquals(userEntity.getPassword(), userWithAlteredPassword.getPassword());
         Assertions.assertEquals(userEntity.getPassword().length(), userWithAlteredPassword.getPassword().length());
@@ -107,7 +107,7 @@ class ProfileServiceTest extends TestContext {
                 .password(password)
                 .passwordConfirmation(newPassword));
         PasswordMatchException confirmationException = Assertions.assertThrowsExactly(PasswordMatchException.class,
-            () -> profileService.alterPassword(passwordUpdateForm));
+            () -> profileService.updatePassword(passwordUpdateForm));
         Assertions.assertEquals(confirmationPasswordError, confirmationException.getMessage());
 
         passwordUpdateForm
@@ -116,11 +116,11 @@ class ProfileServiceTest extends TestContext {
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
         InvalidPasswordException currentPasswordException = Assertions.assertThrowsExactly(InvalidPasswordException.class,
-            () -> profileService.alterPassword(passwordUpdateForm));
+            () -> profileService.updatePassword(passwordUpdateForm));
         Assertions.assertEquals(currentPasswordError, currentPasswordException.getMessage());
 
         deauthenticate();
-        Assertions.assertThrowsExactly(NullPointerException.class, () -> profileService.alterPassword(passwordUpdateForm));
+        Assertions.assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));
     }
     
 }

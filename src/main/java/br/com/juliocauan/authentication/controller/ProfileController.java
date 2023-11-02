@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.application.ProfileServiceImpl;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -25,7 +24,7 @@ public class ProfileController implements ProfileApi {
     }
 
     @Override
-    public ResponseEntity<OkMessage> _updateUserPassword(@Valid PasswordUpdateForm passwordUpdateForm) {
+    public ResponseEntity<OkMessage> _updateUserPassword(PasswordUpdateForm passwordUpdateForm) {
         profileService.updatePassword(passwordUpdateForm);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }

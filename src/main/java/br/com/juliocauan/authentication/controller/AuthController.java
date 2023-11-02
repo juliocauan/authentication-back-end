@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -20,7 +19,7 @@ public class AuthController implements AuthApi {
 	private final AuthenticationServiceImpl authenticationService;
 
 	@Override
-  public ResponseEntity<OkMessage> _signup(@Valid SignupForm signupForm) {
+  public ResponseEntity<OkMessage> _signup(SignupForm signupForm) {
     authenticationService.validateAndRegisterNewUser(
         signupForm.getUsername(),
         signupForm.getPassword(),
@@ -29,7 +28,7 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<JWTResponse> _signin(@Valid SigninForm signinForm) {
+  public ResponseEntity<JWTResponse> _signin(SigninForm signinForm) {
     JWTResponse response = authenticationService.authenticate(
       signinForm.getUsername(),
       signinForm.getPassword());

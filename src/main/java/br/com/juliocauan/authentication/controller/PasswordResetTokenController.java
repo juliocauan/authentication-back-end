@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.PasswordResetTokenServiceImpl;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -18,7 +17,7 @@ public class PasswordResetTokenController implements PasswordResetTokenApi {
     private final PasswordResetTokenServiceImpl passwordResetTokenService;
     
     @Override
-    public ResponseEntity<OkMessage> _emailPasswordResetToken(@Valid String username) {
+    public ResponseEntity<OkMessage> _emailPasswordResetToken(String username) {
         String token = passwordResetTokenService.generateToken(username);
         passwordResetTokenService.sendEmail(username, token);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body(
@@ -26,7 +25,7 @@ public class PasswordResetTokenController implements PasswordResetTokenApi {
     }
 
     @Override
-    public ResponseEntity<OkMessage> _resetUserPassword(@Valid PasswordMatch passwordMatch, String token) {
+    public ResponseEntity<OkMessage> _resetUserPassword(PasswordMatch passwordMatch, String token) {
         passwordResetTokenService.resetPassword(passwordMatch, token);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Password updated successfully!"));
     }

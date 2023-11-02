@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -25,13 +24,13 @@ public class AdminController implements AdminApi {
     private final UserServiceImpl userService;
 
     @Override @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<OkMessage> _updateUserRoles(@Valid UpdateUserRolesForm updateUserRolesForm) {
+    public ResponseEntity<OkMessage> _updateUserRoles(UpdateUserRolesForm updateUserRolesForm) {
       adminService.updateUserRole(updateUserRolesForm);
       return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Patched user roles successfully!"));
     }
   
     @Override @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserInfo>> _getAllUsers(@Valid String username, @Valid EnumRole role) {
+    public ResponseEntity<List<UserInfo>> _getAllUsers(String username, EnumRole role) {
       List<UserInfo> response = userService.getUserInfos(username, role);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }

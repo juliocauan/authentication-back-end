@@ -30,7 +30,7 @@ class AuthControllerTest extends TestContext {
     private final String urlSignin = "/api/auth/signin";
 
     private final String password = "1234567890";
-    private final String username = "test1@email.com";
+    private final String username = "test@email.com";
 
     private final String okMessage = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -62,7 +62,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void signupUser() throws Exception{
+    void signup() throws Exception{
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -73,7 +73,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void signupUser_error_invalidSignupForm() throws Exception{
+    void signup_error_invalidSignupForm() throws Exception{
         signupForm.username("aaaaaaaaaaaaa").password("12345");
         getMockMvc().perform(
             post(urlSignup)
@@ -87,7 +87,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void signupUser_error_duplicatedUsername() throws Exception{
+    void signup_error_duplicatedUsername() throws Exception{
         saveUser();
         getMockMvc().perform(
             post(urlSignup)
@@ -101,7 +101,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void signinUser() throws Exception{
+    void signin() throws Exception{
         saveUser();
         getMockMvc().perform(
             post(urlSignin)
@@ -109,12 +109,12 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(144)))
+            .andExpect(jsonPath("$.token", hasLength(143)))
             .andExpect(jsonPath("$.type").value("Bearer"));
     }
 
     @Test
-    void signinUser_error_invalidSigninForm() throws Exception{
+    void signin_error_invalidSigninForm() throws Exception{
         signinForm.username("aaaaaaaaaaaaa").password("12345");
         getMockMvc().perform(
             post(urlSignin)
@@ -128,7 +128,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void signinUser_error_badCredentials() throws Exception{
+    void signin_error_badCredentials() throws Exception{
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)

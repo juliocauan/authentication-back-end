@@ -1,7 +1,5 @@
 package br.com.juliocauan.authentication.repository;
 
-import java.util.HashSet;
-
 import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +43,7 @@ class PasswordResetTokenRepositoryTest extends TestContext {
             .id(null)
             .username(username)
             .password(password)
-            .roles(new HashSet<>())
+            .roles(null)
         .build());
     }
 
@@ -60,22 +58,22 @@ class PasswordResetTokenRepositoryTest extends TestContext {
     }
 
     @Test
-    void givenPresentToken_WhenFindByToken_ThenPasswordResetToken() {
+    void getByToken() {
         assertEquals(expectedEntity, passwordResetTokenRepository.getByToken(tokenPresent).get());
     }
 
     @Test
-    void givenNotPresentToken_WhenFindByToken_ThenPasswordResetTokenNotPresent() {
+    void getByToken_notPresent() {
         assertFalse(passwordResetTokenRepository.getByToken(tokenNotPresent).isPresent());
     }
 
     @Test
-    void givenPresentUser_WhenFindByUser_ThenPasswordResetToken() {
+    void getByUser() {
         assertEquals(expectedEntity, passwordResetTokenRepository.getByUser(userEntity).get());
     }
 
     @Test
-    void givenNotPresentUser_WhenFindByUser_ThenPasswordResetTokenNotPresent() {
+    void getByUser_notPresent() {
         assertFalse(passwordResetTokenRepository.getByUser(null).isPresent());
     }
     

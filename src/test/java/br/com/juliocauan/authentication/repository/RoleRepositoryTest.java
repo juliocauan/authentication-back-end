@@ -21,13 +21,13 @@ class RoleRepositoryTest extends TestContext {
     }
 
     @Test
-    void givenPresentName_WhenFindByName_ThenRole(){
+    void getByName(){
         RoleEntity expectedEntity = getRoleRepository().findAll().get(0);
         assertEquals(expectedEntity, getRoleRepository().getByName(expectedEntity.getName()).get());
     }
 
     @Test
-    void givenNotPresentName_WhenFindByName_ThenRoleNotPresent(){
+    void getByName_notPresent(){
         assertFalse(getRoleRepository().getByName(null).isPresent());
     }
 

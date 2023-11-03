@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +70,7 @@ class PasswordResetTokenControllerTest extends TestContext {
                 .id(null)
                 .username(username)
                 .password(password)
-                .roles(new HashSet<>())
+                .roles(null)
             .build());
     }
 

@@ -2,6 +2,7 @@ package br.com.juliocauan.authentication.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -54,16 +55,18 @@ class PasswordResetTokenEntityTest extends TestContext {
     }
 
     @Test
-    void deleteCascadeDoesNotDeleteUser() {
+    void onDelete_cascadeDoesNotDeleteUser() {
+        UUID userId = passwordResetToken.getUser().getId();
         passwordResetTokenRepository.deleteAll();
-        assertEquals(userEntity, getUserRepository().findById(passwordResetToken.getUser().getId()).get());
+        assertEquals(userEntity, getUserRepository().findById(userId).get());
     }
 
     @Test
-    void ifDeleteUser_ThenDeletePasswordResetToken() {
-        assertTrue(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
+    void onUserDelete_deletePasswordResetToken() {
+        Long id = passwordResetToken.getId();
+        assertTrue(passwordResetTokenRepository.findById(id).isPresent());
         getUserRepository().deleteById(userEntity.getId());
-        assertFalse(passwordResetTokenRepository.findById(passwordResetToken.getId()).isPresent());
+        assertFalse(passwordResetTokenRepository.findById(id).isPresent());
     }
 
     @Test

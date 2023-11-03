@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,9 +80,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final Set<EnumRole> getRoles() {
-        Set<EnumRole> roles = new HashSet<>();
-        for(EnumRole role : EnumRole.values()) roles.add(role);
-        return roles;
+        return Stream.of(EnumRole.values()).collect(Collectors.toSet());
     }
 
     @Test

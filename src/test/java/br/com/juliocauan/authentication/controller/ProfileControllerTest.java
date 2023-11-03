@@ -6,8 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.HashSet;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.JWTResponse;
@@ -57,7 +55,7 @@ class ProfileControllerTest extends TestContext {
                 .id(null)
                 .username(username)
                 .password(encoder.encode(password))
-                .roles(new HashSet<>())
+                .roles(null)
             .build());
     }
 
@@ -77,7 +75,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
-    void profileContent_error_notLogged() throws Exception{
+    void profileContent_error_unauthorized() throws Exception{
         getMockMvc().perform(
             get(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -103,7 +101,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @Test
-    void updateUserPassword_error_notLogged() throws Exception{
+    void updateUserPassword_error_unauthorized() throws Exception{
         getMockMvc().perform(
             patch(urlProfile))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

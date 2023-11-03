@@ -49,7 +49,7 @@ class AuthControllerTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username).password(password);
+        signupForm.username(username).password(password).role(null);
         signinForm.username(username).password(password);
     }
 

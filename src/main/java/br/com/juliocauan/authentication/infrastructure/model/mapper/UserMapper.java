@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
@@ -25,7 +26,7 @@ public interface UserMapper {
         return new UserInfo()
             .id(model.getId())
             .username(model.getUsername())
-            .roles(RoleMapper.setRoleToSetEnumRole(model.getRoles()));
+            .roles(model.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
     }
     
 }

@@ -6,7 +6,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,7 @@ class UserDetailsServiceTest extends TestContext {
     }
     
     @Test
-    void givenPresentUsername_WhenLoadUserByUsername_ThenUserDetails(){
+    void loadByUsername(){
         getUserRepository().save(entity);
         UserDetails user = userDetailsService.loadUserByUsername(username);
         assertEquals(username, user.getUsername());
@@ -66,8 +66,10 @@ class UserDetailsServiceTest extends TestContext {
     }
     
     @Test
-    void givenNotPresentUsername_WhenLoadUserByUsername_ThenUsernameNotFoundException(){
-        assertThrows(UsernameNotFoundException.class, () -> userDetailsService.loadUserByUsername(username), errorUsernameNotFound);
+    void loadByUsername_error_usernameNotFound(){
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+            () -> userDetailsService.loadUserByUsername(username));
+        assertEquals(errorUsernameNotFound, exception.getMessage());
     }
 
 }

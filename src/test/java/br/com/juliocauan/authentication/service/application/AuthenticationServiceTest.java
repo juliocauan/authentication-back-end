@@ -61,7 +61,7 @@ class AuthenticationServiceTest extends TestContext {
     }
     
     @Test
-    void validateAndRegisterNewUser_DuplicatedUserError(){
+    void validateAndRegisterNewUser_duplicatedUserError(){
         getUserRepository().save(UserEntity.builder()
             .id(null)
             .username(username)
@@ -83,7 +83,7 @@ class AuthenticationServiceTest extends TestContext {
     }
 
     @Test
-    void authenticate_BadCredentialsError(){
+    void authenticate_badCredentialsError(){
         BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
             () -> authenticationService.authenticate(username, password));
         assertEquals(errorBadCredentials, exception.getMessage());

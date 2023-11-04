@@ -1,13 +1,10 @@
-server:
-    port: ${APP_PORT_DEV:8100}
-
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:${DB_PORT_DEV:5432}/auth-db-dev?useSSL=true
+        url: jdbc:postgresql://localhost:${DB_PORT_DEV:5432}/${DB_NAME_DEV:auth-db-dev}?useSSL=true
         username: ${DB_USER_DEV:root}
         password: ${DB_PASSWORD_DEV:secret}
     mail:
-        username: ${APP_EMAIL_USERNAME:jcam.test01@gmail.com}
-        password: ${APP_EMAIL_PASSWORD:qsdbnzwwmoznzcee}
+        username: ${APP_EMAIL_USERNAME_DEV:jcam.test01@gmail.com}
+        password: ${APP_EMAIL_PASSWORD_DEV:qsdbnzwwmoznzcee}
         
 domain: http://localhost:4200

@@ -1,12 +1,16 @@
+# Use an appropriate base image for your Java application
 FROM eclipse-temurin:17-jre-alpine
 
+# Expose the port your Java application listens on
 EXPOSE 8000
 
+# Set the working directory
 WORKDIR /auth
 
-ENV DB_HOST=postgres DB_PORT=5432
-ENV DB_NAME=auth-db DB_USER=root DB_PASSWORD=secret
+# Copy your Java application JAR file into the container
+COPY ./target/*.jar /authentication.jar
 
-COPY ./*.jar /authentication.jar
+# Define the command to run your Java application
+ENV SPRING_PROFILES_ACTIVE=prod
 
-CMD [ "java", "-jar", "/authentication.jar" ]
+CMD ["java", "-jar", "/authentication.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]

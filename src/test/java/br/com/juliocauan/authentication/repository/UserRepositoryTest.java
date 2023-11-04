@@ -129,20 +129,20 @@ class UserRepositoryTest extends TestContext {
 
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameNotContainsAndRole() {
-        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, rolePresent);
-        assertTrue(userList.isEmpty());
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, rolePresent);
+        assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameContainsAndRoleNotPresent() {
-        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleNotPresent);
-        assertTrue(userList.isEmpty());
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleNotPresent);
+        assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameNotContainsAndRoleNotPresent() {
-        List<User> userList = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
-        assertTrue(userList.isEmpty());
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
+        assertTrue(foundUsers.isEmpty());
     }
 
 }

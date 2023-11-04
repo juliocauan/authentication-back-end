@@ -58,26 +58,38 @@ class UserServiceTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        entity = UserEntity.builder()
-            .password(password)
-            .username(username)
-            .roles(roles)
-        .build();
+        entity = getUserRepository().save(
+            UserEntity.builder()
+                .password(password)
+                .username(username)
+                .roles(roles)
+            .build());
+    }
+
+    private final void saveSecondUser() {
+        getUserRepository().save(UserEntity
+            .builder()
+                .id(null)
+                .username(username + "2")
+                .password(password)
+                .roles(roles)
+            .build());
     }
 
     @Test
     void save(){
+        getUserRepository().deleteAll();
         assertDoesNotThrow(() -> userService.save(entity));
     }
 
     @Test
     void getByUsername(){
-        getUserRepository().save(entity);
         assertEquals(entity, userService.getByUsername(username));
     }
 
     @Test
     void getByUsername_error_usernameNotFound(){
+        getUserRepository().deleteAll();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> userService.getByUsername(username));
         assertEquals(errorUsernameNotFound, exception.getMessage());
@@ -85,51 +97,77 @@ class UserServiceTest extends TestContext {
 
     @Test
     void checkDuplicatedUsername(){
+        getUserRepository().deleteAll();
         assertDoesNotThrow(() -> userService.checkDuplicatedUsername(username));
     }
 
     @Test
     void checkDuplicatedUsername_entityExistsException(){
-        getUserRepository().save(entity);
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
             () -> userService.checkDuplicatedUsername(username));
         assertEquals(errorDuplicatedUsername, exception.getMessage());
     }
 
     @Test
-    void getAllUsers(){
-        entity = getUserRepository().save(entity);
+    void getUserInfos() {
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> userList = userService.getUserInfos(usernameContains, rolePresent);
-        assertEquals(1, userList.size());
-        assertEquals(expectedUserInfo, userList.get(0));
-        
-        entity = getUserRepository().save(UserEntity
-            .builder()
-                .username(username + "2")
-                .password(password)
-                .roles(roles)
-            .build());
-        expectedUserInfo = UserMapper.domainToUserInfo(entity);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, rolePresent);
+        assertEquals(1, foundUserInfos.size());
+        assertEquals(expectedUserInfo, foundUserInfos.get(0));
+    }
 
-        userList = userService.getUserInfos(usernameContains, rolePresent);
-        assertEquals(2, userList.size());
-        assertTrue(userList.contains(expectedUserInfo));
+    @Test
+    void getUserInfos_branch_usernameContainsAndRole() {
+        saveSecondUser();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, rolePresent);
+        assertEquals(2, foundUserInfos.size());
+        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    }
 
-        userList = userService.getUserInfos(null, null);
-        assertEquals(2, userList.size());
+    @Test
+    void getUserInfos_branch_usernameContainsAndNull() {
+        saveSecondUser();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, null);
+        assertEquals(2, foundUserInfos.size());
+        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    }
 
-        userList = userService.getUserInfos(null, rolePresent);
-        assertEquals(2, userList.size());
+    @Test
+    void getUserInfos_branch_nullAndRole() {
+        saveSecondUser();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(null, rolePresent);
+        assertEquals(2, foundUserInfos.size());
+        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    }
 
-        userList = userService.getUserInfos(usernameContains, null);
-        assertEquals(2, userList.size());
+    @Test
+    void getUserInfos_branch_nullAndNull() {
+        saveSecondUser();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(null, null);
+        assertEquals(2, foundUserInfos.size());
+        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    }
 
-        userList = userService.getUserInfos(usernameNotContains, null);
-        assertTrue(userList.isEmpty());
+    @Test
+    void getUserInfos_branch_usernameNotContainsAndRole() {
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameNotContains, rolePresent);
+        assertTrue(foundUserInfos.isEmpty());
+    }
 
-        userList = userService.getUserInfos(null, roleNotPresent);
-        assertTrue(userList.isEmpty());
+    @Test
+    void getUserInfos_branch_usernameContainsAndRoleNotPresent() {
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, roleNotPresent);
+        assertTrue(foundUserInfos.isEmpty());
+    }
+
+    @Test
+    void getUserInfos_branch_usernameNotContainsAndRoleNotPresent() {
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameNotContains, roleNotPresent);
+        assertTrue(foundUserInfos.isEmpty());
     }
     
 }

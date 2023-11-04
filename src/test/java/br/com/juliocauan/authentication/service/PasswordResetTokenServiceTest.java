@@ -1,12 +1,15 @@
 package br.com.juliocauan.authentication.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
-import java.util.HashSet;
 
 import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.PasswordMatch;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,7 +72,7 @@ class PasswordResetTokenServiceTest extends TestContext {
             .builder()
                 .username(username)
                 .password(password)
-                .roles(new HashSet<>())
+                .roles(null)
             .build());
     }
 

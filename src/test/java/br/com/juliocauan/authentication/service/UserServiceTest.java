@@ -66,32 +66,34 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void givenValidUserEntity_WhenSave_ThenVoid(){
+    void save(){
         assertDoesNotThrow(() -> userService.save(entity));
     }
 
     @Test
-    void givenPresentUsername_WhenGetByUsername_ThenEqualsUser(){
+    void getByUsername(){
         getUserRepository().save(entity);
         assertEquals(entity, userService.getByUsername(username));
     }
 
     @Test
-    void givenNotPresentUsername_WhenGetByUsername_ThenUsernameNotFoundException(){
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class, () -> userService.getByUsername(username));
+    void getByUsername_error_usernameNotFound(){
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+            () -> userService.getByUsername(username));
         assertEquals(errorUsernameNotFound, exception.getMessage());
     }
 
     @Test
-    void givenDuplicatedUsername_WhenCheckDuplicatedUsername_ThenEntityExistsException(){
-        getUserRepository().save(entity);
-        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class, () -> userService.checkDuplicatedUsername(username));
-        assertEquals(errorDuplicatedUsername, exception.getMessage());
+    void checkDuplicatedUsername(){
+        assertDoesNotThrow(() -> userService.checkDuplicatedUsername(username));
     }
 
     @Test
-    void givenNotDuplicatedUsername_WhenCheckDuplicatedUsername_ThenVoid(){
-        assertDoesNotThrow(() -> userService.checkDuplicatedUsername(username));
+    void checkDuplicatedUsername_entityExistsException(){
+        getUserRepository().save(entity);
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+            () -> userService.checkDuplicatedUsername(username));
+        assertEquals(errorDuplicatedUsername, exception.getMessage());
     }
 
     @Test

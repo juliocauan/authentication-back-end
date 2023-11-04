@@ -26,14 +26,15 @@ class RoleServiceTest extends TestContext {
     }
 
     @Test
-    void givenValidName_WhenGetByName_ThenEqualsName(){
+    void getByName(){
         for(EnumRole name : EnumRole.values())
             assertEquals(name, roleService.getByName(name).getName());
     }
 
     @Test
-    void givenInvalidName_WhenGetByName_ThenThrowsEntityNotFoundException(){
-        EntityNotFoundException expection = assertThrowsExactly(EntityNotFoundException.class, () -> roleService.getByName(null));
+    void getByName_error_entityNotFound(){
+        EntityNotFoundException expection = assertThrowsExactly(EntityNotFoundException.class,
+            () -> roleService.getByName(null));
         assertEquals("Role Not Found with name: null", expection.getMessage());
     }
 

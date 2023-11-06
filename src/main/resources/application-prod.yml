@@ -7,4 +7,4 @@ spring:
         username: ${APP_EMAIL_USERNAME}
         password: ${APP_EMAIL_PASSWORD}
 
-domain: http://localhost:4200
+domain: ${APP_DOMAIN}

@@ -1,40 +1,41 @@
 version: '3.9'
 name: authentication-back-end-dev
 services:
-  postgres:
-    image: postgres:alpine
-    restart: always
-    env_file:
-      - .env
-    environment:
-      POSTGRES_USER: ${DB_USER_DEV}
-      POSTGRES_PASSWORD: ${DB_PASSWORD_DEV}
-      POSTGRES_DB: ${DB_NAME_DEV}
-    ports:
-      - ${DB_PORT_DEV}:5432
-    volumes:
-      - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db-dev:/var/lib/postgresql/data
-  
-  authentication:
-    container_name: authentication-back-end-dev
+  app:
     build: .
     depends_on:
       - postgres
     env_file:
       - .env
     environment:
-      SPRING_PROFILES_ACTIVE: dev
-
-      # Default environment variables
-      # DB_NAME_DEV: ${DB_NAME_DEV}
-      # DB_PORT_DEV: ${DB_PORT_DEV}
-      # DB_USER_DEV: ${DB_USER_DEV}
-      # DB_PASSWORD_DEV: ${DB_PASSWORD_DEV}
-      # APP_EMAIL_USERNAME_DEV: ${APP_EMAIL_USERNAME_DEV}
-      # APP_EMAIL_PASSWORD_DEV: ${APP_EMAIL_PASSWORD_DEV}
+      - SPRING_PROFILES_ACTIVE=dev
+      - DB_NAME_DEV=${DB_NAME_DEV}
+      - DB_PORT_DEV=${DB_PORT_DEV}
+      - DB_USER_DEV=${DB_USER_DEV}
+      - DB_PASSWORD_DEV=${DB_PASSWORD_DEV}
+      - APP_EMAIL_USERNAME_DEV=${APP_EMAIL_USERNAME_DEV}
+      - APP_EMAIL_PASSWORD_DEV=${APP_EMAIL_PASSWORD_DEV}
     ports:
-      - 8100:8100
+      - 8000:8000
+    networks:
+      - backend
+  
+  postgres:
+    image: postgres:alpine
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER_DEV}
+      - POSTGRES_PASSWORD=${DB_PASSWORD_DEV}
+      - POSTGRES_DB=${DB_NAME_DEV}
+    ports:
+      - ${DB_PORT_DEV}:5432
+    volumes:
+      - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db-dev:/var/lib/postgresql/data
+    networks:
+      - backend
   
   adminer:
     image: adminer:standalone
@@ -43,8 +44,13 @@ services:
       - postgres
     ports:
       - 9000:8080
+    networks:
+      - backend
    
 volumes:
   db-dev:
     name: auth-db-dev
     
+networks:
+  backend:
+    driver: bridge

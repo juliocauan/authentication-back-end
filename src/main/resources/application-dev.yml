@@ -1,10 +1,10 @@
 spring:
     datasource:
-        url: jdbc:postgresql://localhost:${DB_PORT_DEV:5432}/${DB_NAME_DEV:auth-db-dev}?useSSL=true
-        username: ${DB_USER_DEV:root}
-        password: ${DB_PASSWORD_DEV:secret}
+        url: jdbc:postgresql://postgres:${DB_PORT_DEV}/${DB_NAME_DEV}?useSSL=true
+        username: ${DB_USER_DEV}
+        password: ${DB_PASSWORD_DEV}
     mail:
-        username: ${APP_EMAIL_USERNAME_DEV:jcam.test01@gmail.com}
-        password: ${APP_EMAIL_PASSWORD_DEV:qsdbnzwwmoznzcee}
+        username: ${APP_EMAIL_USERNAME_DEV}
+        password: ${APP_EMAIL_PASSWORD_DEV}
         
 domain: http://localhost:4200

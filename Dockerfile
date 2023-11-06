@@ -8,9 +8,9 @@ EXPOSE 8000
 WORKDIR /auth
 
 # Copy your Java application JAR file into the container
-COPY ./target/*.jar /authentication.jar
+COPY ./**/authentication-*.jar /authentication.jar
 
 # Define the command to run your Java application
 ENV SPRING_PROFILES_ACTIVE=prod
 
-CMD ["java", "-jar", "/authentication.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
+CMD ["java", "-jar", "/authentication.jar"]

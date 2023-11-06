@@ -32,12 +32,12 @@ class EmailServiceTest extends TestContext {
     }
 
     @Test
-    void givenValidArgs_whenSendEmail_ThenVoid() {
+    void sendEmail() {
         assertDoesNotThrow(() -> emailService.sendEmail(receiver, subject, message));
     }
 
     @Test
-    void givenInvalidArgs_whenSendEmail_ThenMailException() {
+    void sendEmail_error_mailSend() {
         MailSendException exception = assertThrowsExactly(MailSendException.class,
             () -> emailService.sendEmail("null", "null", null));
         

@@ -3,18 +3,11 @@ name: authentication-back-end-dev
 services:
   app:
     build: .
+    restart: no
     depends_on:
       - postgres
     env_file:
       - .env
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - DB_NAME_DEV=${DB_NAME_DEV}
-      - DB_PORT_DEV=${DB_PORT_DEV}
-      - DB_USER_DEV=${DB_USER_DEV}
-      - DB_PASSWORD_DEV=${DB_PASSWORD_DEV}
-      - APP_EMAIL_USERNAME_DEV=${APP_EMAIL_USERNAME_DEV}
-      - APP_EMAIL_PASSWORD_DEV=${APP_EMAIL_PASSWORD_DEV}
     ports:
       - 8000:8000
     networks:

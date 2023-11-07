@@ -20,7 +20,7 @@ public class JwtProvider {
 		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + EXPIRATION);
-		return Jwts.builder()
+		return "Bearer " + Jwts.builder()
 				.subject(userPrincipal.getUsername())
 				.issuedAt(now)
 				.expiration(expiryDate)

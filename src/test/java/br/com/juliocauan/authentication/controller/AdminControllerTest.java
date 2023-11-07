@@ -16,7 +16,6 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
-import org.openapitools.model.JWTResponse;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,8 +74,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final String getToken(String username){
-        JWTResponse jwt = authenticationService.authenticate(username, password);
-        return jwt.getType() + " " + jwt.getToken();
+        return authenticationService.authenticate(username, password).getBody();
     }
 
     private final Set<EnumRole> getRoles() {

@@ -1,7 +1,7 @@
 package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.AuthApi;
-import org.openapitools.model.JWTResponse;
+import org.openapitools.model.BearerToken;
 import org.openapitools.model.OkMessage;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
@@ -28,8 +28,8 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<JWTResponse> _signin(SigninForm signinForm) {
-    JWTResponse response = authenticationService.authenticate(
+  public ResponseEntity<BearerToken> _signin(SigninForm signinForm) {
+    BearerToken response = authenticationService.authenticate(
       signinForm.getUsername(),
       signinForm.getPassword());
     return ResponseEntity.status(HttpStatus.OK).body(response);

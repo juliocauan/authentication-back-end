@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.JWTResponse;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.PasswordUpdateForm;
 import org.springframework.http.MediaType;
@@ -60,8 +59,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     private final String getToken(){
-        JWTResponse jwt = authenticationService.authenticate(username, password);
-        return jwt.getType() + " " + jwt.getToken();
+        return authenticationService.authenticate(username, password).getBody();
     }
 
     @Test

@@ -109,8 +109,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.token", hasLength(143)))
-            .andExpect(jsonPath("$.type").value("Bearer"));
+            .andExpect(jsonPath("$.body", hasLength(150)));
     }
 
     @Test

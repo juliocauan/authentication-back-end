@@ -34,10 +34,43 @@ jobs:
     - name: Test and Package with Maven
       run: mvn -B package --file pom.xml
 
+        
+    - name: Upload Workplace Artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: workplace
+        path: .
+
+    - name: Upload Authentication Artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: authentication
+        path: target/*.jar
+
+  upload_image:
+    needs: test_and_package
+    uses: ./.github/workflows/docker.yml
+    secrets: inherit
+
+  dependency_graph:
+    runs-on: ubuntu-latest
+    needs: test_and_package
+    steps:
+    - name: Download Workplace Artifact
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: workplace
+    
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v2.0.1
 
-    - name: Delete Old Artifacts
+  delete_artifacts:
+    runs-on: ubuntu-latest
+    needs: 
+      - upload_image
+      - dependency_graph
+    steps:
+    - name: Delete Artifacts
       uses: actions/github-script@v6
       id: artifact
       with:
@@ -56,14 +89,3 @@ jobs:
                 artifact_id: id,
               })
             })
-
-    - name: Upload a Build Artifact
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: authentication
-        path: target/*.jar
-
-  upload_image:
-    needs: test_and_package
-    uses: ./.github/workflows/docker.yml
-    secrets: inherit

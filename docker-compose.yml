@@ -8,6 +8,8 @@ services:
       - postgres
     env_file:
       - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
     ports:
       - 8000:8000
     networks:
@@ -19,11 +21,11 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${DB_USER_DEV}
-      - POSTGRES_PASSWORD=${DB_PASSWORD_DEV}
-      - POSTGRES_DB=${DB_NAME_DEV}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - ${DB_PORT_DEV}:5432
+      - ${DB_PORT}:5432
     volumes:
       - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
       - db-dev:/var/lib/postgresql/data

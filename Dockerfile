@@ -12,12 +12,12 @@ COPY ./**/authentication-*.jar /authentication.jar
 
 # Default environment variables for opensource production
 ENV SPRING_PROFILES_ACTIVE=prod
-ENV DB_NAME=auth-db-dev
+
+ENV DB_NAME=auth-db
 ENV DB_PORT=5432
-ENV DB_USER=root
-ENV DB_PASSWORD=secret
-ENV APP_EMAIL_USERNAME=jcam.test01@gmail.com
-ENV APP_EMAIL_PASSWORD=qsdbnzwwmoznzcee
+ENV DB_USER=sa
+ENV DB_PASSWORD=sa
+
 ENV APP_DOMAIN=http://localhost:4200
 
 # Command to run Java application

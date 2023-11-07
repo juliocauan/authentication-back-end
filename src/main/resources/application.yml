@@ -3,6 +3,9 @@ server:
 
 spring:
     datasource:
+        url: jdbc:postgresql://postgres:${DB_PORT}/${DB_NAME}?useSSL=true
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
         driver-class-name: org.postgresql.Driver
     mustache:  
         check-template-location: false
@@ -27,3 +30,4 @@ spring:
                     starttls:
                         enable: true
     
+domain: ${APP_DOMAIN}

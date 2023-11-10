@@ -28,7 +28,7 @@ services:
       - ${DB_PORT}:5432
     volumes:
       - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db-dev:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     networks:
       - backend
   
@@ -39,11 +39,9 @@ services:
       - postgres
     ports:
       - 9000:8080
-    networks:
-      - backend
    
 volumes:
-  db-dev:
+  db:
     name: auth-db-dev
     
 networks:

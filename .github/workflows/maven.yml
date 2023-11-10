@@ -7,7 +7,7 @@ on:
     branches: [ 'main', 'develop' ]
 
 jobs:
-  test_and_package:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
@@ -33,35 +33,18 @@ jobs:
     
     - name: Test and Package with Maven
       run: mvn -B package --file pom.xml
+    
+    - name: Save build on cache
+      uses: actions/cache/save@v3
+      id: build
+      with:
+        path: .
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v2.0.1
 
-    - name: Delete old Artifacts
-      uses: actions/github-script@v6
-      id: artifact
-      with:
-        script: |
-          const res = await github.rest.actions.listArtifactsForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-          })
-          res.data.artifacts
-            .filter(({ name }) => name === 'package')
-            .forEach(({ id }) => {
-              github.rest.actions.deleteArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: id,
-              })
-            })
-    - name: Upload Authentication Artifact
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: authentication
-        path: target/*.jar
-
-  upload_image:
-    needs: test_and_package
+  docker_deploy:
+    needs: build
     uses: ./.github/workflows/docker.yml
     secrets: inherit

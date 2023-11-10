@@ -8,7 +8,7 @@ EXPOSE 8000
 WORKDIR /auth
 
 # Copy Java application JAR file into the container
-COPY ./**/authentication-*.jar /authentication.jar
+COPY ./target/authentication-*.jar /authentication.jar
 
 # Default environment variables for opensource production
 ENV SPRING_PROFILES_ACTIVE=prod

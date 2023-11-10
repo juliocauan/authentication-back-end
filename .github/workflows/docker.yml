@@ -9,14 +9,18 @@ jobs:
     steps:
     - name: Setup Docker Build
       uses: docker/setup-buildx-action@v2.4.0
-      
-    - name: Restore build cache
+    
+    - name: Restore Cache .JAR
       uses: actions/cache/restore@v3
       with:
-        path: |
-          ./target/authentication-*.jar
-          ./Dockerfile
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        path: './target/authentication-*.jar'
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/authentication-*.jar') }}
+
+    - name: Restore Cache Dockerfile
+      uses: actions/cache/restore@v3
+      with:
+        path: './Dockerfile'
+        key: ${{ runner.os }}-maven-${{ hashFiles('./Dockerfile') }}
 
     - name: Docker Login
       uses: docker/login-action@v2.1.0

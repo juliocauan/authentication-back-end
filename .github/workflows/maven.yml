@@ -34,12 +34,17 @@ jobs:
     - name: Test and Package with Maven
       run: mvn -B package --file pom.xml
     
-    - name: Save build on cache
+    - name: Cache .JAR
       uses: actions/cache/save@v3
-      id: build
       with:
-        path: .
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        path: './target/authentication-*.jar'
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/authentication-*.jar') }}
+
+    - name: Cache Dockerfile
+      uses: actions/cache/save@v3
+      with:
+        path: './Dockerfile'
+        key: ${{ runner.os }}-maven-${{ hashFiles('./Dockerfile') }}
 
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v2.0.1

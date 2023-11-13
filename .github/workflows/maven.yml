@@ -7,11 +7,33 @@ on:
     branches: [ 'main', 'develop' ]
 
 jobs:
+  clean_artifacts:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Delete old Artifacts
+      uses: actions/github-script@v6
+      id: artifact
+      with:
+        script: |
+          const res = await github.rest.actions.listArtifactsForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          })
+          res.data.artifacts
+            .filter(({ name }) => name === 'package')
+            .forEach(({ id }) => {
+              github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: id,
+              })
+            })
+
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
       with:
         ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
         submodules: recursive
@@ -22,14 +44,6 @@ jobs:
         java-version: 17
         distribution: 'temurin'
         cache: maven
-
-    # - name: Set up SSH Agent
-    #   uses: webfactory/ssh-agent@v0.8.0
-    #   with:
-    #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    # - name: Update Git Submodules
-    #   run: git submodule update --init --recursive
 
     - name: Build Database
       run: docker compose -f "docker-compose-test.yml" up -d --build
@@ -49,10 +63,11 @@ jobs:
         path: './Dockerfile'
         key: ${{ runner.os }}-dockerfile-${{ hashFiles('./Dockerfile') }}
 
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v2.0.1
-
-  docker_deploy:
+  docker:
     needs: build
     uses: ./.github/workflows/docker.yml
     secrets: inherit
+  
+  analytics:
+    needs: clean_artifacts
+    uses: ./.github/workflows/analytics.yml

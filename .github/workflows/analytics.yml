@@ -1,0 +1,25 @@
+name: Check Vulnerabilities
+
+on:
+  workflow_call:
+  
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: Submit Dependency Snapshot
+      uses: advanced-security/maven-dependency-submission-action@v3
+  
+  code:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    
+    - name: CodeQL Bundle
+      uses: advanced-security/codeql-bundle-action@v1.1.0
+      with:
+        packs: codeql/java-all, codeql/java-queries

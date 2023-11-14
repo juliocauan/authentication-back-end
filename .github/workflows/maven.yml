@@ -51,6 +51,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
     - name: Restore Cache Authentication
       uses: actions/cache/restore@v3
       with:

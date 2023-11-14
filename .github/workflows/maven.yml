@@ -41,21 +41,14 @@ jobs:
         path: './Dockerfile'
         key: ${{ runner.os }}-dockerfile-${{ hashFiles('./Dockerfile') }}
     
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v3.1.3
-      with:
-        name: authentication
-        path: ./**
-    
   codeql-analysis:
-    needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v3.0.2
+    - name: Checkout Repository
+      uses: actions/checkout@v4
       with:
-        name: authentication
-        path: .
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        submodules: recursive
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2

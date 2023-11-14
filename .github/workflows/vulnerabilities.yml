@@ -20,8 +20,4 @@ jobs:
         vulnerability-check: true
         base-ref: main
         head-ref: ${{ github.event.before }}
-  
-  code:
-    uses: ./.github/workflows/codeql.yml
-    secrets: inherit
-    
+        

@@ -9,6 +9,9 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        submodules: recursive
     
     - name: Submit Dependency Snapshot
       uses: advanced-security/maven-dependency-submission-action@v3
@@ -26,6 +29,9 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        submodules: recursive
     
     - name: Run Snyk to check for vulnerabilities
       uses: snyk/actions/maven-3-jdk-17@master

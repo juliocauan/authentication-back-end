@@ -1,0 +1,27 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [ 'main']
+  pull_request:
+    branches: [ 'main']
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Environment
+      uses: ./.github/workflows/setup.yml
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java-kotlin
+    
+    - name: Compile with Maven
+      run: mvn -B compile --file pom.xml
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:java-kotlin"

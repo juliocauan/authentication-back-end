@@ -15,6 +15,11 @@ jobs:
       with:
         ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
         submodules: recursive
+        
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java-kotlin
       
     - name: Set up JDK 17
       uses: actions/setup-java@v3
@@ -51,11 +56,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: java-kotlin
-      
     - name: Restore Cache Authentication
       uses: actions/cache/restore@v3
       with:

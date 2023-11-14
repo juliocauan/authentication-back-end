@@ -43,6 +43,7 @@ jobs:
   
   vulnerabilities:
     uses: ./.github/workflows/vulnerabilities.yml
+    secrets: inherit
 
   docker:
     needs: [ 'build', 'vulnerabilities' ]

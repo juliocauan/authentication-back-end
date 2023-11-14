@@ -15,7 +15,7 @@ jobs:
       with:
         ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
         submodules: recursive
-        
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
@@ -45,25 +45,6 @@ jobs:
       with:
         path: './Dockerfile'
         key: ${{ runner.os }}-dockerfile-${{ hashFiles('./Dockerfile') }}
-
-    - name: Cache Authentication
-      uses: actions/cache/save@v3
-      with:
-        path: './**'
-        key: ${{ runner.os }}-build
-    
-  codeql-analysis:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Restore Cache Authentication
-      uses: actions/cache/restore@v3
-      with:
-        path: './**'
-        key: ${{ runner.os }}-build
-
-    - name: Debug Output
-      run: ls -R .
     
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

@@ -7,28 +7,6 @@ on:
     branches: [ 'main', 'develop' ]
 
 jobs:
-  clean_artifacts:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Delete old Artifacts
-      uses: actions/github-script@v6
-      id: artifact
-      with:
-        script: |
-          const res = await github.rest.actions.listArtifactsForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-          })
-          res.data.artifacts
-            .filter(({ name }) => name === 'package')
-            .forEach(({ id }) => {
-              github.rest.actions.deleteArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: id,
-              })
-            })
-
   build:
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +22,11 @@ jobs:
         java-version: 17
         distribution: 'temurin'
         cache: maven
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java-kotlin
 
     - name: Build Database
       run: docker compose -f "docker-compose-test.yml" up -d --build
@@ -62,23 +45,16 @@ jobs:
       with:
         path: './Dockerfile'
         key: ${{ runner.os }}-dockerfile-${{ hashFiles('./Dockerfile') }}
-        
-    - name: Upload a application artifact
-      uses: actions/upload-artifact@v3.1.3
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
       with:
-        name: authentication
-        path: .
+        category: "/language:java-kotlin"
   
   vulnerabilities:
-    needs: clean_artifacts
     uses: ./.github/workflows/vulnerabilities.yml
-  
-  code_review:
-    needs: [ 'clean_artifacts', 'build' ]
-    uses: ./.github/workflows/codeql.yml
-    secrets: inherit
 
   docker:
-    needs: [ 'build', 'vulnerabilities' ]
+    needs: build
     uses: ./.github/workflows/docker.yml
     secrets: inherit

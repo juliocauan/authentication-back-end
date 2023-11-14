@@ -59,7 +59,7 @@ jobs:
     - name: Restore Cache Authentication
       uses: actions/cache/restore@v3
       with:
-        path: '.'
+        path: './**'
         key: ${{ runner.os }}-build
 
     - name: Debug Output

@@ -1,3 +1,5 @@
+name: Docker Application Deployment
+
 on:
   workflow_call:
 

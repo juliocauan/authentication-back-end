@@ -1,4 +1,4 @@
-name: Check Vulnerabilities
+name: Check Application Vulnerabilities
 
 on:
   workflow_call:
@@ -18,13 +18,10 @@ jobs:
       with:
         fail-on-severity: low
         vulnerability-check: true
+        base-ref: main
+        head-ref: ${{ github.event.before }}
   
   code:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+    uses: ./.github/workflows/codeql.yml
+    secrets: inherit
     
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v2.0.2
-              

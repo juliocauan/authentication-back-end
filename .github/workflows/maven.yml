@@ -62,12 +62,13 @@ jobs:
       with:
         path: './Dockerfile'
         key: ${{ runner.os }}-dockerfile-${{ hashFiles('./Dockerfile') }}
-
-  docker:
-    needs: build
-    uses: ./.github/workflows/docker.yml
-    secrets: inherit
   
   analytics:
     needs: clean_artifacts
     uses: ./.github/workflows/analytics.yml
+    secrets: inherit
+
+  docker:
+    needs: ["build", "analytics"]
+    uses: ./.github/workflows/docker.yml
+    secrets: inherit

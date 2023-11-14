@@ -48,6 +48,7 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
     
   codeql-analysis:
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Restore Cache Authentication

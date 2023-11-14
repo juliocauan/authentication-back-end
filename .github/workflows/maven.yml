@@ -23,11 +23,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: java-kotlin
-
     - name: Build Database
       run: docker compose -f "docker-compose-test.yml" up -d --build
     
@@ -46,15 +41,30 @@ jobs:
         path: './Dockerfile'
         key: ${{ runner.os }}-dockerfile-${{ hashFiles('./Dockerfile') }}
     
+    - name: Set Build Workspace Output
+      run: echo "workspace=${{ github.workspace }}" >> $GITHUB_ENV
+    
+  codeql-analysis:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Restore Build Workspace
+      run: echo "workspace=${{ needs.build.outputs.workspace }}" >> $GITHUB_ENV
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java
+    
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
-        category: "/language:java-kotlin"
+        category: "/language:java"
   
   vulnerabilities:
     uses: ./.github/workflows/vulnerabilities.yml
 
   docker:
-    needs: build
+    needs: [ 'build', 'vulnerabilities' ]
     uses: ./.github/workflows/docker.yml
     secrets: inherit

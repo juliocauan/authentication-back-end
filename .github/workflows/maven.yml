@@ -44,7 +44,7 @@ jobs:
     - name: Cache Authentication
       uses: actions/cache/save@v3
       with:
-        path: './**'
+        path: './target/**'
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
     
   codeql-analysis:

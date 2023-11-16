@@ -23,11 +23,11 @@ public abstract class PasswordResetTokenService {
 
     public final String generateToken(String username) {
         User user = getUserService().getByUsername(username);
-        deleteUserPreviousPasswordResetToken(user);
+        deletePreviousPasswordResetToken(user);
         return saveWithUser(user).getToken();
     }
     
-    private final void deleteUserPreviousPasswordResetToken(User user) {
+    private final void deletePreviousPasswordResetToken(User user) {
         Optional<PasswordResetToken> oldToken = getRepository().getByUser(user);
         if(oldToken.isPresent())
             getRepository().deleteById(oldToken.get().getId());

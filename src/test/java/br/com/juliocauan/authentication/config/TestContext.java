@@ -1,5 +1,7 @@
 package br.com.juliocauan.authentication.config;
 
+import java.util.random.RandomGenerator;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -26,6 +28,7 @@ public class TestContext {
     private final RoleRepositoryImpl roleRepository;
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
+    private final String password = RandomGenerator.getDefault().toString();
 
     @BeforeAll
     public void setup(){
@@ -46,6 +49,10 @@ public class TestContext {
     
     public RoleRepositoryImpl getRoleRepository() {
         return roleRepository;
+    }
+
+    public String getPassword() {
+        return password;
     }
     
 }

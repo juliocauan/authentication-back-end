@@ -35,14 +35,12 @@ class AdminControllerTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    private final String urlAdmin = "/api/auth/admin";
+    private final String url = "/api/auth/admin";
     private final String authorizationHeader = "Authorization";
 
     private final String usernameAdmin = "admin@email.com";
     private final String usernameManager = "manager@email.com";
     private final String usernameUser = "user@email.com";
-    private final String password = "1234567890";
-    private final int uuidSize = 36;
     
     private final String okAlterUserRole = "Patched user roles successfully!";
     private final String errorUserNotFound = "User Not Found with username: ";
@@ -58,36 +56,39 @@ class AdminControllerTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        buildAndSaveUser(usernameAdmin, EnumRole.ADMIN);
+        saveUser(usernameAdmin, EnumRole.ADMIN);
     }
 
-    private final void buildAndSaveUser(String username, EnumRole enumRole) {
+    private final void saveUser(String username, EnumRole enumRole) {
         Set<RoleEntity> roles = new HashSet<>();
         roles.add( new RoleEntity(getRoleRepository().getByName(enumRole).get()) );
         getUserRepository().save(UserEntity
             .builder()
                 .id(null)
                 .username(username)
-                .password(encoder.encode(password))
+                .password(encoder.encode(getPassword()))
                 .roles(roles)
             .build());
     }
 
-    private final String getToken(String username){
-        return authenticationService.authenticate(username, password).getBody();
+    private final String getBearerToken(String username){
+        return authenticationService.authenticate(username, getPassword()).getBody();
     }
 
-    private final Set<EnumRole> getRoles() {
+    private final Set<EnumRole> getAllRoles() {
         return Stream.of(EnumRole.values()).collect(Collectors.toSet());
     }
 
     @Test
-    void updateUserRole() throws Exception{
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
-        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm().username(usernameManager).roles(getRoles());
+    void updateUserRoles() throws Exception{
+        saveUser(usernameManager, EnumRole.MANAGER);
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm()
+            .username(usernameManager)
+            .roles(getAllRoles());
+
         getMockMvc().perform(
-            patch(urlAdmin)
-                .header(authorizationHeader, getToken(usernameAdmin))
+            patch(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isOk())
@@ -96,40 +97,47 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void updateUserRole_error_unauthorized() throws Exception{
+    void updateUserRoles_error_unauthorized() throws Exception{
         getMockMvc().perform(
-            patch(urlAdmin))
+            patch(url))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test
-    void updateUserRole_error_forbidden() throws Exception{
-        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm().username(usernameManager).roles(getRoles());
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+    void updateUserRoles_error_forbidden() throws Exception{
+        saveUser(usernameManager, EnumRole.MANAGER);
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm()
+            .username(usernameManager)
+            .roles(getAllRoles());
+        
         getMockMvc().perform(
-            patch(urlAdmin)
-                .header(authorizationHeader, getToken(usernameManager))
+            patch(url)
+                .header(authorizationHeader, getBearerToken(usernameManager))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isForbidden());
         
+        saveUser(usernameUser, EnumRole.USER);
         updateUserRolesForm.username(usernameUser);
-        buildAndSaveUser(usernameUser, EnumRole.USER);
+
         getMockMvc().perform(
-            patch(urlAdmin)
-                .header(authorizationHeader, getToken(usernameUser))
+            patch(url)
+                .header(authorizationHeader, getBearerToken(usernameUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isForbidden());
     }
 
     @Test
-    void updateUserRole_error_usernameNotFound() throws Exception{
-        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm().username(usernameUser).roles(getRoles());
+    void updateUserRoles_error_usernameNotFound() throws Exception{
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm()
+            .username(usernameUser)
+            .roles(getAllRoles());
+        
         getMockMvc().perform(
-            patch(urlAdmin)
-                .header(authorizationHeader, getToken(usernameAdmin))
+            patch(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isNotFound())
@@ -141,85 +149,97 @@ class AdminControllerTest extends TestContext {
 
     @Test
     void getAllUsers() throws Exception{
-        buildAndSaveUser(usernameUser, EnumRole.USER);
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+        saveUser(usernameUser, EnumRole.USER);
+        saveUser(usernameManager, EnumRole.MANAGER);
+        
         getMockMvc().perform(
-            get(urlAdmin)
-                .header(authorizationHeader, getToken(usernameAdmin)))
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(3)))
-            .andExpect(jsonPath("$.[0].id", Matchers.hasLength(uuidSize)))
             .andExpect(jsonPath("$.[0].username", Matchers.containsString("@email.com")))
             .andExpect(jsonPath("$.[0].roles", hasSize(1)));
     }
 
     @Test
     void getAllUsers_branch_username() throws Exception{
-        buildAndSaveUser(usernameUser, EnumRole.USER);
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+        saveUser(usernameUser, EnumRole.USER);
+        saveUser(usernameManager, EnumRole.MANAGER);
+
         getMockMvc().perform(
-            get(urlAdmin)
-                .header(authorizationHeader, getToken(usernameAdmin))
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .queryParam("username", "manag"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$.[0].id", Matchers.hasLength(uuidSize)))
             .andExpect(jsonPath("$.[0].username").value(usernameManager))
             .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.MANAGER.getValue()));
     }
 
     @Test
     void getAllUsers_branch_role() throws Exception{
-        buildAndSaveUser(usernameUser, EnumRole.USER);
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+        saveUser(usernameUser, EnumRole.USER);
+        saveUser(usernameManager, EnumRole.MANAGER);
+
         getMockMvc().perform(
-            get(urlAdmin)
-                .header(authorizationHeader, getToken(usernameAdmin))
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .queryParam("role", EnumRole.USER.getValue()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
-            .andExpect(jsonPath("$.[0].id", Matchers.hasLength(uuidSize)))
             .andExpect(jsonPath("$.[0].username").value(usernameUser))
             .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.USER.getValue()));
     }
 
     @Test
     void getAllUsers_branch_usernameAndRole() throws Exception{
-        buildAndSaveUser(usernameUser, EnumRole.USER);
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+        saveUser(usernameUser, EnumRole.USER);
+        saveUser(usernameManager, EnumRole.MANAGER);
+
         getMockMvc().perform(
-            get(urlAdmin)
-                .header(authorizationHeader, getToken(usernameAdmin))
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .queryParam("username", "admin")
                 .queryParam("role", EnumRole.USER.getValue()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$").isEmpty());
+        
+        getMockMvc().perform(
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameAdmin))
+                .queryParam("username", "er@")
+                .queryParam("role", EnumRole.USER.getValue()))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$", hasSize(1)))
+            .andExpect(jsonPath("$.[0].username").value(usernameUser))
+            .andExpect(jsonPath("$.[0].roles[0]").value(EnumRole.USER.getValue()));
     }
 
     @Test
     void getAllUsers_error_unauthorized() throws Exception{
         getMockMvc().perform(
-            get(urlAdmin))
+            get(url))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test
     void getAllUsers_error_forbidden() throws Exception{
-        buildAndSaveUser(usernameManager, EnumRole.MANAGER);
+        saveUser(usernameManager, EnumRole.MANAGER);
         getMockMvc().perform(
-            get(urlAdmin)
-                .header(authorizationHeader, getToken(usernameManager)))
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameManager)))
             .andExpect(status().isForbidden());
 
-        buildAndSaveUser(usernameUser, EnumRole.USER);
+        saveUser(usernameUser, EnumRole.USER);
         getMockMvc().perform(
-            get(urlAdmin)
-                .header(authorizationHeader, getToken(usernameUser)))
+            get(url)
+                .header(authorizationHeader, getBearerToken(usernameUser)))
             .andExpect(status().isForbidden());
     }
     

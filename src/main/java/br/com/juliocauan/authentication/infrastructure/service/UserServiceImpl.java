@@ -24,5 +24,12 @@ public final class UserServiceImpl extends UserService {
     protected final UserRepository getRepository() {
         return userRepository;
     }
+
+    @Override
+    protected final void updatePassword(User user, String encodedPassword) {
+        UserEntity userEntity = new UserEntity(user);
+        userEntity.setPassword(encodedPassword);
+        save(userEntity);
+    }
     
 }

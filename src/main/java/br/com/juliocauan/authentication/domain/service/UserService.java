@@ -16,6 +16,7 @@ public abstract class UserService {
 	
 	protected abstract UserRepository getRepository();
 	public abstract User save(User user);
+    protected abstract void updatePassword(User user, String encodedPassword);
 
     public final User getByUsername(String username){
         return getRepository().getByUsername(username)

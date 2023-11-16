@@ -10,7 +10,6 @@ import br.com.juliocauan.authentication.domain.repository.PasswordResetTokenRepo
 import br.com.juliocauan.authentication.domain.service.util.EmailService;
 import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetTokenException;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import jakarta.persistence.EntityNotFoundException;
 
 public abstract class PasswordResetTokenService {
@@ -66,9 +65,8 @@ public abstract class PasswordResetTokenService {
     }
     
     private final void updateUserPassword(User user, String newPassword) {
-        UserEntity userEntity = new UserEntity(user);
-        userEntity.setPassword(getPasswordService().encode(newPassword));
-        getUserService().save(userEntity);
+        String encodedPassword = getPasswordService().encode(newPassword);
+        getUserService().updatePassword(user, encodedPassword);
     }
 
 }

@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.service.application.AuthenticationService;
+import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtProvider;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
-import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
 import lombok.AllArgsConstructor;
 
 @Service

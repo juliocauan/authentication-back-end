@@ -7,10 +7,10 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetTokenRepository;
 import br.com.juliocauan.authentication.domain.service.PasswordResetTokenService;
 import br.com.juliocauan.authentication.domain.service.UserService;
+import br.com.juliocauan.authentication.domain.service.util.EmailService;
+import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.service.util.EmailService;
-import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
 import lombok.AllArgsConstructor;
 
 @Service

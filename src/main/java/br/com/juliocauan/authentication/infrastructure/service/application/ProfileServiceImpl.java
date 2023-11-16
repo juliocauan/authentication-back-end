@@ -6,10 +6,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.service.application.ProfileService;
+import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
-import br.com.juliocauan.authentication.infrastructure.service.util.PasswordService;
 import lombok.AllArgsConstructor;
 
 @Service

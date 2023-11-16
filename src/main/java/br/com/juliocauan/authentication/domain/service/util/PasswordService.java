@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.infrastructure.service.util;
+package br.com.juliocauan.authentication.domain.service.util;
 
 import org.openapitools.model.PasswordMatch;
 import org.springframework.security.crypto.password.PasswordEncoder;

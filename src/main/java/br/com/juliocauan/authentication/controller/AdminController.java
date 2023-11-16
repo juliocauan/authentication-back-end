@@ -31,7 +31,7 @@ public class AdminController implements AdminApi {
   
     @Override @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserInfo>> _getAllUsers(String username, EnumRole role) {
-      List<UserInfo> response = userService.getUserInfos(username, role);
+      List<UserInfo> response = userService.getUserInfosByUsernameSubstringAndRole(username, role);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
     

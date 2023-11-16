@@ -111,7 +111,7 @@ class UserServiceTest extends TestContext {
     @Test
     void getUserInfos() {
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, rolePresent);
         assertEquals(1, foundUserInfos.size());
         assertEquals(expectedUserInfo, foundUserInfos.get(0));
     }
@@ -120,7 +120,7 @@ class UserServiceTest extends TestContext {
     void getUserInfos_branch_usernameContainsAndRole() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, rolePresent);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
@@ -129,7 +129,7 @@ class UserServiceTest extends TestContext {
     void getUserInfos_branch_usernameContainsAndNull() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, null);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, null);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
@@ -138,7 +138,7 @@ class UserServiceTest extends TestContext {
     void getUserInfos_branch_nullAndRole() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfos(null, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(null, rolePresent);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
@@ -147,26 +147,26 @@ class UserServiceTest extends TestContext {
     void getUserInfos_branch_nullAndNull() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfos(null, null);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(null, null);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
 
     @Test
     void getUserInfos_branch_usernameNotContainsAndRole() {
-        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameNotContains, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, rolePresent);
         assertTrue(foundUserInfos.isEmpty());
     }
 
     @Test
     void getUserInfos_branch_usernameContainsAndRoleNotPresent() {
-        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, roleNotPresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleNotPresent);
         assertTrue(foundUserInfos.isEmpty());
     }
 
     @Test
     void getUserInfos_branch_usernameNotContainsAndRoleNotPresent() {
-        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameNotContains, roleNotPresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
         assertTrue(foundUserInfos.isEmpty());
     }
     

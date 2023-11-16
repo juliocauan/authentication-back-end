@@ -32,7 +32,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   private final RoleServiceImpl roleService;
 
   @Override
-  public final BearerToken getBearerToken(String username, String password) {
+  public final BearerToken authenticate(String username, String password) {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
     Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);
@@ -40,7 +40,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @Override
-  public final void validateAndRegisterNewUser(String username, String password, EnumRole role) {
+  public final void registerUser(String username, String password, EnumRole role) {
     userService.checkDuplicatedUsername(username);
     userService.save(UserEntity
       .builder()

@@ -20,7 +20,7 @@ public class AuthController implements AuthApi {
 
 	@Override
   public ResponseEntity<OkMessage> _signup(SignupForm signupForm) {
-    authenticationService.validateAndRegisterNewUser(
+    authenticationService.registerUser(
         signupForm.getUsername(),
         signupForm.getPassword(),
         signupForm.getRole());
@@ -30,7 +30,7 @@ public class AuthController implements AuthApi {
   @Override
   public ResponseEntity<BearerToken> _signin(SigninForm signinForm) {
     return ResponseEntity.status(HttpStatus.OK).body(authenticationService
-      .getBearerToken(
+      .authenticate(
         signinForm.getUsername(),
         signinForm.getPassword()));
   }

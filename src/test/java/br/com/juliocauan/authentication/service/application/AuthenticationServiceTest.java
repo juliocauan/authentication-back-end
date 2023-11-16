@@ -43,7 +43,7 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void validateAndRegisterNewUser(){
-        assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, EnumRole.MANAGER));
+        assertDoesNotThrow(() -> authenticationService.registerUser(username, password, EnumRole.MANAGER));
         assertEquals(1, getUserRepository().findAll().size());
 
         UserEntity user = getUserRepository().findAll().get(0);
@@ -54,7 +54,7 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void validateAndRegisterNewUser_NullRole(){
-        assertDoesNotThrow(() -> authenticationService.validateAndRegisterNewUser(username, password, null));
+        assertDoesNotThrow(() -> authenticationService.registerUser(username, password, null));
 
         UserEntity user = getUserRepository().findAll().get(0);
         assertEquals(EnumRole.USER, user.getRoles().iterator().next().getName());
@@ -70,21 +70,21 @@ class AuthenticationServiceTest extends TestContext {
         .build());
 
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
-            () -> authenticationService.validateAndRegisterNewUser(username, password, null));
+            () -> authenticationService.registerUser(username, password, null));
         assertEquals(errorUsernameDuplicated, exception.getMessage());
     }
 
     @Test
     void authenticate(){
-        authenticationService.validateAndRegisterNewUser(username, password, null);
-        BearerToken response = authenticationService.getBearerToken(username, password);
+        authenticationService.registerUser(username, password, null);
+        BearerToken response = authenticationService.authenticate(username, password);
         assertEquals("Bearer ", response.getBody().subSequence(0, 7));
     }
 
     @Test
     void authenticate_badCredentialsError(){
         BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
-            () -> authenticationService.getBearerToken(username, password));
+            () -> authenticationService.authenticate(username, password));
         assertEquals(errorBadCredentials, exception.getMessage());
     }
 

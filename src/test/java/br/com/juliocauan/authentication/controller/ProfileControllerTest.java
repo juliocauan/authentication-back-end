@@ -59,7 +59,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     private final String getToken(){
-        return authenticationService.getBearerToken(username, password).getBody();
+        return authenticationService.authenticate(username, password).getBody();
     }
 
     @Test

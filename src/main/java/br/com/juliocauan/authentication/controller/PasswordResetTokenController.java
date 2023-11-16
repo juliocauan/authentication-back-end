@@ -18,7 +18,7 @@ public class PasswordResetTokenController implements PasswordResetTokenApi {
     
     @Override
     public ResponseEntity<OkMessage> _emailPasswordResetToken(String username) {
-        String token = passwordResetTokenService.generateToken(username);
+        String token = passwordResetTokenService.generatePasswordResetToken(username);
         passwordResetTokenService.sendEmail(username, token);
         return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body(
                 "Email sent to %s successfully!".formatted(username)));

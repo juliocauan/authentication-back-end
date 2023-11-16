@@ -29,7 +29,6 @@ class AuthControllerTest extends TestContext {
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
 
-    private final String password = "1234567890";
     private final String username = "test@email.com";
 
     private final String okMessage = "User registered successfully!";
@@ -49,13 +48,13 @@ class AuthControllerTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username).password(password).role(null);
-        signinForm.username(username).password(password);
+        signupForm.username(username).password(getPassword()).role(null);
+        signinForm.username(username).password(getPassword());
     }
 
     private final void saveUser() {
         getUserRepository().save(UserEntity.builder()
-            .password(encoder.encode(password))
+            .password(encoder.encode(getPassword()))
             .username(username)
             .roles(null)
         .build());

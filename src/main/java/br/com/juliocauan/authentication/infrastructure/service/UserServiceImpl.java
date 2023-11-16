@@ -3,9 +3,9 @@ package br.com.juliocauan.authentication.infrastructure.service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.openapitools.model.EnumRole;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import br.com.juliocauan.authentication.domain.service.UserService;
@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 public final class UserServiceImpl extends UserService {
     
     private final UserRepositoryImpl userRepository;
+    private final RoleServiceImpl roleService;
 
     @Override
     public final User save(User user) {
@@ -38,13 +39,14 @@ public final class UserServiceImpl extends UserService {
     }
 
     @Override
-    public final void updateRoles(User user, Set<Role> roles) {
-        UserEntity userEntity = new UserEntity(user);
-        Set<RoleEntity> rolesEntities = roles.stream()
+    public final void updateRoles(String username, Set<EnumRole> enumRoles) {
+        UserEntity user = new UserEntity(getByUsername(username));
+        Set<RoleEntity> roles = enumRoles.stream()
+            .map(roleService::getByName)
             .map(RoleEntity::new)
             .collect(Collectors.toSet());
         
-        userEntity.setRoles(rolesEntities);
+        user.setRoles(roles);
         save(user);
     }
     

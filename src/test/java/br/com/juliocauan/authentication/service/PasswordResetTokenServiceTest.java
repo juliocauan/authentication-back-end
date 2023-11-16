@@ -78,7 +78,7 @@ class PasswordResetTokenServiceTest extends TestContext {
 
     @Test
     void generateToken() {
-        String token = assertDoesNotThrow(() -> passwordResetTokenService.generatePasswordResetToken(user.getUsername()));
+        String token = assertDoesNotThrow(() -> passwordResetTokenService.generateToken(user.getUsername()));
         PasswordResetToken passwordResetToken = passwordResetTokenRepository.getByToken(token).get();
         
         assertEquals(user, passwordResetToken.getUser());
@@ -93,7 +93,7 @@ class PasswordResetTokenServiceTest extends TestContext {
             .token(tokenMock)
             .user(user)
         .build());
-        String token = assertDoesNotThrow(() -> passwordResetTokenService.generatePasswordResetToken(user.getUsername()));
+        String token = assertDoesNotThrow(() -> passwordResetTokenService.generateToken(user.getUsername()));
         PasswordResetToken passwordResetTokenAfter = passwordResetTokenRepository.getByToken(token).get();
         
         assertNotEquals(passwordResetTokenBefore, passwordResetTokenAfter);
@@ -104,7 +104,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     void generateToken_error_getByUsername() {
         UsernameNotFoundException exception = assertThrowsExactly(
             UsernameNotFoundException.class,
-            () -> passwordResetTokenService.generatePasswordResetToken(usernameNotPresent));
+            () -> passwordResetTokenService.generateToken(usernameNotPresent));
         assertTrue(exception.getMessage().contentEquals(usernameNotFoundException));
     }
 

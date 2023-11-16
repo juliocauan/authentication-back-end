@@ -1,17 +1,18 @@
 package br.com.juliocauan.authentication.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeAll;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
-import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
@@ -35,8 +36,8 @@ class UserServiceTest extends TestContext {
     private final String username = "test@email.com";
     private final String usernameContains = "test";
     private final String usernameNotContains = "asd";
-    private final EnumRole rolePresent = EnumRole.MANAGER;
-    private final EnumRole roleNotPresent = EnumRole.ADMIN;
+    private final EnumRole roleAdmin = EnumRole.ADMIN;
+    private final EnumRole roleUser = EnumRole.USER;
 
     private final String errorUsernameNotFound =  "User Not Found with username: " + username;
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -53,7 +54,7 @@ class UserServiceTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        roles.add(new RoleEntity(getRoleRepository().getByName(rolePresent).get()));
+        roles.add(new RoleEntity(getRoleRepository().getByName(roleAdmin).get()));
     }
 
     @BeforeEach
@@ -112,7 +113,7 @@ class UserServiceTest extends TestContext {
     @Test
     void getUserInfos() {
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleAdmin);
         assertEquals(1, foundUserInfos.size());
         assertEquals(expectedUserInfo, foundUserInfos.get(0));
     }
@@ -121,7 +122,7 @@ class UserServiceTest extends TestContext {
     void getUserInfos_branch_usernameContainsAndRole() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleAdmin);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
@@ -139,7 +140,7 @@ class UserServiceTest extends TestContext {
     void getUserInfos_branch_nullAndRole() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(null, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(null, roleAdmin);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
@@ -155,23 +156,23 @@ class UserServiceTest extends TestContext {
 
     @Test
     void getUserInfos_branch_usernameNotContainsAndRole() {
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, rolePresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleAdmin);
         assertTrue(foundUserInfos.isEmpty());
     }
 
     @Test
     void getUserInfos_branch_usernameContainsAndRoleNotPresent() {
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleNotPresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleUser);
         assertTrue(foundUserInfos.isEmpty());
     }
 
     @Test
     void getUserInfos_branch_usernameNotContainsAndRoleNotPresent() {
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
+        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleUser);
         assertTrue(foundUserInfos.isEmpty());
     }
 
-    // TODO
+    //TODO
     // @Test
     // void updateRoles() {
     //     UserEntity userBeforeUpdate = getUserRepository().save(entity);
@@ -179,7 +180,7 @@ class UserServiceTest extends TestContext {
     //         .username(username)
     //         .addRolesItem(roleManager)
     //         .addRolesItem(roleUser);
-    //     assertDoesNotThrow(() -> userService.updateRole(alterUserRolesForm));
+    //     assertDoesNotThrow(() -> userService.updateRole(userBeforeUpdate, roles));
     //     UserEntity userAfterUpdate = getUserRepository().findById(userBeforeUpdate.getId()).get();
 
     //     assertNotEquals(userBeforeUpdate.getRoles(), userAfterUpdate.getRoles());

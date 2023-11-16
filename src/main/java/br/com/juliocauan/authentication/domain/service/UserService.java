@@ -8,7 +8,6 @@ import org.openapitools.model.EnumRole;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
@@ -20,7 +19,7 @@ public abstract class UserService {
 
 	public abstract User save(User user);
     public abstract void updatePassword(User user, String encodedPassword);
-    public abstract void updateRoles(User user, Set<Role> roles);
+    public abstract void updateRoles(String username, Set<EnumRole> enumRoles);
 
     public final User getByUsername(String username){
         return getRepository().getByUsername(username)

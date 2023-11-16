@@ -29,10 +29,10 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<BearerToken> _signin(SigninForm signinForm) {
-    return ResponseEntity.status(HttpStatus.OK).body(authenticationService
-      .authenticate(
+    BearerToken bearerToken = authenticationService.authenticate(
         signinForm.getUsername(),
-        signinForm.getPassword()));
+        signinForm.getPassword());
+    return ResponseEntity.status(HttpStatus.OK).body(bearerToken);
   }
 
 }

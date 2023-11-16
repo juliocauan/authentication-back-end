@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
@@ -169,5 +170,32 @@ class UserServiceTest extends TestContext {
         List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
         assertTrue(foundUserInfos.isEmpty());
     }
+
+    // TODO
+    // @Test
+    // void updateRoles() {
+    //     UserEntity userBeforeUpdate = getUserRepository().save(entity);
+    //     UpdateUserRolesForm alterUserRolesForm = new UpdateUserRolesForm()
+    //         .username(username)
+    //         .addRolesItem(roleManager)
+    //         .addRolesItem(roleUser);
+    //     assertDoesNotThrow(() -> userService.updateRole(alterUserRolesForm));
+    //     UserEntity userAfterUpdate = getUserRepository().findById(userBeforeUpdate.getId()).get();
+
+    //     assertNotEquals(userBeforeUpdate.getRoles(), userAfterUpdate.getRoles());
+    //     assertEquals(1, userBeforeUpdate.getRoles().size());
+    //     assertEquals(2, userAfterUpdate.getRoles().size());
+    // }
+
+    // @Test
+    // void updateRoles_error_getByUsername() {
+    //     UpdateUserRolesForm alterUserRolesForm = new UpdateUserRolesForm()
+    //         .username(username)
+    //         .addRolesItem(roleManager)
+    //         .addRolesItem(roleUser);
+    //     UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+    //         () -> adminService.updateUserRole(alterUserRolesForm));
+    //     assertEquals(usernameNotFoundException, exception.getMessage());
+    // }
     
 }

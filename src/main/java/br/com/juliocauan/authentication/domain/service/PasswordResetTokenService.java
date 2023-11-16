@@ -24,7 +24,7 @@ public abstract class PasswordResetTokenService {
     public final String generatePasswordResetToken(String username) {
         User user = getUserService().getByUsername(username);
         deleteUserPreviousPasswordResetToken(user);
-        return this.saveWithUser(user).getToken();
+        return saveWithUser(user).getToken();
     }
     
     private final void deleteUserPreviousPasswordResetToken(User user) {
@@ -48,7 +48,8 @@ public abstract class PasswordResetTokenService {
     public final void resetPassword(PasswordMatch passwordMatch, String token) {
         getPasswordService().checkPasswordConfirmation(passwordMatch);
         PasswordResetToken passwordResetToken = checkTokenValidation(token);
-        updateUserPassword(passwordResetToken.getUser(), passwordMatch.getPassword());
+        String encodedPassword = getPasswordService().encode(passwordMatch.getPassword());
+        getUserService().updatePassword(passwordResetToken.getUser(), encodedPassword);
         getRepository().deleteById(passwordResetToken.getId());
     }
     
@@ -62,11 +63,6 @@ public abstract class PasswordResetTokenService {
     private final PasswordResetToken getByToken(String token) {
         return getRepository().getByToken(token)
             .orElseThrow(() -> new EntityNotFoundException("Password Reset Token not found with token: " + token));
-    }
-    
-    private final void updateUserPassword(User user, String newPassword) {
-        String encodedPassword = getPasswordService().encode(newPassword);
-        getUserService().updatePassword(user, encodedPassword);
     }
 
 }

@@ -32,7 +32,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   private final RoleServiceImpl roleService;
 
   @Override
-  public final BearerToken authenticate(String username, String password) {
+  public final BearerToken getBearerToken(String username, String password) {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
     Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);

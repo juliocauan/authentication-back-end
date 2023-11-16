@@ -74,7 +74,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final String getToken(String username){
-        return authenticationService.authenticate(username, password).getBody();
+        return authenticationService.getBearerToken(username, password).getBody();
     }
 
     private final Set<EnumRole> getRoles() {

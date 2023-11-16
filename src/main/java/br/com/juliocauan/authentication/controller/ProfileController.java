@@ -19,8 +19,7 @@ public class ProfileController implements ProfileApi {
 
     @Override
     public ResponseEntity<Profile> _profileContent() {
-        Profile profile = profileService.getProfileContent();
-        return ResponseEntity.status(HttpStatus.OK).body(profile);
+        return ResponseEntity.status(HttpStatus.OK).body(profileService.getProfileContent());
     }
 
     @Override

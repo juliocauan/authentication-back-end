@@ -77,14 +77,14 @@ class AuthenticationServiceTest extends TestContext {
     @Test
     void authenticate(){
         authenticationService.validateAndRegisterNewUser(username, password, null);
-        BearerToken response = authenticationService.authenticate(username, password);
+        BearerToken response = authenticationService.getBearerToken(username, password);
         assertEquals("Bearer ", response.getBody().subSequence(0, 7));
     }
 
     @Test
     void authenticate_badCredentialsError(){
         BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
-            () -> authenticationService.authenticate(username, password));
+            () -> authenticationService.getBearerToken(username, password));
         assertEquals(errorBadCredentials, exception.getMessage());
     }
 

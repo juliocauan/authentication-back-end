@@ -23,8 +23,10 @@ import br.com.juliocauan.authentication.infrastructure.security.model.UserPrinci
 class UserMapperTest extends TestContext {
 
     private final UUID idUUID = UUID.randomUUID();
+
+    //TODO refactor this email
     private final String username = "test@email.com";
-    private final String password = "1234567890";
+    private final String password = getRandomPassword();
 
     public UserMapperTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {

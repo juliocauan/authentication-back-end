@@ -27,12 +27,13 @@ class ProfileControllerTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    private final String urlProfile = "/api/auth/profile";
+    private final String url = "/api/auth/profile";
     private final String authorizationHeader = "Authorization";
 
+    //TODO refactor this email
     private final String username = "test@email.com";
-    private final String password = "1234567890";
-    private final String newPassword = "1234567890123";
+    private final String password = getRandomPassword();
+    private final String newPassword = getRandomPassword();
 
     private final String updatedPasswordMessage = "Password updated successfully!";
     private final String errorPassword = "Wrong current password!";
@@ -58,15 +59,15 @@ class ProfileControllerTest extends TestContext {
             .build());
     }
 
-    private final String getToken(){
+    private final String getBearerToken(){
         return authenticationService.authenticate(username, password).getBody();
     }
 
     @Test
     void profileContent() throws Exception{
         getMockMvc().perform(
-            get(urlProfile)
-                .header(authorizationHeader, getToken()))
+            get(url)
+                .header(authorizationHeader, getBearerToken()))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.username").value(username));
@@ -75,7 +76,7 @@ class ProfileControllerTest extends TestContext {
     @Test
     void profileContent_error_unauthorized() throws Exception{
         getMockMvc().perform(
-            get(urlProfile))
+            get(url))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value(errorNotAuthorized));
@@ -88,9 +89,10 @@ class ProfileControllerTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
+        
         getMockMvc().perform(
-            patch(urlProfile)
-                .header(authorizationHeader, getToken())
+            patch(url)
+                .header(authorizationHeader, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -101,7 +103,7 @@ class ProfileControllerTest extends TestContext {
     @Test
     void updateUserPassword_error_unauthorized() throws Exception{
         getMockMvc().perform(
-            patch(urlProfile))
+            patch(url))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.message").value(errorNotAuthorized));
@@ -114,9 +116,10 @@ class ProfileControllerTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(password));
+        
         getMockMvc().perform(
-            patch(urlProfile)
-                .header(authorizationHeader, getToken())
+            patch(url)
+                .header(authorizationHeader, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -131,9 +134,10 @@ class ProfileControllerTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
+        
         getMockMvc().perform(
-            patch(urlProfile)
-                .header(authorizationHeader, getToken())
+            patch(url)
+                .header(authorizationHeader, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

@@ -30,10 +30,11 @@ class PasswordResetTokenControllerTest extends TestContext {
     private final String urlForgotPassword = "/api/auth/forgotpassword";
     private final String urlForgotPasswordWithToken = "/api/auth/forgotpassword/{token}";
 
+    //TODO refactor this email
     private final String username = "test@email.com";
-    private final String password = "1234567890";
-    private final String newPassword = "0987654321";
-    private final String tokenMock = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    private final String password = getRandomPassword();
+    private final String newPassword = getRandomPassword();
+    private final String tokenMock = getRandomToken();
 
     private final String okEmailPasswordResetToken = "Email sent to " + username + " successfully!";
     private final String okResetUserPassword = "Password updated successfully!";
@@ -56,15 +57,15 @@ class PasswordResetTokenControllerTest extends TestContext {
         passwordMatch.password(newPassword).passwordConfirmation(newPassword);
     }
 
-    private final void buildAndSavePasswordResetToken() {
+    private final void savePasswordResetToken() {
         passwordResetTokenRepository.save(PasswordResetTokenEntity
             .builder()
                 .token(tokenMock)
-                .user(buildAndSaveUser())
+                .user(saveUser())
             .build());
     }
 
-    private final UserEntity buildAndSaveUser() {
+    private final UserEntity saveUser() {
         return getUserRepository().save(UserEntity
             .builder()
                 .id(null)
@@ -76,7 +77,7 @@ class PasswordResetTokenControllerTest extends TestContext {
 
     @Test
     void emailPasswordResetToken() throws Exception {
-        buildAndSaveUser();
+        saveUser();
         getMockMvc().perform(
             post(urlForgotPassword)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +102,7 @@ class PasswordResetTokenControllerTest extends TestContext {
 
     @Test
     void resetUserPassword() throws Exception {
-        buildAndSavePasswordResetToken();
+        savePasswordResetToken();
         getMockMvc().perform(
             patch(urlForgotPasswordWithToken, tokenMock)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +144,7 @@ class PasswordResetTokenControllerTest extends TestContext {
         passwordResetTokenRepository.save(PasswordResetTokenEntity
             .builder()
                 .token(tokenMock)
-                .user(buildAndSaveUser())
+                .user(saveUser())
                 .expireDate(LocalDateTime.now().minusSeconds(1))
             .build());
         getMockMvc().perform(

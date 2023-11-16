@@ -38,6 +38,7 @@ class AdminControllerTest extends TestContext {
     private final String url = "/api/auth/admin";
     private final String authorizationHeader = "Authorization";
 
+    private final String password = getRandomPassword();
     private final String usernameAdmin = "admin@email.com";
     private final String usernameManager = "manager@email.com";
     private final String usernameUser = "user@email.com";
@@ -66,13 +67,13 @@ class AdminControllerTest extends TestContext {
             .builder()
                 .id(null)
                 .username(username)
-                .password(encoder.encode(getPassword()))
+                .password(encoder.encode(password))
                 .roles(roles)
             .build());
     }
 
     private final String getBearerToken(String username){
-        return authenticationService.authenticate(username, getPassword()).getBody();
+        return authenticationService.authenticate(username, password).getBody();
     }
 
     private final Set<EnumRole> getAllRoles() {

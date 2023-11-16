@@ -29,7 +29,9 @@ class AuthControllerTest extends TestContext {
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
 
+    //TODO refactor this email
     private final String username = "test@email.com";
+    private final String password = getRandomPassword();
 
     private final String okMessage = "User registered successfully!";
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -48,13 +50,13 @@ class AuthControllerTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username).password(getPassword()).role(null);
-        signinForm.username(username).password(getPassword());
+        signupForm.username(username).password(password).role(null);
+        signinForm.username(username).password(password);
     }
 
     private final void saveUser() {
         getUserRepository().save(UserEntity.builder()
-            .password(encoder.encode(getPassword()))
+            .password(encoder.encode(password))
             .username(username)
             .roles(null)
         .build());

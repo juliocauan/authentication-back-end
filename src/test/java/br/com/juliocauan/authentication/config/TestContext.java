@@ -28,7 +28,9 @@ public class TestContext {
     private final RoleRepositoryImpl roleRepository;
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
-    private final String password = RandomGenerator.getDefault().toString();
+    private final RandomGenerator randomGenerator = RandomGenerator.getDefault();
+
+    private final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     @BeforeAll
     public void setup(){
@@ -51,8 +53,21 @@ public class TestContext {
         return roleRepository;
     }
 
-    public String getPassword() {
-        return password;
+    public String getRandomPassword() {
+        return getRandomString(15);
+    }
+
+    public String getRandomToken() {
+        return getRandomString(43);
+    }
+
+    private String getRandomString(Integer length) {
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int index = randomGenerator.nextInt(characters.length());
+            sb.append(characters.charAt(index));
+        }
+        return sb.toString();
     }
     
 }

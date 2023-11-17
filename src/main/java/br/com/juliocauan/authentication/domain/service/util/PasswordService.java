@@ -15,9 +15,9 @@ public final class PasswordService {
     private final PasswordEncoder encoder;
 
     public final void checkPasswordConfirmation(PasswordMatch passwordMatch){
-        String newPassword = passwordMatch.getPassword();
+        String newPassword = encode(passwordMatch.getPassword());
         String confirmationPassword = passwordMatch.getPasswordConfirmation();
-        if(!newPassword.equals(confirmationPassword))
+        if(!encoder.matches(confirmationPassword, newPassword))
             throw new PasswordMatchException("Confirmation and new password are different!");
     }
 

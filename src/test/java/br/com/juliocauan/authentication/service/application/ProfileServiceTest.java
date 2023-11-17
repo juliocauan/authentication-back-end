@@ -32,9 +32,10 @@ class ProfileServiceTest extends TestContext {
     private final AuthenticationManager authenticationManager;
     private final PasswordService passwordService;
 
+    //TODO refactor this email
     private final String username = "test@email.com";
-    private final String password = "123456789";
-    private final String newPassword = "0987654321";
+    private final String password = getRandomPassword();
+    private final String newPassword = getRandomPassword();
     private final String currentPasswordError = "Wrong current password!";
     private final String confirmationPasswordError = "Confirmation and new password are different!";
 
@@ -86,7 +87,7 @@ class ProfileServiceTest extends TestContext {
     }
 
     @Test
-    void alterPassword() {
+    void updatePassword() {
         authenticate();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .currentPassword(password)
@@ -101,7 +102,7 @@ class ProfileServiceTest extends TestContext {
     }
 
     @Test
-    void alterPassword_error_passwordMatch() {
+    void updatePassword_error_passwordMatch() {
         authenticate();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .currentPassword(password)
@@ -117,7 +118,7 @@ class ProfileServiceTest extends TestContext {
     }
 
     @Test
-    void alterPassword_error_invalidPassword() {
+    void updatePassword_error_invalidPassword() {
         authenticate();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .currentPassword(newPassword)
@@ -130,7 +131,7 @@ class ProfileServiceTest extends TestContext {
     }
 
     @Test
-    void alterPassword_error() {
+    void updatePassword_error() {
         deauthenticate();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm();
         assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));

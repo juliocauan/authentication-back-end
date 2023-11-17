@@ -24,8 +24,9 @@ class AuthenticationServiceTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    private final String password = "12345678";
+    //TODO refactor this email
     private final String username = "test@email.com";
+    private final String password = getRandomPassword();
     private final String errorUsernameDuplicated = "Username is already taken!";
     private final String errorBadCredentials = "Bad credentials";
 
@@ -42,7 +43,7 @@ class AuthenticationServiceTest extends TestContext {
     }
 
     @Test
-    void validateAndRegisterNewUser(){
+    void registerUser(){
         assertDoesNotThrow(() -> authenticationService.registerUser(username, password, EnumRole.MANAGER));
         assertEquals(1, getUserRepository().findAll().size());
 
@@ -53,7 +54,7 @@ class AuthenticationServiceTest extends TestContext {
     }
 
     @Test
-    void validateAndRegisterNewUser_NullRole(){
+    void registerUser_NullRole(){
         assertDoesNotThrow(() -> authenticationService.registerUser(username, password, null));
 
         UserEntity user = getUserRepository().findAll().get(0);
@@ -61,7 +62,7 @@ class AuthenticationServiceTest extends TestContext {
     }
     
     @Test
-    void validateAndRegisterNewUser_duplicatedUserError(){
+    void registerUser_duplicatedUserError(){
         getUserRepository().save(UserEntity.builder()
             .id(null)
             .username(username)

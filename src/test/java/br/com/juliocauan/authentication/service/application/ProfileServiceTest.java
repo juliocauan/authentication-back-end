@@ -32,8 +32,7 @@ class ProfileServiceTest extends TestContext {
     private final AuthenticationManager authenticationManager;
     private final PasswordService passwordService;
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String newPassword = getRandomPassword();
     private final String currentPasswordError = "Wrong current password!";

@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.service.util;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailSendException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,9 +17,7 @@ class EmailServiceTest extends TestContext {
 
     private final EmailService emailService;
 
-    //TODO refactor this email
-    @Value("${test.mail.receiver}")
-    private String receiver;
+    private final String receiver = getRandomUsername();
     private final String subject = "Test Subject";
     private final String message = "Test Message";
     

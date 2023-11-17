@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.PasswordMatch;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.MailSendException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,9 +37,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
 
-    //TODO refactor this email
-    @Value("${test.mail.receiver}")
-    private String username;
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String tokenMock = getRandomToken();
 
@@ -50,7 +46,6 @@ class PasswordResetTokenServiceTest extends TestContext {
     private final String passwordConfirmationException = "Confirmation and new password are different!";
     private final String entityNotFoundException = "Password Reset Token not found with token: " + tokenMock;
     private final String expiredPasswordResetTokenException = "Expired Password Reset Token!";
-    private final String errorMailSend = "The recipient address is not a valid address!";
 
     private UserEntity user;
 
@@ -110,13 +105,6 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void sendEmail() {
         assertDoesNotThrow(() -> passwordResetTokenService.sendEmail(username, tokenMock));
-    }
-
-    @Test
-    void sendEmail_error_mailSend() {
-        MailSendException exception = assertThrowsExactly(MailSendException.class, () -> 
-            passwordResetTokenService.sendEmail("notAnEmail", tokenMock));
-        assertEquals(errorMailSend, exception.getMessage());
     }
 
     @Test

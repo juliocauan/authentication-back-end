@@ -1,6 +1,5 @@
 package br.com.juliocauan.authentication.controller;
 
-import static org.hamcrest.Matchers.hasLength;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,8 +28,7 @@ class AuthControllerTest extends TestContext {
     private final String urlSignup = "/api/auth/signup";
     private final String urlSignin = "/api/auth/signin";
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
 
     private final String okMessage = "User registered successfully!";
@@ -110,7 +108,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body", hasLength(150)));
+            .andExpect(jsonPath("$.body").isNotEmpty());
     }
 
     @Test

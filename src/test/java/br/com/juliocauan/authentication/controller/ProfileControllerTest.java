@@ -30,8 +30,7 @@ class ProfileControllerTest extends TestContext {
     private final String url = "/api/auth/profile";
     private final String authorizationHeader = "Authorization";
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String newPassword = getRandomPassword();
 

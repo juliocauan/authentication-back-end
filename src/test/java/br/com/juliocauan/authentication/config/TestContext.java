@@ -5,6 +5,7 @@ import java.util.random.RandomGenerator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
@@ -12,6 +13,9 @@ import org.springframework.test.context.TestConstructor.AutowireMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetupTest;
 
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -23,6 +27,11 @@ import lombok.AllArgsConstructor;
 @TestConstructor(autowireMode = AutowireMode.ALL)
 @AllArgsConstructor
 public class TestContext {
+    
+    @RegisterExtension
+    static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+        .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"))
+        .withPerMethodLifecycle(false);
 
     private final UserRepositoryImpl userRepository;
     private final RoleRepositoryImpl roleRepository;
@@ -51,6 +60,10 @@ public class TestContext {
     
     public RoleRepositoryImpl getRoleRepository() {
         return roleRepository;
+    }
+
+    public String getRandomUsername() {
+        return getRandomString(12) + "@email.test";
     }
 
     public String getRandomPassword() {

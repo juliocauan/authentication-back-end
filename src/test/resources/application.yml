@@ -19,10 +19,11 @@ spring:
         init:
             mode: never
     mail:
-        host: smtp.gmail.com
-        port: 587
-        username: jcam.test01@gmail.com
-        password: qsdbnzwwmoznzcee
+        host: 127.0.0.1
+        port: 3025
+        username: user
+        password: admin
+        protocol: smtp
         properties:
             mail:
                 smtp:
@@ -30,9 +31,3 @@ spring:
                     auth: true
                     starttls:
                         enable: true
-
-domain: http://localhost:4200
-
-test:
-    mail:
-        receiver: jcam.test01@gmail.com

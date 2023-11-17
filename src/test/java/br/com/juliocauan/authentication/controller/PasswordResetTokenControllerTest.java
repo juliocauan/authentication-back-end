@@ -30,8 +30,7 @@ class PasswordResetTokenControllerTest extends TestContext {
     private final String urlForgotPassword = "/api/auth/forgotpassword";
     private final String urlForgotPasswordWithToken = "/api/auth/forgotpassword/{token}";
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String newPassword = getRandomPassword();
     private final String tokenMock = getRandomToken();

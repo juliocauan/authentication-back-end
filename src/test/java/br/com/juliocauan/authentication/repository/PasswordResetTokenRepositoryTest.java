@@ -22,8 +22,7 @@ class PasswordResetTokenRepositoryTest extends TestContext {
 
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String tokenPresent = getRandomToken();
     private final String tokenNotPresent = getRandomToken();

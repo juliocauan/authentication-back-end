@@ -24,8 +24,7 @@ class UserMapperTest extends TestContext {
 
     private final UUID idUUID = UUID.randomUUID();
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
 
     public UserMapperTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,

@@ -36,10 +36,9 @@ class UserServiceTest extends TestContext {
     private final UserServiceImpl userService;
     private final PasswordEncoder encoder;
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String usernameContains = "test";
-    private final String usernameNotContains = "asd";
+    private final String usernameNotContains = "@tset";
     private final String password = getRandomPassword();
     private final EnumRole roleAdmin = EnumRole.ADMIN;
     private final EnumRole roleManager = EnumRole.MANAGER;

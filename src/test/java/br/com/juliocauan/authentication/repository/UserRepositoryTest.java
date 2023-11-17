@@ -25,8 +25,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class UserRepositoryTest extends TestContext {
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String usernameContains = "test";
     private final String usernameNotContains = "asd";
     private final String password = getRandomPassword();

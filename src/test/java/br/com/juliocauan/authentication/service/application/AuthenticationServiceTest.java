@@ -24,8 +24,7 @@ class AuthenticationServiceTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    //TODO refactor this email
-    private final String username = "test@email.com";
+    private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String errorUsernameDuplicated = "Username is already taken!";
     private final String errorBadCredentials = "Bad credentials";

@@ -21,8 +21,8 @@ class PasswordServiceTest extends TestContext {
     private final PasswordService passwordService;
     private final PasswordEncoder encoder;
 
-    private final String password1 = "1234567890";
-    private final String password2 = "1234567890123";
+    private final String password1 = getRandomPassword();
+    private final String password2 = getRandomPassword();
 
     private final String currentPasswordError = "Wrong current password!";
     private final String confirmationPasswordError = "Confirmation and new password are different!";

@@ -18,6 +18,7 @@ class EmailServiceTest extends TestContext {
 
     private final EmailService emailService;
 
+    //TODO refactor this email
     @Value("${test.mail.receiver}")
     private String receiver;
     private final String subject = "Test Subject";

@@ -2,7 +2,6 @@ package br.com.juliocauan.authentication.model;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -56,7 +55,7 @@ class PasswordResetTokenEntityTest extends TestContext {
 
     @Test
     void onDelete_cascadeDoesNotDeleteUser() {
-        UUID userId = passwordResetToken.getUser().getId();
+        Integer userId = passwordResetToken.getUser().getId();
         passwordResetTokenRepository.deleteAll();
         assertEquals(userEntity, getUserRepository().findById(userId).get());
     }

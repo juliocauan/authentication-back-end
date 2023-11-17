@@ -2,7 +2,6 @@ package br.com.juliocauan.authentication.model.mapper;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +21,6 @@ import br.com.juliocauan.authentication.infrastructure.security.model.UserPrinci
 
 class UserMapperTest extends TestContext {
 
-    private final UUID idUUID = UUID.randomUUID();
-
     private final String username = getRandomUsername();
     private final String password = getRandomPassword();
 
@@ -35,7 +32,7 @@ class UserMapperTest extends TestContext {
     private final User getUser(){
         return new User() {
             @Override
-            public UUID getId() {return idUUID;}
+            public Integer getId() {return 1;}
             @Override
             public String getUsername() {return username;}
             @Override

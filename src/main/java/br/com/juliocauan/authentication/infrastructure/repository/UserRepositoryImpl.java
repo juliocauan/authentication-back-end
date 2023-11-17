@@ -2,7 +2,6 @@ package br.com.juliocauan.authentication.infrastructure.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.openapitools.model.EnumRole;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,7 +13,7 @@ import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.specification.UserSpecification;
 
-public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEntity, UUID>, JpaSpecificationExecutor<UserEntity> {
+public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEntity, Integer>, JpaSpecificationExecutor<UserEntity> {
 
     @Override
     default List<User> getAllByUsernameSubstringAndRole(String username, EnumRole role) {

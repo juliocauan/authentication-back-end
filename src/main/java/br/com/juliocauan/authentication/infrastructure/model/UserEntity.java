@@ -2,17 +2,14 @@ package br.com.juliocauan.authentication.infrastructure.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.annotations.UuidGenerator.Style;
 
 import br.com.juliocauan.authentication.domain.model.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -34,9 +31,8 @@ import lombok.NoArgsConstructor;
 public final class UserEntity extends User {
     
 	@Id @EqualsAndHashCode.Exclude
-	@GeneratedValue
-	@UuidGenerator(style = Style.RANDOM)
-    private UUID id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
 	@Email
 	@NotBlank @Size(max = 50) @Column(unique = true)

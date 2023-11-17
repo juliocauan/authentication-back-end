@@ -20,8 +20,7 @@ spring:
         init:
             mode: never
     mail:
-        host: smtp.gmail.com
-        port: 587
+        protocol: smtp
         properties:
             mail:
                 smtp:
@@ -29,5 +28,3 @@ spring:
                     auth: true
                     starttls:
                         enable: true
-    
-domain: ${APP_DOMAIN}

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.EmailPasswordResetTokenRequest;
 import org.openapitools.model.PasswordMatch;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -77,10 +78,11 @@ class PasswordResetTokenControllerTest extends TestContext {
     @Test
     void emailPasswordResetToken() throws Exception {
         saveUser();
+        EmailPasswordResetTokenRequest requestBody = new EmailPasswordResetTokenRequest().username(username);
         getMockMvc().perform(
             post(urlForgotPassword)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(username))
+                .content(getObjectMapper().writeValueAsString(requestBody)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.body").value(okEmailPasswordResetToken));
@@ -88,10 +90,11 @@ class PasswordResetTokenControllerTest extends TestContext {
 
     @Test
     void emailPasswordResetToken_error_userNotFound() throws Exception {
+        EmailPasswordResetTokenRequest requestBody = new EmailPasswordResetTokenRequest().username(username);
         getMockMvc().perform(
             post(urlForgotPassword)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(username))
+                .content(getObjectMapper().writeValueAsString(requestBody)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message").value(errorUsernameNotFound))

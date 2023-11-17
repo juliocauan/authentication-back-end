@@ -1,4 +1,6 @@
 spring:
     mail:
-        username: ${APP_EMAIL_USERNAME:jcam.test01@gmail.com}
-        password: ${APP_EMAIL_PASSWORD:qsdbnzwwmoznzcee}
+        host: smtp.gmail.com
+        port: 587
+        username: ${APP_EMAIL_USERNAME}
+        password: ${APP_EMAIL_PASSWORD}

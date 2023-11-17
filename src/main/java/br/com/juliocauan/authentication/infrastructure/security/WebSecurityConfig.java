@@ -41,7 +41,7 @@ public class WebSecurityConfig {
     private static final String URI_ROOT = "/api/auth";
     private static final String URI_SIGNUP = URI_ROOT + "/signup";
     private static final String URI_SIGNIN = URI_ROOT + "/signin";
-    private static final String URI_FORGOT_PASSWORD = URI_ROOT + "/forgotpassword/**";
+    private static final String URI_FORGOT_PASSWORD = URI_ROOT + "/forgotpassword";
 
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -86,7 +86,7 @@ public class WebSecurityConfig {
                         URI_SIGNIN,
                         URI_FORGOT_PASSWORD)
                     .permitAll()
-                .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD).permitAll()
+                .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD + "/**").permitAll()
             .anyRequest().authenticated());
         return http.build();
     }

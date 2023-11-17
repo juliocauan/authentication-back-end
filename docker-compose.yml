@@ -39,6 +39,8 @@ services:
       - postgres
     ports:
       - 9000:8080
+    networks:
+      - backend
    
 volumes:
   db:

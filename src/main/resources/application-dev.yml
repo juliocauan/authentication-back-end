@@ -1,5 +1,7 @@
 spring:
     mail:
-        username: jcam.test01@gmail.com
-        password: qsdbnzwwmoznzcee
+        host: 127.0.0.1
+        port: 3025
+        username: user
+        password: admin
         

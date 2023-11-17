@@ -25,12 +25,13 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class UserRepositoryTest extends TestContext {
 
-    private final String password = "12345678";
+    //TODO refactor this email
     private final String username = "test@email.com";
     private final String usernameContains = "test";
     private final String usernameNotContains = "asd";
-    private final EnumRole rolePresent = EnumRole.MANAGER;
-    private final EnumRole roleNotPresent = EnumRole.ADMIN;
+    private final String password = getRandomPassword();
+    private final EnumRole roleManager = EnumRole.MANAGER;
+    private final EnumRole roleAdmin = EnumRole.ADMIN;
 
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
@@ -43,7 +44,7 @@ class UserRepositoryTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
-        roles.add(new RoleEntity(getRoleRepository().getByName(rolePresent).get()));
+        roles.add(new RoleEntity(getRoleRepository().getByName(roleManager).get()));
     }
 
     @BeforeEach
@@ -90,7 +91,7 @@ class UserRepositoryTest extends TestContext {
     @Test
     void getAllByUsernameSubstringAndRole() {
         UserEntity expectedUser = entity;
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, rolePresent);
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleManager);
         assertEquals(1, foundUsers.size());
         assertEquals(expectedUser, foundUsers.get(0));
     }
@@ -98,7 +99,7 @@ class UserRepositoryTest extends TestContext {
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameContainsAndRole() {
         saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, rolePresent);
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleManager);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(entity));
     }
@@ -114,7 +115,7 @@ class UserRepositoryTest extends TestContext {
     @Test
     void getAllByUsernameSubstringAndRole_branch_nullAndRole() {
         saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(null, rolePresent);
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(null, roleManager);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(entity));
     }
@@ -129,19 +130,19 @@ class UserRepositoryTest extends TestContext {
 
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameNotContainsAndRole() {
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, rolePresent);
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleManager);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleNotPresent);
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleAdmin);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAllByUsernameSubstringAndRole_branch_usernameNotContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleNotPresent);
+        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleAdmin);
         assertTrue(foundUsers.isEmpty());
     }
 

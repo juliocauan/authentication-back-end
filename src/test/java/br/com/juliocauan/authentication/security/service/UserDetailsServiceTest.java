@@ -27,8 +27,9 @@ class UserDetailsServiceTest extends TestContext {
 
     private final UserDetailsServiceImpl userDetailsService;
     
-    private final String password = "12345678";
+    //TODO refactor this email
     private final String username = "test@email.com";
+    private final String password = getRandomPassword();
     private final String errorUsernameNotFound = "User Not Found with username: " + username;
 
     private UserEntity entity;

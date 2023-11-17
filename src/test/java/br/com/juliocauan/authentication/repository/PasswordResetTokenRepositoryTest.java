@@ -22,10 +22,11 @@ class PasswordResetTokenRepositoryTest extends TestContext {
 
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
 
+    //TODO refactor this email
     private final String username = "test@email.com";
-    private final String password = "1234567890";
-    private final String tokenPresent = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    private final String tokenNotPresent = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    private final String password = getRandomPassword();
+    private final String tokenPresent = getRandomToken();
+    private final String tokenNotPresent = getRandomToken();
 
     private UserEntity userEntity;
     private PasswordResetTokenEntity expectedEntity;

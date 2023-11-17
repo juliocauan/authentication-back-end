@@ -39,10 +39,11 @@ class PasswordResetTokenServiceTest extends TestContext {
     private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
 
+    //TODO refactor this email
     @Value("${test.mail.receiver}")
     private String username;
-    private final String password = "12345678";
-    private final String tokenMock = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    private final String password = getRandomPassword();
+    private final String tokenMock = getRandomToken();
 
     private final String usernameNotPresent = "notPresent@email.test";
     private final String usernameNotFoundException = "User Not Found with username: " + usernameNotPresent;
@@ -50,8 +51,6 @@ class PasswordResetTokenServiceTest extends TestContext {
     private final String entityNotFoundException = "Password Reset Token not found with token: " + tokenMock;
     private final String expiredPasswordResetTokenException = "Expired Password Reset Token!";
     private final String errorMailSend = "The recipient address is not a valid address!";
-
-    private final int tokenLength = 43;
 
     private UserEntity user;
 
@@ -83,7 +82,7 @@ class PasswordResetTokenServiceTest extends TestContext {
         
         assertEquals(user, passwordResetToken.getUser());
         assertEquals(token, passwordResetToken.getToken());
-        assertEquals(tokenLength, passwordResetToken.getToken().length());
+        assertEquals(43, passwordResetToken.getToken().length());
         assertFalse(passwordResetToken.isExpired());
     }
     
@@ -144,7 +143,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     }
 
     @Test
-    void resetPassword_error_findByToken() {
+    void resetPassword_error_getByToken() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation(password);
         EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));

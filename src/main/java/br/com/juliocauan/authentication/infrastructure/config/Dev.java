@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.infrastructure;
+package br.com.juliocauan.authentication.infrastructure.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,11 +9,11 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 
 @Configuration
 @Profile(value = "dev")
-public class ConfigDev {
+public class Dev {
     public static final GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP)
         .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"));
     
-    public ConfigDev() {
+    public Dev() {
         greenMail.start();
     }
 }

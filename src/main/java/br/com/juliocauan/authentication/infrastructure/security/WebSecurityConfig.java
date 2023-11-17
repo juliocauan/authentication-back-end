@@ -66,7 +66,7 @@ public class WebSecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(Collections.singletonList("${domain}"));
+        config.setAllowedOrigins(Collections.singletonList("*"));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         source.registerCorsConfiguration("/**", config);
@@ -86,7 +86,7 @@ public class WebSecurityConfig {
                         URI_SIGNIN,
                         URI_FORGOT_PASSWORD)
                     .permitAll()
-                .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD + "/**").permitAll()
+                .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD + "/{token}").permitAll()
             .anyRequest().authenticated());
         return http.build();
     }

@@ -100,12 +100,18 @@ Also make sure you have the following ports available:
    - With the project running, access the API documentation:
 
      [Authentication API OpenAPI(Swagger) Documentation](https://app.swaggerhub.com/apis/juliocauan/authentication/1.1.x)
+
+   - Scroll down the right tab of this page:
+
+     ![swagger-tutorial](https://github.com/juliocauan/authentication-server/assets/84354526/4ee04ce0-cff0-4df2-8924-8bf997aafb30)
    
-   - Scroll down and at the bottom right of this page, you will see this:
-   ![tutorial1](https://github.com/juliocauan/authentication-server/assets/84354526/882ba442-ad23-4432-a6ca-c7cfd2cbca5c)
+   - At the bottom right, you will see this:
+
+     ![tutorial1](https://github.com/juliocauan/authentication-server/assets/84354526/882ba442-ad23-4432-a6ca-c7cfd2cbca5c)
 
    - Click on "Use browser instead" and the configuration should look like this:
-   ![tutorial2](https://github.com/juliocauan/authentication-server/assets/84354526/a90f5a2a-502e-4058-b6f5-92bbc66dddec)
+
+     ![tutorial2](https://github.com/juliocauan/authentication-server/assets/84354526/a90f5a2a-502e-4058-b6f5-92bbc66dddec)
 
    - Now use the provided information to interact with the API.
 

@@ -55,8 +55,10 @@ public abstract class PasswordResetTokenService {
     
     private final PasswordResetToken checkTokenValidation(String token) {
         PasswordResetToken passwordResetToken = getByToken(token);
-        if(passwordResetToken.isExpired())
+        if(passwordResetToken.isExpired()){
+            getRepository().deleteById(passwordResetToken.getId());
             throw new ExpiredPasswordResetTokenException("Expired Password Reset Token!");
+        }
         return passwordResetToken;
     }
 

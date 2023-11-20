@@ -141,15 +141,16 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void resetPassword_error_isExpired() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation(password);
-        passwordResetTokenRepository.save(PasswordResetTokenEntity
+        Long id = passwordResetTokenRepository.save(PasswordResetTokenEntity
             .builder()
                 .expireDate(LocalDateTime.now().minusSeconds(1))
                 .token(tokenMock)
                 .user(user)
-            .build());
+            .build()).getId();
         ExpiredPasswordResetTokenException exception = assertThrowsExactly(ExpiredPasswordResetTokenException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
         assertEquals(expiredPasswordResetTokenException, exception.getMessage());
+        assertFalse(passwordResetTokenRepository.findById(id).isPresent());
     }
     
 }

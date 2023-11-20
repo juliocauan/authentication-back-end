@@ -126,7 +126,7 @@ Also make sure you have the following ports available:
 - To package the project and run tests (port 5434 must be available):
 
   ```bash
-  docker-compose -f "docker-compose-test.yml" up -d --build
+  docker compose -f "docker-compose-test.yml" up -d --build
   ./mvnw clean package
   ```
 

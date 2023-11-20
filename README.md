@@ -99,7 +99,7 @@ Also make sure you have the following ports available:
 
    - With the project running, access the API documentation:
 
-     [Authentication API OpenAPI(Swagger) Documentation](https://app.swaggerhub.com/apis/juliocauan/authentication/1.0.5)
+     [Authentication API OpenAPI(Swagger) Documentation](https://app.swaggerhub.com/apis/juliocauan/authentication/1.1.x)
 
    - Use the provided information to interact with the API.
 
@@ -128,11 +128,14 @@ Also make sure you have the following ports available:
 
 ***
 ## 🔮 Future implementations
+
 1. Extra Security Policies
    - Strong Passwords
    - Account block after failed login attemps
    - Email verification upon user registration
+
 2. Multifactor Authentication
+
 3. Authentication via Google
 
 <br/>

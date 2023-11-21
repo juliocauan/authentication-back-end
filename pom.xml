@@ -148,7 +148,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/authentication-open-api/authentication.yml</inputSpec>
+							<inputSpec>${project.basedir}/authentication-docs/authentication.yml</inputSpec>
 							<generatorName>spring</generatorName>
 							<library>spring-boot</library>
 							<configOptions>

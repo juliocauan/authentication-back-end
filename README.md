@@ -32,7 +32,7 @@ This API was developed as a personal challenge for learning different areas of d
 **Admin Role Management:**
    - Enables administrators to update user roles for effective access control.
 
-To see all endpoints and functionalities, visit [Authentication API OpenAPI(Swagger) Documentation](https://github.com/juliocauan/authentication-open-api)
+To see all endpoints and functionalities, visit [Authentication API OpenAPI(Swagger) Documentation](https://github.com/juliocauan/authentication-docs)
 
 <br/>
 

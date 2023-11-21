@@ -73,7 +73,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final String getBearerToken(String username){
-        return authenticationService.authenticate(username, password).getBody();
+        return "Bearer " + authenticationService.authenticate(username, password).getToken();
     }
 
     private final Set<EnumRole> getAllRoles() {
@@ -94,7 +94,7 @@ class AdminControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.body").value(okAlterUserRole));
+            .andExpect(jsonPath("$.message").value(okAlterUserRole));
     }
 
     @Test

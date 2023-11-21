@@ -3,8 +3,8 @@ package br.com.juliocauan.authentication.infrastructure.service.application;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.openapitools.model.BearerToken;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.JWT;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,11 +32,11 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   private final RoleServiceImpl roleService;
 
   @Override
-  public final BearerToken authenticate(String username, String password) {
+  public final JWT authenticate(String username, String password) {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
     Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);
-    return new BearerToken().body(jwtProvider.generateToken(auth));
+    return new JWT().token(jwtProvider.generateToken(auth));
   }
 
   @Override

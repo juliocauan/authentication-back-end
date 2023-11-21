@@ -85,7 +85,7 @@ class PasswordResetTokenControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(requestBody)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body").value(okEmailPasswordResetToken));
+            .andExpect(jsonPath("$.message").value(okEmailPasswordResetToken));
     }
 
     @Test
@@ -111,7 +111,7 @@ class PasswordResetTokenControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body").value(okResetUserPassword));
+            .andExpect(jsonPath("$.message").value(okResetUserPassword));
     }
 
     @Test

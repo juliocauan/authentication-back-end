@@ -2,8 +2,8 @@ package br.com.juliocauan.authentication.service.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.BearerToken;
 import org.openapitools.model.EnumRole;
+import org.openapitools.model.JWT;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -77,8 +77,8 @@ class AuthenticationServiceTest extends TestContext {
     @Test
     void authenticate(){
         authenticationService.registerUser(username, password, null);
-        BearerToken response = authenticationService.authenticate(username, password);
-        assertEquals("Bearer ", response.getBody().subSequence(0, 7));
+        JWT response = authenticationService.authenticate(username, password);
+        assertTrue(response.getToken().contains("."));
     }
 
     @Test

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.openapitools.api.AdminApi;
 import org.openapitools.model.EnumRole;
-import org.openapitools.model.OkMessage;
+import org.openapitools.model.OkResponse;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
 import org.springframework.http.HttpStatus;
@@ -22,9 +22,9 @@ public class AdminController implements AdminApi {
     private final UserServiceImpl userService;
 
     @Override @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<OkMessage> _updateUserRoles(UpdateUserRolesForm updateUserRolesForm) {
+    public ResponseEntity<OkResponse> _updateUserRoles(UpdateUserRolesForm updateUserRolesForm) {
       userService.updateRoles(updateUserRolesForm.getUsername(), updateUserRolesForm.getRoles());
-      return ResponseEntity.status(HttpStatus.OK).body(new OkMessage().body("Patched user roles successfully!"));
+      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Patched user roles successfully!"));
     }
   
     @Override @PreAuthorize("hasAuthority('ADMIN')")

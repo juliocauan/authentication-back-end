@@ -59,7 +59,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     private final String getBearerToken(){
-        return authenticationService.authenticate(username, password).getBody();
+        return "Bearer " + authenticationService.authenticate(username, password).getToken();
     }
 
     @Test
@@ -96,7 +96,7 @@ class ProfileControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body").value(updatedPasswordMessage));
+            .andExpect(jsonPath("$.message").value(updatedPasswordMessage));
     }
 
     @Test

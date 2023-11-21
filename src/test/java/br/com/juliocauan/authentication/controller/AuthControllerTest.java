@@ -68,7 +68,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.body").value(okMessage));
+            .andExpect(jsonPath("$.message").value(okMessage));
     }
 
     @Test
@@ -108,7 +108,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.body").isNotEmpty());
+            .andExpect(jsonPath("$.token").isNotEmpty());
     }
 
     @Test

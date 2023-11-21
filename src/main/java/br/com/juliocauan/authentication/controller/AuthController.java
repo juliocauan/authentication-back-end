@@ -1,8 +1,8 @@
 package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.AuthApi;
-import org.openapitools.model.BearerToken;
-import org.openapitools.model.OkMessage;
+import org.openapitools.model.JWT;
+import org.openapitools.model.OkResponse;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.HttpStatus;
@@ -19,20 +19,20 @@ public class AuthController implements AuthApi {
 	private final AuthenticationServiceImpl authenticationService;
 
 	@Override
-  public ResponseEntity<OkMessage> _signup(SignupForm signupForm) {
+  public ResponseEntity<OkResponse> _signup(SignupForm signupForm) {
     authenticationService.registerUser(
         signupForm.getUsername(),
         signupForm.getPassword(),
         signupForm.getRole());
-    return ResponseEntity.status(HttpStatus.CREATED).body(new OkMessage().body("User registered successfully!"));
+    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("User registered successfully!"));
   }
 
   @Override
-  public ResponseEntity<BearerToken> _signin(SigninForm signinForm) {
-    BearerToken bearerToken = authenticationService.authenticate(
+  public ResponseEntity<JWT> _signin(SigninForm signinForm) {
+    JWT jwt = authenticationService.authenticate(
         signinForm.getUsername(),
         signinForm.getPassword());
-    return ResponseEntity.status(HttpStatus.OK).body(bearerToken);
+    return ResponseEntity.status(HttpStatus.OK).body(jwt);
   }
 
 }

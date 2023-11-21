@@ -21,7 +21,7 @@ CREATE TABLE auth.password_reset_tokens
 (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
-    token VARCHAR(43) NOT NULL,
+    token VARCHAR(43) UNIQUE NOT NULL,
     expire_date timestamp NOT NULL
 );
 

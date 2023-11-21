@@ -1,3 +1,3 @@
-[submodule "authentication-open-api"]
-	path = authentication-open-api
-	url = git@github.com:juliocauan/authentication-open-api.git
+[submodule "authentication-docs"]
+	path = authentication-docs
+	url = git@github.com:juliocauan/authentication-docs.git

@@ -1,9 +1,10 @@
 version: '3.9'
-name: authentication-back-end-dev
+name: authentication-dev
 services:
   app:
-    build: .
-    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     env_file:
@@ -11,41 +12,35 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     ports:
-      - 8000:8000
+      - 8000:8443
     networks:
-      - backend
+      - server
   
   postgres:
     image: postgres:alpine
-    restart: always
     env_file:
       - .env
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
     ports:
       - ${DB_PORT}:5432
     volumes:
-      - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - data:/var/lib/postgresql/data
     networks:
-      - backend
+      - server
   
   adminer:
     image: adminer:standalone
-    restart: always
     depends_on:
       - postgres
     ports:
       - 9000:8080
     networks:
-      - backend
+      - server
    
 volumes:
-  db:
-    name: auth-db-dev
+  data:
+    name: auth-dev
     
 networks:
-  backend:
+  server:
     driver: bridge

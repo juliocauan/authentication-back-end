@@ -2,7 +2,6 @@
 
 ![youshallnotpass](https://github.com/juliocauan/authentication-server/assets/84354526/e4d27e22-8a5f-4d74-aacc-b95119852c10)
 
-***
 ## 📖  Description
 
 This is a tutorial to run this API locally on DEV mode. <br/>
@@ -11,7 +10,16 @@ Obs: DEV mode will only mock emails, it won't send real ones. Production mode wi
 Check the [documentation](https://github.com/juliocauan/authentication-docs) to see all endpoints and functionalities.
 <br/>
 
-***
+## 📡 Used Technologies 
+<div align="center"> 
+  <img align="left" alt="Spring" title="Spring" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg">
+  <img align="left" alt="OpenAPI (Swagger)" title="OpenAPI (Swagger)" height="30" width="30" src="https://avatars.githubusercontent.com/u/37325267?s=200&v=4">
+  <img align="left" alt="Postgresql" title="Postgresql" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg">
+  <img align="left" alt="Docker" title="Docker" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg">
+  <img align="left" alt="GitHub Actions" title="GitHub Actions" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg">
+</div>
+<br/><br/>
+
 ## 🚀 Getting Started
 This project was developed in a Linux environment, using Ubuntu 22.04 and the technologies mentioned above. If you use another operating system, the initial project configuration may be slightly different. <br/>
 These instructions will help you set up and run the project locally.
@@ -53,7 +61,7 @@ Also make sure you have the following ports available:
    - Run the following command to start the API on DEV mode along with PostgreSQL database using Docker Compose:
 
      ```bash
-     docker compose -f "docker-compose.yml" up -d --build
+     docker compose -f "docker-compose-dev.yml" up -d --build
      ```
 
    - Wait until the container is up and running.
@@ -81,16 +89,14 @@ Also make sure you have the following ports available:
 
 5. **Using Adminer:**
 
-      To check the database(Docker Compose must be running), access [http://localhost:9000](http://localhost:9000) and fill the following fields like that:
+      To check the database (Docker Compose must be running), access [http://localhost:9000](http://localhost:9000) and fill the following fields like that:
     - System: PostgreSQL
     - Server: postgres
     - Username: root
     - Password: secret
-    - Database: auth-db-dev
-      <br/><br/>
-      Login and change Schema from **public** to **auth**
+    - Database: auth-dev
+    - Login and change Schema from **public** to **auth**
 
-***
 ### Additional Usage
 
 - To package the project and run tests (port 5434 must be available):
@@ -101,14 +107,3 @@ Also make sure you have the following ports available:
   ```
 
 <br/>
-
-***
-## 📡 Used Technologies 
-<div align="center"> 
-  <img align="left" alt="Spring" title="Spring" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg">
-  <img align="left" alt="OpenAPI (Swagger)" title="OpenAPI (Swagger)" height="30" width="30" src="https://avatars.githubusercontent.com/u/37325267?s=200&v=4">
-  <img align="left" alt="Postgresql" title="Postgresql" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg">
-  <img align="left" alt="Docker" title="Docker" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg">
-  <img align="left" alt="GitHub Actions" title="GitHub Actions" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg">
-</div>
-<br/><br/>

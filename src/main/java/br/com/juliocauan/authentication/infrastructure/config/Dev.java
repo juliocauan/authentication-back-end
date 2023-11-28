@@ -8,7 +8,7 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
 @Configuration
-@Profile(value = "dev")
+@Profile("dev")
 public class Dev {
     public static final GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP)
         .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"));

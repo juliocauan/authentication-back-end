@@ -1,8 +1,10 @@
 version: '3.9'
-name: authentication-back-end-dev
+name: authentication-dev
 services:
   app:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
     restart: no
     depends_on:
       - postgres
@@ -13,11 +15,11 @@ services:
     ports:
       - 8000:8000
     networks:
-      - backend
+      - server
   
   postgres:
     image: postgres:alpine
-    restart: always
+    restart: no
     env_file:
       - .env
     environment:
@@ -27,25 +29,25 @@ services:
     ports:
       - ${DB_PORT}:5432
     volumes:
-      - ./src/main/resources/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - db:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - data:/var/lib/postgresql/data
     networks:
-      - backend
+      - server
   
   adminer:
     image: adminer:standalone
-    restart: always
+    restart: no
     depends_on:
       - postgres
     ports:
       - 9000:8080
     networks:
-      - backend
+      - server
    
 volumes:
-  db:
-    name: auth-db-dev
+  data:
+    name: auth-dev
     
 networks:
-  backend:
+  server:
     driver: bridge

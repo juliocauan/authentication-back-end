@@ -3,7 +3,6 @@ name: authentication-test
 services:
   postgres:
     image: postgres:alpine
-    restart: no
     environment:
       - POSTGRES_USER=sa
       - POSTGRES_PASSWORD=sa

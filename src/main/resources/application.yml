@@ -3,9 +3,9 @@ server:
 
 spring:
     datasource:
-        url: jdbc:postgresql://postgres:${DB_PORT}/${DB_NAME}?useSSL=true
-        username: ${DB_USER}
-        password: ${DB_PASSWORD}
+        url: jdbc:postgresql://postgres:${DB_PORT}/${POSTGRES_DB}?useSSL=true
+        username: ${POSTGRES_USER}
+        password: ${POSTGRES_PASSWORD}
         driver-class-name: org.postgresql.Driver
     mustache:  
         check-template-location: false

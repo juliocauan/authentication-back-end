@@ -2,9 +2,10 @@ version: '3.9'
 name: authentication-dev
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
+    restart: on-failure:2
     depends_on:
       - postgres
     env_file:
@@ -12,7 +13,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     ports:
-      - 8000:8000
+      - 8000:8443
     networks:
       - server
   

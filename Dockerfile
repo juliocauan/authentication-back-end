@@ -1,6 +1,6 @@
 FROM eclipse-temurin:17-jre-alpine
 
-EXPOSE 8000
+EXPOSE 8443
 
 WORKDIR /auth
 

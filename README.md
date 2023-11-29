@@ -61,7 +61,7 @@ Also make sure you have the following ports available:
    - Run the following command to start the API on DEV mode along with PostgreSQL database using Docker Compose:
 
      ```bash
-     docker compose -f "docker-compose-dev.yml" up -d --build
+     docker compose -f "docker-compose.yml" up -d --build
      ```
 
    - Wait until the container is up and running.

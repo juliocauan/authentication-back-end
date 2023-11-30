@@ -46,7 +46,7 @@ public abstract class PasswordResetTokenService {
     }
 
     public final void resetPassword(PasswordMatch passwordMatch, String token) {
-        getPasswordService().checkPasswordConfirmation(passwordMatch);
+        getPasswordService().validatePasswordMatch(passwordMatch);
         PasswordResetToken passwordResetToken = checkTokenValidation(token);
         String encodedPassword = getPasswordService().encode(passwordMatch.getPassword());
         getUserService().updatePassword(passwordResetToken.getUser(), encodedPassword);

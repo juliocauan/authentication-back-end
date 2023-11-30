@@ -1,33 +1,38 @@
 package br.com.juliocauan.authentication.domain.service.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openapitools.model.PasswordMatch;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
-import lombok.AllArgsConstructor;
 
-@Service
-@AllArgsConstructor
-public final class PasswordService {
+public abstract class PasswordService {
 
-    private final PasswordEncoder encoder;
-
-    public final void checkPasswordConfirmation(PasswordMatch passwordMatch){
-        String newPassword = encode(passwordMatch.getPassword());
-        String confirmationPassword = passwordMatch.getPasswordConfirmation();
-        if(!encoder.matches(confirmationPassword, newPassword))
-            throw new PasswordMatchException("Confirmation and new password are different!");
+    public final void validatePasswordMatch(PasswordMatch passwordMatch) {
+        String encodedPassword = encode(passwordMatch.getPassword());
+        String rawPassword = passwordMatch.getPasswordConfirmation();
+        validatePasswordMatch(rawPassword, encodedPassword);
     }
 
-    public final void checkCurrentPassword(String encodedPassword, String rawPassword){
-        if(!encoder.matches(rawPassword, encodedPassword))
-            throw new InvalidPasswordException("Wrong current password!");
+    public final void validatePasswordMatch(String rawPassword, String encodedPassword) {
+        if(!matches(rawPassword, encodedPassword))
+            throw new InvalidPasswordException("Passwords don't match!");
     }
 
-    public final String encode(String password) {
-        return encoder.encode(password);
+    public final void validatePasswordSecurity(String password) {
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=.*[\\d]).{8,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        if(!matcher.matches())
+            throw new InvalidPasswordException("Password is not strong. It must have at least: " + 
+                "1 lower case character, " + 
+                "1 upper case character, " +
+                "1 special character, " +
+                "1 number");
     }
+
+    public abstract String encode(String password);
+    protected abstract boolean matches(String rawPassword, String encodedPassword);
 
 }

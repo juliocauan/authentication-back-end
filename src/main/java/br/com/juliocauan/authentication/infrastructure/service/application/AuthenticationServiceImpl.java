@@ -42,6 +42,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   @Override
   public final void registerUser(String username, String password, EnumRole role) {
     userService.checkDuplicatedUsername(username);
+    passwordService.validatePasswordSecurity(password);
     userService.save(UserEntity
       .builder()
         .id(null)

@@ -21,7 +21,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetTokenException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
+import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
@@ -43,7 +43,7 @@ class PasswordResetTokenServiceTest extends TestContext {
 
     private final String usernameNotPresent = "notPresent@email.test";
     private final String usernameNotFoundException = "User Not Found with username: " + usernameNotPresent;
-    private final String passwordConfirmationException = "Confirmation and new password are different!";
+    private final String invalidPasswordException = "Passwords don't match!";
     private final String entityNotFoundException = "Password Reset Token not found with token: " + tokenMock;
     private final String expiredPasswordResetTokenException = "Expired Password Reset Token!";
 
@@ -125,9 +125,9 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void resetPassword_error_checkPasswordConfirmation() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation("differentPassword");
-        PasswordMatchException exception = assertThrowsExactly(PasswordMatchException.class,
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
-        assertEquals(passwordConfirmationException, exception.getMessage());
+        assertEquals(invalidPasswordException, exception.getMessage());
     }
 
     @Test

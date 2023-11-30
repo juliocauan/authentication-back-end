@@ -35,8 +35,7 @@ class ProfileControllerTest extends TestContext {
     private final String newPassword = getRandomPassword();
 
     private final String updatedPasswordMessage = "Password updated successfully!";
-    private final String errorPassword = "Wrong current password!";
-    private final String errorPasswordMatch = "Confirmation and new password are different!";
+    private final String invalidPasswordError = "Passwords don't match!";
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     public ProfileControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -123,7 +122,7 @@ class ProfileControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(errorPasswordMatch));
+            .andExpect(jsonPath("$.message").value(invalidPasswordError));
     }
 
     @Test
@@ -141,7 +140,7 @@ class ProfileControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(errorPassword));
+            .andExpect(jsonPath("$.message").value(invalidPasswordError));
     }
 
 }

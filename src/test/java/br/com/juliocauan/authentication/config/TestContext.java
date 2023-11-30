@@ -39,7 +39,7 @@ public class TestContext {
     private final MockMvc mockMvc;
     private final RandomGenerator randomGenerator = RandomGenerator.getDefault();
 
-    private final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private final String characters = "ABCDEFGHIJKLMnopqrstuvwxyz0123456789";
 
     @BeforeAll
     public void setup(){
@@ -67,7 +67,7 @@ public class TestContext {
     }
 
     public String getRandomPassword() {
-        return getRandomString(15);
+        return getRandomString(4) + "aB3$";
     }
 
     public String getRandomToken() {

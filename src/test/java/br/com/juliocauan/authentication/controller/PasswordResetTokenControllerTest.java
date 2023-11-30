@@ -39,7 +39,7 @@ class PasswordResetTokenControllerTest extends TestContext {
     private final String okEmailPasswordResetToken = "Email sent to " + username + " successfully!";
     private final String okResetUserPassword = "Password updated successfully!";
     private final String errorUsernameNotFound = "User Not Found with username: " + username;
-    private final String errorPasswordMatch = "Confirmation and new password are different!";
+    private final String invalidPasswordError = "Passwords don't match!";
     private final String errorTokenNotFound = "Password Reset Token not found with token: " + tokenMock;
     private final String errorTokenExpired = "Expired Password Reset Token!";
 
@@ -123,7 +123,7 @@ class PasswordResetTokenControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(errorPasswordMatch))
+            .andExpect(jsonPath("$.message").value(invalidPasswordError))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

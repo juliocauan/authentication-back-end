@@ -3,23 +3,21 @@ package br.com.juliocauan.authentication.domain.service.util;
 import org.openapitools.model.PasswordMatch;
 
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
 
 public abstract class PasswordService {
 
-    public final void checkPasswordConfirmation(PasswordMatch passwordMatch){
-        String newPassword = encode(passwordMatch.getPassword());
-        String confirmationPassword = passwordMatch.getPasswordConfirmation();
-        if(!matches(confirmationPassword, newPassword))
-            throw new PasswordMatchException("Confirmation and new password are different!");
+    public final void validatePasswordMatch(PasswordMatch passwordMatch){
+        String encodedPassword = encode(passwordMatch.getPassword());
+        String rawPassword = passwordMatch.getPasswordConfirmation();
+        validatePasswordMatch(rawPassword, encodedPassword);
     }
 
-    public final void checkCurrentPassword(String encodedPassword, String rawPassword){
+    public final void validatePasswordMatch(String rawPassword, String encodedPassword){
         if(!matches(rawPassword, encodedPassword))
-            throw new InvalidPasswordException("Wrong current password!");
+            throw new InvalidPasswordException("Passwords don't match!");
     }
 
     public abstract String encode(String password);
-    public abstract boolean matches(String rawPassword, String encodedPassword);
+    protected abstract boolean matches(String rawPassword, String encodedPassword);
 
 }

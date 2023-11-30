@@ -18,7 +18,7 @@ public final class PasswordServiceImpl extends PasswordService {
     }
 
     @Override
-    public final boolean matches(String rawPassword, String encodedPassword) {
+    protected final boolean matches(String rawPassword, String encodedPassword) {
         return encoder.matches(rawPassword, encodedPassword);
     }
     

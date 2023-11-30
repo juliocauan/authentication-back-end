@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.exception.PasswordMatchException;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -35,8 +34,7 @@ class ProfileServiceTest extends TestContext {
     private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String newPassword = getRandomPassword();
-    private final String currentPasswordError = "Wrong current password!";
-    private final String confirmationPasswordError = "Confirmation and new password are different!";
+    private final String invalidPasswordError = "Passwords don't match!";
 
     private UserEntity userEntity;
 
@@ -108,9 +106,9 @@ class ProfileServiceTest extends TestContext {
             .newPasswordMatch(new PasswordMatch()
                 .password(password)
                 .passwordConfirmation(newPassword));
-        PasswordMatchException exception = assertThrowsExactly(PasswordMatchException.class,
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
             () -> profileService.updatePassword(passwordUpdateForm));
-        assertEquals(confirmationPasswordError, exception.getMessage());
+        assertEquals(invalidPasswordError, exception.getMessage());
 
         deauthenticate();
         assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));
@@ -126,7 +124,7 @@ class ProfileServiceTest extends TestContext {
                 .passwordConfirmation(newPassword));
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
             () -> profileService.updatePassword(passwordUpdateForm));
-        assertEquals(currentPasswordError, exception.getMessage());
+        assertEquals(invalidPasswordError, exception.getMessage());
     }
 
     @Test

@@ -58,11 +58,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
-    @ExceptionHandler(PasswordMatchException.class)
-    public ResponseEntity<Object> handlePasswordConfirmation(PasswordMatchException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));

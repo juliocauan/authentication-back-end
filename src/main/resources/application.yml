@@ -2,6 +2,8 @@ server:
     port: 8443
 
 spring:
+    profiles:
+        active: prod
     datasource:
         url: jdbc:postgresql://postgres:${DB_PORT}/${POSTGRES_DB}?useSSL=true
         username: ${POSTGRES_USER}

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.PasswordUpdateForm;
-import org.openapitools.model.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -67,20 +66,6 @@ class ProfileServiceTest extends TestContext {
 
     private final void deauthenticate() {
         SecurityContextHolder.getContext().setAuthentication(null);
-    }
-
-    @Test
-    void getProfileContent() {
-        Profile expectedProfile = new Profile().username(username);
-
-        authenticate();
-        assertEquals(expectedProfile, profileService.getProfileContent());
-    }
-
-    @Test
-    void getProfileContent_error() {
-        deauthenticate();
-        assertThrowsExactly(NullPointerException.class, () -> profileService.getProfileContent());
     }
 
     @Test

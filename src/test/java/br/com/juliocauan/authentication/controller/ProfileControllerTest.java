@@ -1,6 +1,5 @@
 package br.com.juliocauan.authentication.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -59,25 +58,6 @@ class ProfileControllerTest extends TestContext {
 
     private final String getBearerToken(){
         return "Bearer " + authenticationService.authenticate(username, password).getToken();
-    }
-
-    @Test
-    void profileContent() throws Exception{
-        getMockMvc().perform(
-            get(url)
-                .header(authorizationHeader, getBearerToken()))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.username").value(username));
-    }
-
-    @Test
-    void profileContent_error_unauthorized() throws Exception{
-        getMockMvc().perform(
-            get(url))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
     @Test

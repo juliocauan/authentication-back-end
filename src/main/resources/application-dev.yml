@@ -1,7 +1,7 @@
 spring:
     mail:
-        host: 127.0.0.1
+        host: localhost
         port: 3025
-        username: user
+        username: admin@authentication.dev
         password: admin
         

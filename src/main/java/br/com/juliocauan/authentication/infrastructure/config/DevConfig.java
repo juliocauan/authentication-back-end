@@ -9,11 +9,13 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 
 @Configuration
 @Profile("dev")
-public class Dev {
-    public static final GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP)
-        .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"));
+public class DevConfig {
+
+    private static final GreenMail greenMail = new GreenMail(ServerSetupTest.SMTP)
+        .withConfiguration(GreenMailConfiguration.aConfig().withUser("admin@authentication.dev", "admin"));
     
-    public Dev() {
-        greenMail.start();
+    DevConfig() {
+        if(!greenMail.isRunning())
+            greenMail.start();
     }
 }

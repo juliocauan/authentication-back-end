@@ -8,9 +8,9 @@ spring:
     jpa:
         open-in-view: false
     mail:
-        host: 127.0.0.1
+        host: localhost
         port: 3025
-        username: user
+        username: admin@authentication.test
         password: admin
         protocol: smtp
         properties:

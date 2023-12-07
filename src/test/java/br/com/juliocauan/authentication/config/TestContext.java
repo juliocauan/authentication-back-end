@@ -30,7 +30,7 @@ public class TestContext {
     
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
-        .withConfiguration(GreenMailConfiguration.aConfig().withUser("user", "admin"))
+        .withConfiguration(GreenMailConfiguration.aConfig().withUser("admin@authentication.test", "admin"))
         .withPerMethodLifecycle(false);
 
     private final UserRepositoryImpl userRepository;

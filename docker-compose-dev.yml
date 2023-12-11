@@ -4,29 +4,28 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     depends_on:
       - postgres
     env_file:
-      - .env
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - ./config/.env.dev
     ports:
-      - 8000:8443
+      - 8000:8080
     networks:
       - server
   
   postgres:
     image: postgres:alpine
     env_file:
-      - .env
+      - ./config/.env.dev
     ports:
-      - ${DB_PORT}:5432
+      - 5433:5432
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - data:/var/lib/postgresql/data
     networks:
       - server
+      - adminer
   
   adminer:
     image: adminer:standalone
@@ -35,7 +34,7 @@ services:
     ports:
       - 9000:8080
     networks:
-      - server
+      - adminer
    
 volumes:
   data:
@@ -43,4 +42,6 @@ volumes:
     
 networks:
   server:
+    driver: bridge
+  adminer:
     driver: bridge

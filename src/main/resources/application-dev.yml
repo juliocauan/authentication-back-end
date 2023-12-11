@@ -1,7 +1,11 @@
+server:
+    port: 8080
+
 spring:
     mail:
         host: localhost
         port: 3025
         username: admin@authentication.dev
         password: admin
-        
+
+REGISTER_ADMIN_PASSWORD: "@Admin1234"

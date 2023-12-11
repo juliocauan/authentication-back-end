@@ -13,7 +13,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,9 +39,9 @@ class UserServiceTest extends TestContext {
     private final String usernameContains = "test";
     private final String usernameNotContains = "@tset";
     private final String password = getRandomPassword();
-    private final EnumRole roleAdmin = EnumRole.ADMIN;
-    private final EnumRole roleManager = EnumRole.MANAGER;
-    private final EnumRole roleUser = EnumRole.USER;
+    private final String roleManager = "MANAGER";
+    private final String roleAdmin = "ADMIN";
+    private final String roleUser = "USER";
 
     private final String errorUsernameNotFound =  "User Not Found with username: " + username;
     private final String errorDuplicatedUsername = "Username is already taken!";
@@ -181,7 +180,7 @@ class UserServiceTest extends TestContext {
     @Test
     void updateRoles() {
         User userBeforeUpdate = getUserRepository().save(entity);
-        Set<EnumRole> enumRoles = new HashSet<>();
+        Set<String> enumRoles = new HashSet<>();
         enumRoles.add(roleManager);
         enumRoles.add(roleUser);
 

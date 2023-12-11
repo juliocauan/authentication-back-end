@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -19,7 +18,7 @@ public abstract class UserService {
 
 	public abstract User save(User user);
     public abstract void updatePassword(User user, String encodedPassword);
-    public abstract void updateRoles(String username, Set<EnumRole> enumRoles);
+    public abstract void updateRoles(String username, Set<String> roles);
 
     public final User getByUsername(String username){
         return getRepository().getByUsername(username)
@@ -31,7 +30,7 @@ public abstract class UserService {
 			throw new EntityExistsException("Username is already taken!");
     }
 
-	public final List<UserInfo> getUserInfosByUsernameSubstringAndRole(String username, EnumRole role){
+	public final List<UserInfo> getUserInfosByUsernameSubstringAndRole(String username, String role){
 		return getRepository().getAllByUsernameSubstringAndRole(username, role).stream()
             .map(UserMapper::domainToUserInfo)
             .collect(Collectors.toList());

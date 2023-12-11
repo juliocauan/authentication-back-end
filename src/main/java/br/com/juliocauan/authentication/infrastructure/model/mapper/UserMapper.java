@@ -15,7 +15,7 @@ public interface UserMapper {
     static UserPrincipal domainToUserPrincipal(User model) {
         UserPrincipal userPrincipal = new UserPrincipal();
         Set<SimpleGrantedAuthority> authorities = model.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName().getValue())).collect(Collectors.toSet());
+            .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
         userPrincipal.setUsername(model.getUsername());
         userPrincipal.setPassword(model.getPassword());
         userPrincipal.setAuthorities(authorities);

@@ -3,7 +3,6 @@ package br.com.juliocauan.authentication.infrastructure.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openapitools.model.EnumRole;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -16,7 +15,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.specification.
 public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEntity, Integer>, JpaSpecificationExecutor<UserEntity> {
 
     @Override
-    default List<User> getAllByUsernameSubstringAndRole(String username, EnumRole role) {
+    default List<User> getAllByUsernameSubstringAndRole(String username, String role) {
         List<UserEntity> users = findAll(Specification
             .where(UserSpecification.usernameContains(username)
             .and(UserSpecification.role(role))));

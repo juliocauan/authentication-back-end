@@ -11,7 +11,6 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,8 +28,8 @@ class UserRepositoryTest extends TestContext {
     private final String usernameContains = "test";
     private final String usernameNotContains = "asd";
     private final String password = getRandomPassword();
-    private final EnumRole roleManager = EnumRole.MANAGER;
-    private final EnumRole roleAdmin = EnumRole.ADMIN;
+    private final String roleManager = "MANAGER";
+    private final String roleAdmin = "ADMIN";
 
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();

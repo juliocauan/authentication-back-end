@@ -1,6 +1,5 @@
 package br.com.juliocauan.authentication.infrastructure.repository.specification;
 
-import org.openapitools.model.EnumRole;
 import org.springframework.data.jpa.domain.Specification;
 
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
@@ -16,7 +15,7 @@ public interface UserSpecification {
         };
     }
 
-    static Specification<UserEntity> role(EnumRole role){
+    static Specification<UserEntity> role(String role){
         return (root, criteriaQuery, criteriaBuilder) -> {
             if(role == null) return null;
             Join<RoleEntity, UserEntity> roles = root.join("roles");

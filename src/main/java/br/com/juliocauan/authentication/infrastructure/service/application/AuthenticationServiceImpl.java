@@ -3,7 +3,6 @@ package br.com.juliocauan.authentication.infrastructure.service.application;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWT;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,7 +39,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @Override
-  public final void registerUser(String username, String password, EnumRole role) {
+  public final void registerUser(String username, String password, String role) {
     userService.checkDuplicatedUsername(username);
     passwordService.validatePasswordSecurity(password);
     userService.save(UserEntity
@@ -52,8 +51,8 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
       .build());
   }
 
-  private final Set<RoleEntity> buildRoleSet(EnumRole formRole) {
-    Role role = roleService.getByName(formRole == null ? EnumRole.USER : formRole);
+  private final Set<RoleEntity> buildRoleSet(String formRole) {
+    Role role = roleService.getByName(formRole == null ? "USER" : formRole);
     Set<RoleEntity> roleSet = new HashSet<>();
     roleSet.add(new RoleEntity(role));
     return roleSet;

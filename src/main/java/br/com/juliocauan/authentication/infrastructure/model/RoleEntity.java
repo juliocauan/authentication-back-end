@@ -1,12 +1,8 @@
 package br.com.juliocauan.authentication.infrastructure.model;
 
-import org.openapitools.model.EnumRole;
-
 import br.com.juliocauan.authentication.domain.model.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -27,9 +23,8 @@ public final class RoleEntity extends Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Short id;
     
-    @Enumerated(EnumType.STRING)
-	@Column(length = 20, nullable = false)
-    private EnumRole name;
+	@Column(length = 40, nullable = false)
+    private String name;
 
 	public RoleEntity(Role role) {
 		this.id = role.getId();

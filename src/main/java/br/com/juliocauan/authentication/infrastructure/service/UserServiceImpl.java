@@ -3,7 +3,6 @@ package br.com.juliocauan.authentication.infrastructure.service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.openapitools.model.EnumRole;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.User;
@@ -39,7 +38,7 @@ public final class UserServiceImpl extends UserService {
     }
 
     @Override
-    public final void updateRoles(String username, Set<EnumRole> enumRoles) {
+    public final void updateRoles(String username, Set<String> enumRoles) {
         UserEntity user = new UserEntity(getByUsername(username));
         Set<RoleEntity> roles = enumRoles.stream()
             .map(roleService::getByName)

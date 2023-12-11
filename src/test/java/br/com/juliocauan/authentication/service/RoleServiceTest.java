@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.service;
 
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +26,7 @@ class RoleServiceTest extends TestContext {
 
     @Test
     void getByName(){
-        for(EnumRole name : EnumRole.values())
-            assertEquals(name, roleService.getByName(name).getName());
+        assertEquals("ADMIN", roleService.getByName("ADMIN").getName());
     }
 
     @Test

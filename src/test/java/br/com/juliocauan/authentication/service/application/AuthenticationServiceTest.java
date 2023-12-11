@@ -2,7 +2,6 @@ package br.com.juliocauan.authentication.service.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.JWT;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +28,9 @@ class AuthenticationServiceTest extends TestContext {
     private final String errorUsernameDuplicated = "Username is already taken!";
     private final String errorBadCredentials = "Bad credentials";
 
+    private final String roleManager = "MANAGER";
+    private final String roleUser = "USER";
+
     public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
@@ -43,13 +45,13 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void registerUser(){
-        assertDoesNotThrow(() -> authenticationService.registerUser(username, password, EnumRole.MANAGER));
+        assertDoesNotThrow(() -> authenticationService.registerUser(username, password, roleManager));
         assertEquals(1, getUserRepository().findAll().size());
 
         UserEntity user = getUserRepository().findAll().get(0);
         assertEquals(username, user.getUsername());
         assertTrue(encoder.matches(password, user.getPassword()));
-        assertEquals(EnumRole.MANAGER, user.getRoles().iterator().next().getName());
+        assertEquals(roleManager, user.getRoles().iterator().next().getName());
     }
 
     @Test
@@ -57,7 +59,7 @@ class AuthenticationServiceTest extends TestContext {
         assertDoesNotThrow(() -> authenticationService.registerUser(username, password, null));
 
         UserEntity user = getUserRepository().findAll().get(0);
-        assertEquals(EnumRole.USER, user.getRoles().iterator().next().getName());
+        assertEquals(roleUser, user.getRoles().iterator().next().getName());
     }
     
     @Test

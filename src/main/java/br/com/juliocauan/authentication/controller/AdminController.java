@@ -3,7 +3,6 @@ package br.com.juliocauan.authentication.controller;
 import java.util.List;
 
 import org.openapitools.api.AdminApi;
-import org.openapitools.model.EnumRole;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
@@ -28,7 +27,7 @@ public class AdminController implements AdminApi {
     }
   
     @Override @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserInfo>> _getAllUsers(String username, EnumRole role) {
+    public ResponseEntity<List<UserInfo>> _getAllUsers(String username, String role) {
       List<UserInfo> response = userService.getUserInfosByUsernameSubstringAndRole(username, role);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }

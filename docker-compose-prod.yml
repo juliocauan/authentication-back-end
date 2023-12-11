@@ -1,25 +1,24 @@
 version: '3.9'
-name: authentication-dev
+name: authentication
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    image: juliocauan/authentication:latest
     depends_on:
       - postgres
     env_file:
-      - ./config/.env.dev
+      - .env
+      - .env.secret
     ports:
-      - 8000:8080
+      - 8080:8443
     networks:
       - server
   
   postgres:
     image: postgres:alpine
     env_file:
-      - ./config/.env.dev
+      - .env
     ports:
-      - 5433:5432
+      - 5432:5432
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
       - data:/var/lib/postgresql/data
@@ -32,13 +31,13 @@ services:
     depends_on:
       - postgres
     ports:
-      - 9000:8080
+      - 8081:8080
     networks:
       - adminer
    
 volumes:
   data:
-    name: auth-dev
+    name: authentication
     
 networks:
   server:

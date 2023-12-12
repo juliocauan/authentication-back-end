@@ -23,7 +23,7 @@ public final class RoleEntity extends Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Short id;
     
-	@Column(length = 40, nullable = false)
+	@Column(length = 40, nullable = false, unique = true)
     private String name;
 
 	public RoleEntity(Role role) {

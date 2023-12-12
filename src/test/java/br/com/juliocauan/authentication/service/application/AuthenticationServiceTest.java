@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -36,6 +37,13 @@ class AuthenticationServiceTest extends TestContext {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;
         this.encoder = encoder;
+    }
+
+    @Override
+    public void setup() {
+        super.setup();
+        getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
+        getRoleRepository().save(RoleEntity.builder().name(roleUser).build());
     }
 
     @BeforeEach

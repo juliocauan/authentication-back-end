@@ -17,6 +17,7 @@ import com.icegreen.greenmail.configuration.GreenMailConfiguration;
 import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
+import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,8 @@ public class TestContext {
     @BeforeAll
     public void setup(){
         userRepository.deleteAll();
+        roleRepository.deleteAll();
+        roleRepository.save(RoleEntity.builder().name("ADMIN").build());
     }
 
     public MockMvc getMockMvc() {

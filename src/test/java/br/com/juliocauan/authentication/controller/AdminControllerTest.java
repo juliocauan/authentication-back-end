@@ -55,6 +55,13 @@ class AdminControllerTest extends TestContext {
         this.encoder = encoder;
     }
 
+    @Override
+    public void setup() {
+        super.setup();
+        getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
+        getRoleRepository().save(RoleEntity.builder().name(roleUser).build());
+    }
+
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();

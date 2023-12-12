@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -43,6 +44,12 @@ class AuthControllerTest extends TestContext {
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;
+    }
+
+    @Override
+    public void setup() {
+        super.setup();
+        getRoleRepository().save(RoleEntity.builder().name("USER").build());
     }
 
     @BeforeEach

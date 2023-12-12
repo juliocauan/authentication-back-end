@@ -59,6 +59,8 @@ class UserServiceTest extends TestContext {
     @Override @BeforeAll
     public void setup(){
         super.setup();
+        getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
+        getRoleRepository().save(RoleEntity.builder().name(roleUser).build());
         roles.add(new RoleEntity(getRoleRepository().getByName(roleAdmin).get()));
     }
 

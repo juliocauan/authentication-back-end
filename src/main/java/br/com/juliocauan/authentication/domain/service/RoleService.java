@@ -13,4 +13,6 @@ public abstract class RoleService {
             .orElseThrow(() -> new EntityNotFoundException("Role Not Found with name: " + name));
     }
 
+    public abstract void save(String role);
+
 }

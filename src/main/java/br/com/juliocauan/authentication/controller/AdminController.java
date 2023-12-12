@@ -51,6 +51,12 @@ public class AdminController implements AdminApi {
       return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         String.format("User %s successfully!", username)));
     }
+
+    @Override
+    public ResponseEntity<List<String>> _getAllRoles(String contains) {
+      List<String> response = roleService.getAllRoles(contains);
+      return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
     
 
 }

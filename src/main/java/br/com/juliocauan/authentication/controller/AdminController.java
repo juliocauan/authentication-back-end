@@ -3,6 +3,7 @@ package br.com.juliocauan.authentication.controller;
 import java.util.List;
 
 import org.openapitools.api.AdminApi;
+import org.openapitools.model.DeleteUserRequest;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.RegisterRoleRequest;
 import org.openapitools.model.UpdateUserRolesForm;
@@ -39,8 +40,17 @@ public class AdminController implements AdminApi {
     @Override
     public ResponseEntity<OkResponse> _registerRole(RegisterRoleRequest registerRoleRequest) {
       roleService.save(registerRoleRequest.getRole());
-      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
+      return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message(
         String.format("Role %s registered successfully!", registerRoleRequest.getRole())));
     }
+
+    @Override
+    public ResponseEntity<OkResponse> _deleteUser(DeleteUserRequest deleteUserRequest) {
+      String username = deleteUserRequest.getUsername();
+      userService.delete(username);
+      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
+        String.format("User %s successfully!", username)));
+    }
     
+
 }

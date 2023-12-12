@@ -17,6 +17,7 @@ public abstract class UserService {
 	protected abstract UserRepository getRepository();
 
 	public abstract User save(User user);
+	public abstract void delete(String username);
     public abstract void updatePassword(User user, String encodedPassword);
     public abstract void updateRoles(String username, Set<String> roles);
 

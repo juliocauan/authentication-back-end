@@ -48,5 +48,10 @@ public final class UserServiceImpl extends UserService {
         user.setRoles(roles);
         save(user);
     }
+
+    @Override
+    public final void delete(String username) {
+        userRepository.deleteById(getByUsername(username).getId());
+    }
     
 }

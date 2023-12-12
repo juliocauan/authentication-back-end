@@ -1,22 +1,17 @@
 package br.com.juliocauan.authentication.infrastructure.service.application;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.openapitools.model.JWT;
+import org.openapitools.model.PasswordMatch;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.service.application.AuthenticationService;
 import br.com.juliocauan.authentication.domain.service.util.PasswordService;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtProvider;
-import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import lombok.AllArgsConstructor;
 
@@ -28,7 +23,6 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   private final JwtProvider jwtProvider;
   private final PasswordService passwordService;
   private final UserServiceImpl userService;
-  private final RoleServiceImpl roleService;
 
   @Override
   public final JWT authenticate(String username, String password) {
@@ -39,23 +33,16 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @Override
-  public final void registerUser(String username, String password, String role) {
+  public final void registerUser(String username, PasswordMatch password) {
     userService.checkDuplicatedUsername(username);
-    passwordService.validatePasswordSecurity(password);
+    passwordService.validatePasswordMatch(password);
+    passwordService.validatePasswordSecurity(password.getPassword());
     userService.save(UserEntity
       .builder()
         .id(null)
         .username(username)
-        .password(passwordService.encode(password))
-        .roles(buildRoleSet(role))
+        .password(passwordService.encode(password.getPassword()))
       .build());
-  }
-
-  private final Set<RoleEntity> buildRoleSet(String formRole) {
-    Role role = roleService.getByName(formRole == null ? "USER" : formRole);
-    Set<RoleEntity> roleSet = new HashSet<>();
-    roleSet.add(new RoleEntity(role));
-    return roleSet;
   }
 
 }

@@ -22,8 +22,7 @@ public class AuthController implements AuthApi {
   public ResponseEntity<OkResponse> _signup(SignupForm signupForm) {
     authenticationService.registerUser(
         signupForm.getUsername(),
-        signupForm.getPassword(),
-        signupForm.getRole());
+        signupForm.getPassword());
     return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("User registered successfully!"));
   }
 

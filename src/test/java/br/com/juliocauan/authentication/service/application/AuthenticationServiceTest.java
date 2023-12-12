@@ -3,6 +3,7 @@ package br.com.juliocauan.authentication.service.application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.JWT;
+import org.openapitools.model.PasswordMatch;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,12 +26,13 @@ class AuthenticationServiceTest extends TestContext {
     private final PasswordEncoder encoder;
 
     private final String username = getRandomUsername();
-    private final String password = getRandomPassword();
+    private final String passwordRandom = getRandomPassword();
     private final String errorUsernameDuplicated = "Username is already taken!";
     private final String errorBadCredentials = "Bad credentials";
 
     private final String roleManager = "MANAGER";
     private final String roleUser = "USER";
+    private final PasswordMatch password = new PasswordMatch();
 
     public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
@@ -44,6 +46,7 @@ class AuthenticationServiceTest extends TestContext {
         super.setup();
         getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
         getRoleRepository().save(RoleEntity.builder().name(roleUser).build());
+        password.password(passwordRandom).passwordConfirmation(passwordRandom);
     }
 
     @BeforeEach
@@ -53,48 +56,38 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void registerUser(){
-        assertDoesNotThrow(() -> authenticationService.registerUser(username, password, roleManager));
+        assertDoesNotThrow(() -> authenticationService.registerUser(username, password));
         assertEquals(1, getUserRepository().findAll().size());
 
         UserEntity user = getUserRepository().findAll().get(0);
         assertEquals(username, user.getUsername());
-        assertTrue(encoder.matches(password, user.getPassword()));
-        assertEquals(roleManager, user.getRoles().iterator().next().getName());
+        assertTrue(encoder.matches(password.getPassword(), user.getPassword()));
     }
 
-    @Test
-    void registerUser_NullRole(){
-        assertDoesNotThrow(() -> authenticationService.registerUser(username, password, null));
-
-        UserEntity user = getUserRepository().findAll().get(0);
-        assertEquals(roleUser, user.getRoles().iterator().next().getName());
-    }
-    
     @Test
     void registerUser_duplicatedUserError(){
         getUserRepository().save(UserEntity.builder()
             .id(null)
             .username(username)
-            .password(password)
-            .roles(null)
+            .password(password.getPassword())
         .build());
 
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
-            () -> authenticationService.registerUser(username, password, null));
+            () -> authenticationService.registerUser(username, password));
         assertEquals(errorUsernameDuplicated, exception.getMessage());
     }
 
     @Test
     void authenticate(){
-        authenticationService.registerUser(username, password, null);
-        JWT response = authenticationService.authenticate(username, password);
+        authenticationService.registerUser(username, password);
+        JWT response = authenticationService.authenticate(username, passwordRandom);
         assertTrue(response.getToken().contains("."));
     }
 
     @Test
     void authenticate_badCredentialsError(){
         BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
-            () -> authenticationService.authenticate(username, password));
+            () -> authenticationService.authenticate(username, passwordRandom));
         assertEquals(errorBadCredentials, exception.getMessage());
     }
 

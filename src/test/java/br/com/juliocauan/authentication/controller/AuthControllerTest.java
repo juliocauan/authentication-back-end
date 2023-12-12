@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.springframework.http.MediaType;
@@ -55,7 +56,7 @@ class AuthControllerTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username).password(password).role(null);
+        signupForm.username(username).password(new PasswordMatch().password(password).passwordConfirmation(password));
         signinForm.username(username).password(password);
     }
 
@@ -80,7 +81,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void signup_error_invalidSignupForm() throws Exception{
-        signupForm.username("aaaaaaaaaaaaa").password("12345");
+        signupForm.username("aaaaaaaaaaaaa").password(new PasswordMatch().password("12345").passwordConfirmation("12345"));
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +90,7 @@ class AuthControllerTest extends TestContext {
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorValidation))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
-            .andExpect(jsonPath("$.fieldErrors", hasSize(2)));
+            .andExpect(jsonPath("$.fieldErrors", hasSize(3)));
     }
 
     @Test

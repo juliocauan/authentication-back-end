@@ -1,6 +1,7 @@
 package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.ProfileApi;
+import org.openapitools.model.CloseAccountRequest;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.PasswordUpdateForm;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,12 @@ public class ProfileController implements ProfileApi {
     public ResponseEntity<OkResponse> _updateUserPassword(PasswordUpdateForm passwordUpdateForm) {
         profileService.updatePassword(passwordUpdateForm);
         return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
+    }
+
+    @Override
+    public ResponseEntity<OkResponse> _closeAccount(CloseAccountRequest closeAccountRequest) {
+        profileService.closeAccount(closeAccountRequest.getPassword());
+        return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Closed account successfully!"));
     }
 
 }

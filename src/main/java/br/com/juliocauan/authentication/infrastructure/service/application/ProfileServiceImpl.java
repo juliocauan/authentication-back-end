@@ -30,5 +30,13 @@ public final class ProfileServiceImpl extends ProfileService {
         entity.setPassword(newPassword);
         userService.save(entity);
     }
-    
+
+    @Override
+    public final void closeAccount(String password) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity entity = new UserEntity(userService.getByUsername(username));
+        passwordService.validatePasswordMatch(password, entity.getPassword());
+        userService.delete(username);
+    }
+
 }

@@ -4,4 +4,5 @@ import org.openapitools.model.PasswordUpdateForm;
 
 public abstract class ProfileService {
     public abstract void updatePassword(PasswordUpdateForm passwordUpdateForm);
+    public abstract void closeAccount(String password);
 }

@@ -51,7 +51,12 @@ public final class UserServiceImpl extends UserService {
 
     @Override
     public final void delete(String username) {
-        userRepository.deleteById(getByUsername(username).getId());
+        delete(getByUsername(username));
+    }
+
+    @Override
+    public final void delete(User user) {
+        userRepository.deleteById(user.getId());
     }
     
 }

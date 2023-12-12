@@ -40,6 +40,7 @@ public class WebSecurityConfig {
     
     private static final String URI_ROOT = "/api/auth";
     private static final String URI_SIGNUP = URI_ROOT + "/signup";
+    private static final String URI_SIGNUP_ADMIN = URI_ROOT + "/signup/admin";
     private static final String URI_SIGNIN = URI_ROOT + "/signin";
     private static final String URI_FORGOT_PASSWORD = URI_ROOT + "/forgotpassword";
 
@@ -83,6 +84,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST,
                         URI_SIGNUP,
+                        URI_SIGNUP_ADMIN,
                         URI_SIGNIN,
                         URI_FORGOT_PASSWORD)
                     .permitAll()

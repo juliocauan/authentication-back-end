@@ -5,6 +5,7 @@ import org.openapitools.model.JWT;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
+import org.openapitools.model.SignupFormAdmin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +33,15 @@ public class AuthController implements AuthApi {
         signinForm.getUsername(),
         signinForm.getPassword());
     return ResponseEntity.status(HttpStatus.OK).body(jwt);
+  }
+
+  @Override
+  public ResponseEntity<OkResponse> _signupAdmin(SignupFormAdmin signupFormAdmin) {
+    authenticationService.registerAdmin(
+        signupFormAdmin.getUsername(),
+        signupFormAdmin.getPassword(),
+        signupFormAdmin.getAdminPassword());
+    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("Admin registered successfully!"));
   }
 
 }

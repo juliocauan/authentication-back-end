@@ -33,6 +33,7 @@ public abstract class PasswordService {
     }
 
     public abstract String encode(String password);
+    public abstract void validateAdminPassword(String adminPassword);
     protected abstract boolean matches(String rawPassword, String encodedPassword);
 
 }

@@ -2,6 +2,7 @@ package br.com.juliocauan.authentication.infrastructure.service;
 
 import org.springframework.stereotype.Service;
 
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.repository.RoleRepository;
 import br.com.juliocauan.authentication.domain.service.RoleService;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
@@ -24,6 +25,11 @@ public final class RoleServiceImpl extends RoleService {
     public final void save(String role) {
         if(roleRepository.getByName(role).isPresent()) throw new EntityExistsException("Role is already taken!");
         roleRepository.save(RoleEntity.builder().name(role).build());
+    }
+
+    @Override
+    public final void delete(Role role) {
+        roleRepository.deleteById(role.getId());
     }
 
 }

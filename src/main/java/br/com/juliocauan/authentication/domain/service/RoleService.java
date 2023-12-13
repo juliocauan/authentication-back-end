@@ -22,6 +22,7 @@ public abstract class RoleService {
                         .collect(Collectors.toList());
         }
 
-        public abstract void save(String role);
+        public abstract void save(String roleName);
+        public abstract void delete(Role role);
 
 }

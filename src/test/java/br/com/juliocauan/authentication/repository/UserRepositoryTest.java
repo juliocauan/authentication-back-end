@@ -88,60 +88,60 @@ class UserRepositoryTest extends TestContext {
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole() {
+    void getAll() {
         UserEntity expectedUser = entity;
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleManager);
+        List<User> foundUsers = getUserRepository().getAll(usernameContains, roleManager);
         assertEquals(1, foundUsers.size());
         assertEquals(expectedUser, foundUsers.get(0));
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_usernameContainsAndRole() {
+    void getAll_branch_usernameContainsAndRole() {
         saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleManager);
+        List<User> foundUsers = getUserRepository().getAll(usernameContains, roleManager);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(entity));
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_usernameContainsAndNull() {
+    void getAll_branch_usernameContainsAndNull() {
         saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, null);
+        List<User> foundUsers = getUserRepository().getAll(usernameContains, null);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(entity));
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_nullAndRole() {
+    void getAll_branch_nullAndRole() {
         saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(null, roleManager);
+        List<User> foundUsers = getUserRepository().getAll(null, roleManager);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(entity));
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_nullAndNull() {
+    void getAll_branch_nullAndNull() {
         saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(null, null);
+        List<User> foundUsers = getUserRepository().getAll(null, null);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(entity));
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_usernameNotContainsAndRole() {
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleManager);
+    void getAll_branch_usernameNotContainsAndRole() {
+        List<User> foundUsers = getUserRepository().getAll(usernameNotContains, roleManager);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_usernameContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameContains, roleAdmin);
+    void getAll_branch_usernameContainsAndRoleNotPresent() {
+        List<User> foundUsers = getUserRepository().getAll(usernameContains, roleAdmin);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void getAllByUsernameSubstringAndRole_branch_usernameNotContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAllByUsernameSubstringAndRole(usernameNotContains, roleAdmin);
+    void getAll_branch_usernameNotContainsAndRoleNotPresent() {
+        List<User> foundUsers = getUserRepository().getAll(usernameNotContains, roleAdmin);
         assertTrue(foundUsers.isEmpty());
     }
 

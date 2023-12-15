@@ -32,8 +32,8 @@ public abstract class UserService {
 			throw new EntityExistsException("Username is already taken!");
     }
 
-	public final List<UserInfo> getUserInfosByUsernameSubstringAndRole(String username, String role){
-		return getRepository().getAllByUsernameSubstringAndRole(username, role).stream()
+	public final List<UserInfo> getUserInfosByUsernameSubstringAndRole(String usernameContains, String roleName){
+		return getRepository().getAll(usernameContains, roleName).stream()
             .map(UserMapper::domainToUserInfo)
             .collect(Collectors.toList());
 	}

@@ -1,7 +1,7 @@
 package br.com.juliocauan.authentication.infrastructure.repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,13 +15,11 @@ import br.com.juliocauan.authentication.infrastructure.repository.specification.
 public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEntity, Integer>, JpaSpecificationExecutor<UserEntity> {
 
     @Override
-    default List<User> getAllByUsernameSubstringAndRole(String username, String role) {
-        List<UserEntity> users = findAll(Specification
-            .where(UserSpecification.usernameContains(username)
-            .and(UserSpecification.role(role))));
-        List<User> mappedUsers = new ArrayList<>();
-        users.forEach(mappedUsers::add);
-        return mappedUsers;
+    default List<User> getAll(String usernameContains, String roleName) {
+        return this.findAll(Specification
+            .where(UserSpecification.usernameContains(usernameContains)
+            .and(UserSpecification.role(roleName))))
+            .stream().collect(Collectors.toList());
     }
 
 }

@@ -1,7 +1,7 @@
 package br.com.juliocauan.authentication.infrastructure.repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,11 +16,9 @@ public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<RoleEn
 
     @Override
     default List<Role> getAll(String nameContains) {
-        List<RoleEntity> roleEntities = this.findAll(Specification
-            .where(RoleSpecification.nameContains(nameContains)));
-        List<Role> roles = new ArrayList<>();
-        roleEntities.forEach(roles::add);
-        return roles;
+        return this.findAll(Specification
+            .where(RoleSpecification.nameContains(nameContains)))
+            .stream().collect(Collectors.toList());
     }
 
     @Override

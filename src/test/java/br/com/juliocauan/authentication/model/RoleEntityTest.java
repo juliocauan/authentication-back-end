@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.model;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,24 +33,24 @@ class RoleEntityTest extends TestContext {
     }
 
     @Test
-    void test_save() {
+    void save() {
         assertDoesNotThrow(() -> saveRole(defaultRoleName));
     }
 
     @Test
-    void test_constraint_length() {
+    void save_constraint_length() {
         String maxLengthName = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
         assertDoesNotThrow(() -> saveRole(maxLengthName));
         assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(maxLengthName + "A"));
     }
 
     @Test
-    void test_constraint_notNull() {
+    void save_constraint_notNull() {
         assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(null));
     }
 
     @Test
-    void test_constraint_unique() {
+    void save_constraint_unique() {
         saveRole(defaultRoleName);
         assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(defaultRoleName));
         assertDoesNotThrow(() -> saveRole(defaultRoleName + "A"));

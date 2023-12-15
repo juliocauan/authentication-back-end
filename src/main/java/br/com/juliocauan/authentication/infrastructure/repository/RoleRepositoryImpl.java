@@ -15,12 +15,12 @@ import br.com.juliocauan.authentication.infrastructure.repository.specification.
 public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<RoleEntity, Short>, JpaSpecificationExecutor<RoleEntity> {
 
     @Override
-    default List<Role> getAllByRoleSubstring(String contains) {
-        List<RoleEntity> roles = findAll(Specification
-            .where(RoleSpecification.roleContains(contains)));
-        List<Role> mappedRoles = new ArrayList<>();
-        roles.forEach(mappedRoles::add);
-        return mappedRoles;
+    default List<Role> getAll(String nameContains) {
+        List<RoleEntity> roleEntities = findAll(Specification
+            .where(RoleSpecification.nameContains(nameContains)));
+        List<Role> roles = new ArrayList<>();
+        roleEntities.forEach(roles::add);
+        return roles;
     }
     
 }

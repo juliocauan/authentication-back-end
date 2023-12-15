@@ -7,5 +7,5 @@ import br.com.juliocauan.authentication.domain.model.Role;
 
 public interface RoleRepository {
     Optional<Role> getByName(String name);
-    List<Role> getAllByRoleSubstring(String contains);
+    List<Role> getAll(String nameContains);
 }

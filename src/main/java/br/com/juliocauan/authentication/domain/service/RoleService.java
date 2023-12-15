@@ -17,7 +17,7 @@ public abstract class RoleService {
         }
 
         public final List<String> getAllRoles(String contains) {
-                return getRepository().getAllByRoleSubstring(contains).stream()
+                return getRepository().getAll(contains).stream()
                         .map(Role::getName)
                         .collect(Collectors.toList());
         }

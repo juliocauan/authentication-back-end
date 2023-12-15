@@ -6,10 +6,10 @@ import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 
 public interface RoleSpecification {
 
-    static Specification<RoleEntity> roleContains(String contains){
+    static Specification<RoleEntity> nameContains(String nameContains){
         return (root, criteriaQuery, criteriaBuilder) -> {
-            if(contains == null) return null;
-            return criteriaBuilder.like(root.get("name"), "%" + contains + "%");
+            if(nameContains == null) return null;
+            return criteriaBuilder.like(root.get("name"), "%" + nameContains + "%");
         };
     }
 

@@ -4,3 +4,4 @@ public abstract class Role {
     public abstract Short getId();
     public abstract String getName();
 }
+    

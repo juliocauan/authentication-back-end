@@ -29,7 +29,7 @@ public final class UserServiceImpl extends UserService {
     public final void updatePassword(User user, String encodedPassword) {
         UserEntity userEntity = new UserEntity(user);
         userEntity.setPassword(encodedPassword);
-        register(userEntity);
+        getRepository().register(userEntity);
     }
 
     @Override
@@ -41,7 +41,7 @@ public final class UserServiceImpl extends UserService {
             .collect(Collectors.toSet());
         
         user.setRoles(roles);
-        register(user);
+        getRepository().register(user);
     }
     
 }

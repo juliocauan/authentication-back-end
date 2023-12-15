@@ -28,7 +28,6 @@ import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
-import jakarta.persistence.EntityExistsException;
 
 class UserServiceTest extends TestContext {
 
@@ -96,77 +95,64 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void checkDuplicatedUsername(){
-        getUserRepository().deleteAll();
-        assertDoesNotThrow(() -> userService.checkDuplicatedUsername(username));
-    }
-
-    @Test
-    void checkDuplicatedUsername_entityExistsException(){
-        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
-            () -> userService.checkDuplicatedUsername(username));
-        assertEquals(getErrorDuplicatedUsername(username), exception.getMessage());
-    }
-
-    @Test
-    void getUserInfosByUsernameSubstringAndRole() {
+    void getUserInfos() {
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleAdmin);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, roleAdmin);
         assertEquals(1, foundUserInfos.size());
         assertEquals(expectedUserInfo, foundUserInfos.get(0));
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_usernameContainsAndRole() {
+    void getUserInfosbranch_usernameContainsAndRole() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleAdmin);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, roleAdmin);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_usernameContainsAndNull() {
+    void getUserInfosbranch_usernameContainsAndNull() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, null);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, null);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_nullAndRole() {
+    void getUserInfosbranch_nullAndRole() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(null, roleAdmin);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(null, roleAdmin);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_nullAndNull() {
+    void getUserInfosbranch_nullAndNull() {
         saveSecondUser();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(entity);
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(null, null);
+        List<UserInfo> foundUserInfos = userService.getUserInfos(null, null);
         assertEquals(2, foundUserInfos.size());
         assertTrue(foundUserInfos.contains(expectedUserInfo));
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_usernameNotContainsAndRole() {
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleAdmin);
+    void getUserInfosbranch_usernameNotContainsAndRole() {
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameNotContains, roleAdmin);
         assertTrue(foundUserInfos.isEmpty());
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_usernameContainsAndRoleNotPresent() {
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameContains, roleUser);
+    void getUserInfosbranch_usernameContainsAndRoleNotPresent() {
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameContains, roleUser);
         assertTrue(foundUserInfos.isEmpty());
     }
 
     @Test
-    void getUserInfosByUsernameSubstringAndRolebranch_usernameNotContainsAndRoleNotPresent() {
-        List<UserInfo> foundUserInfos = userService.getUserInfosByUsernameSubstringAndRole(usernameNotContains, roleUser);
+    void getUserInfosbranch_usernameNotContainsAndRoleNotPresent() {
+        List<UserInfo> foundUserInfos = userService.getUserInfos(usernameNotContains, roleUser);
         assertTrue(foundUserInfos.isEmpty());
     }
 

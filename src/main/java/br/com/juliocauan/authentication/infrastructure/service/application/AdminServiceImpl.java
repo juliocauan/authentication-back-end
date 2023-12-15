@@ -22,7 +22,7 @@ public final class AdminServiceImpl implements AdminService{
     @Override
     public final void delete(String roleName) {
         Role role = roleService.getByName(roleName);
-        List<UserInfo> users = userService.getUserInfosByUsernameSubstringAndRole(null, role.getName());
+        List<UserInfo> users = userService.getUserInfos(null, role.getName());
         users.forEach(user -> {
             Set<String> roles = user.getRoles();
             roles.remove(role.getName());

@@ -36,7 +36,7 @@ public class AdminController implements AdminApi {
   
     @Override
     public ResponseEntity<List<UserInfo>> _getUsers(String username, String role) {
-      List<UserInfo> response = userService.getUserInfosByUsernameSubstringAndRole(username, role);
+      List<UserInfo> response = userService.getUserInfos(username, role);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -8,4 +8,6 @@ import br.com.juliocauan.authentication.domain.model.Role;
 public interface RoleRepository {
     Optional<Role> getByName(String name);
     List<Role> getAll(String nameContains);
+    void register(String name);
+    void delete(Role role);
 }

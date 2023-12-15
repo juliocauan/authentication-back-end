@@ -16,11 +16,21 @@ public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<RoleEn
 
     @Override
     default List<Role> getAll(String nameContains) {
-        List<RoleEntity> roleEntities = findAll(Specification
+        List<RoleEntity> roleEntities = this.findAll(Specification
             .where(RoleSpecification.nameContains(nameContains)));
         List<Role> roles = new ArrayList<>();
         roleEntities.forEach(roles::add);
         return roles;
+    }
+
+    @Override
+    default void register(String name) {
+        this.save(RoleEntity.builder().name(name).build());
+    }
+
+    @Override
+    default void delete(Role role) {
+        this.deleteById(role.getId());
     }
     
 }

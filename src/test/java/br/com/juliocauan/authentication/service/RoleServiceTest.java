@@ -33,7 +33,7 @@ class RoleServiceTest extends TestContext {
     void getByName_error_entityNotFound(){
         EntityNotFoundException expection = assertThrowsExactly(EntityNotFoundException.class,
             () -> roleService.getByName(null));
-        assertEquals("Role Not Found with name: null", expection.getMessage());
+        assertEquals("Role [null] not found!", expection.getMessage());
     }
 
 }

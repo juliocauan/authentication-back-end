@@ -42,7 +42,7 @@ public class AdminController implements AdminApi {
 
     @Override
     public ResponseEntity<OkResponse> _registerRole(RegisterRoleRequest registerRoleRequest) {
-      roleService.save(registerRoleRequest.getRole());
+      roleService.register(registerRoleRequest.getRole());
       return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message(
         String.format("Role %s registered successfully!", registerRoleRequest.getRole())));
     }
@@ -57,7 +57,7 @@ public class AdminController implements AdminApi {
 
     @Override
     public ResponseEntity<List<String>> _getRoles(String contains) {
-      List<String> response = roleService.getAllRoles(contains);
+      List<String> response = roleService.getAll(contains);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

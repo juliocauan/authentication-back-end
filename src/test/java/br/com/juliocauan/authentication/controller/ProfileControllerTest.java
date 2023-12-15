@@ -26,7 +26,7 @@ class ProfileControllerTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    private final String url = "/api/auth/profile";
+    private final String url = "/profile";
     private final String authorizationHeader = "Authorization";
 
     private final String username = getRandomUsername();

@@ -33,7 +33,7 @@ class AdminControllerTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    private final String url = "/api/auth/admin/users";
+    private final String url = "/admin/users";
     private final String authorizationHeader = "Authorization";
 
     private final String password = getRandomPassword();

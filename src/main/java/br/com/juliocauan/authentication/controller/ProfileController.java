@@ -18,7 +18,7 @@ public class ProfileController implements ProfileApi {
     private final ProfileServiceImpl profileService;
 
     @Override
-    public ResponseEntity<OkResponse> _updateUserPassword(PasswordUpdateForm passwordUpdateForm) {
+    public ResponseEntity<OkResponse> _updatePassword(PasswordUpdateForm passwordUpdateForm) {
         profileService.updatePassword(passwordUpdateForm);
         return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
     }

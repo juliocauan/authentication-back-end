@@ -38,11 +38,10 @@ public class WebSecurityConfig {
     private final AuthEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
     
-    private static final String URI_ROOT = "/api/auth";
-    private static final String URI_SIGNUP = URI_ROOT + "/signup";
-    private static final String URI_SIGNUP_ADMIN = URI_ROOT + "/signup/admin";
-    private static final String URI_SIGNIN = URI_ROOT + "/signin";
-    private static final String URI_FORGOT_PASSWORD = URI_ROOT + "/forgotpassword";
+    private static final String URI_SIGNUP = "/signup";
+    private static final String URI_SIGNUP_ADMIN = "/signup/admin";
+    private static final String URI_LOGIN = "/login";
+    private static final String URI_FORGOT_PASSWORD = "/forgot-password";
 
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
@@ -85,7 +84,7 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST,
                         URI_SIGNUP,
                         URI_SIGNUP_ADMIN,
-                        URI_SIGNIN,
+                        URI_LOGIN,
                         URI_FORGOT_PASSWORD)
                     .permitAll()
                 .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD + "/{token}").permitAll()

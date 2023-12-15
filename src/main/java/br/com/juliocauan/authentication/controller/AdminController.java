@@ -35,7 +35,7 @@ public class AdminController implements AdminApi {
     }
   
     @Override
-    public ResponseEntity<List<UserInfo>> _getAllUsers(String username, String role) {
+    public ResponseEntity<List<UserInfo>> _getUsers(String username, String role) {
       List<UserInfo> response = userService.getUserInfosByUsernameSubstringAndRole(username, role);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -56,7 +56,7 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<List<String>> _getAllRoles(String contains) {
+    public ResponseEntity<List<String>> _getRoles(String contains) {
       List<String> response = roleService.getAllRoles(contains);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }

@@ -28,7 +28,7 @@ public final class ProfileServiceImpl extends ProfileService {
         
         String newPassword = passwordService.encode(passwordUpdateForm.getNewPasswordMatch().getPassword());
         entity.setPassword(newPassword);
-        userService.save(entity);
+        userService.register(entity);
     }
 
     @Override

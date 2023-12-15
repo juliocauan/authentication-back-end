@@ -43,9 +43,6 @@ class UserServiceTest extends TestContext {
     private final String roleAdmin = "ADMIN";
     private final String roleUser = "USER";
 
-    private final String errorUsernameNotFound =  "User Not Found with username: " + username;
-    private final String errorDuplicatedUsername = "Username is already taken!";
-
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
 
@@ -95,7 +92,7 @@ class UserServiceTest extends TestContext {
         getUserRepository().deleteAll();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> userService.getByUsername(username));
-        assertEquals(errorUsernameNotFound, exception.getMessage());
+        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
 
     @Test
@@ -108,7 +105,7 @@ class UserServiceTest extends TestContext {
     void checkDuplicatedUsername_entityExistsException(){
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
             () -> userService.checkDuplicatedUsername(username));
-        assertEquals(errorDuplicatedUsername, exception.getMessage());
+        assertEquals(getErrorDuplicatedUsername(username), exception.getMessage());
     }
 
     @Test
@@ -176,7 +173,7 @@ class UserServiceTest extends TestContext {
     @Test
     void save(){
         getUserRepository().deleteAll();
-        assertDoesNotThrow(() -> userService.save(entity));
+        assertDoesNotThrow(() -> userService.register(entity));
     }
 
     @Test
@@ -199,7 +196,7 @@ class UserServiceTest extends TestContext {
         getUserRepository().deleteAll();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> userService.updateRoles(username, new HashSet<>()));
-        assertEquals(errorUsernameNotFound, exception.getMessage());
+        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
     
     @Test

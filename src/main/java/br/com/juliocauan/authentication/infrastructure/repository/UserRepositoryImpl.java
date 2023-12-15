@@ -22,4 +22,14 @@ public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEn
             .stream().collect(Collectors.toList());
     }
 
+    @Override
+    default void register(User user) {
+        this.save(new UserEntity(user));
+    }
+
+    @Override
+    default void delete(User user) {
+        this.deleteById(user.getId());
+    }
+
 }

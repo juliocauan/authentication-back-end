@@ -42,7 +42,6 @@ class AdminControllerTest extends TestContext {
     private final String usernameUser = "user@email.com";
     
     private final String okAlterUserRole = "Patched user roles successfully!";
-    private final String errorUserNotFound = "User Not Found with username: ";
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     private final String roleManager = "MANAGER";
@@ -151,7 +150,7 @@ class AdminControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message").value(errorUserNotFound + usernameUser))
+            .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(usernameUser)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

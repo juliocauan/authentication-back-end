@@ -29,7 +29,6 @@ class UserDetailsServiceTest extends TestContext {
     
     private final String username = getRandomUsername();
     private final String password = getRandomPassword();
-    private final String errorUsernameNotFound = "User Not Found with username: " + username;
 
     private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
@@ -69,7 +68,7 @@ class UserDetailsServiceTest extends TestContext {
     void loadByUsername_error_usernameNotFound(){
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> userDetailsService.loadUserByUsername(username));
-        assertEquals(errorUsernameNotFound, exception.getMessage());
+        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
 
 }

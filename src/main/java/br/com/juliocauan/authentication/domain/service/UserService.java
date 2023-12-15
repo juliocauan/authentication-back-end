@@ -15,27 +15,35 @@ import jakarta.persistence.EntityExistsException;
 public abstract class UserService {
 	
 	protected abstract UserRepository getRepository();
-
-	public abstract User save(User user);
-	public abstract void delete(String username);
-	public abstract void delete(User user);
     public abstract void updatePassword(User user, String encodedPassword);
     public abstract void updateRoles(String username, Set<String> roles);
 
     public final User getByUsername(String username){
         return getRepository().getByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+            .orElseThrow(() -> new UsernameNotFoundException(String.format("Username [%s] not found!", username)));
 	}
 
 	public final void checkDuplicatedUsername(String username) {
 		if (getRepository().existsByUsername(username))
-			throw new EntityExistsException("Username is already taken!");
+			throw new EntityExistsException(String.format("Username [%s] is already taken!", username));
     }
 
 	public final List<UserInfo> getUserInfosByUsernameSubstringAndRole(String usernameContains, String roleName){
 		return getRepository().getAll(usernameContains, roleName).stream()
             .map(UserMapper::domainToUserInfo)
             .collect(Collectors.toList());
+	}
+
+	public final void register(User user) {
+		getRepository().register(user);
+	}
+	
+	public final void delete(String username) {
+		this.delete(this.getByUsername(username));
+	}
+	
+	public final void delete(User user) {
+		getRepository().delete(user);
 	}
 	
 }

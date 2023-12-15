@@ -27,7 +27,6 @@ class AuthenticationServiceTest extends TestContext {
 
     private final String username = getRandomUsername();
     private final String passwordRandom = getRandomPassword();
-    private final String errorUsernameDuplicated = "Username is already taken!";
     private final String errorBadCredentials = "Bad credentials";
 
     private final String roleManager = "MANAGER";
@@ -74,7 +73,7 @@ class AuthenticationServiceTest extends TestContext {
 
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
             () -> authenticationService.registerUser(username, password));
-        assertEquals(errorUsernameDuplicated, exception.getMessage());
+        assertEquals(getErrorDuplicatedUsername(username), exception.getMessage());
     }
 
     @Test

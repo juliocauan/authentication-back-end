@@ -44,15 +44,13 @@ class AuthControllerTest extends TestContext {
     private final String newPassword = getRandomPassword();
     private final String tokenMock = getRandomToken();
 
+    private final String okMessage = "User registered successfully!";
     private final String okEmailPasswordResetToken = "Email sent to " + username + " successfully!";
     private final String okResetUserPassword = "Password updated successfully!";
-    private final String errorUsernameNotFound = "User Not Found with username: " + username;
+    
     private final String invalidPasswordError = "Passwords don't match!";
     private final String errorTokenNotFound = "Password Reset Token not found with token: " + tokenMock;
     private final String errorTokenExpired = "Expired Password Reset Token!";
-
-    private final String okMessage = "User registered successfully!";
-    private final String errorDuplicatedUsername = "Username is already taken!";
     private final String errorValidation = "Input validation error!";
     private final String errorBadCredentials = "Bad credentials";
 
@@ -131,7 +129,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(errorDuplicatedUsername))
+            .andExpect(jsonPath("$.message").value(getErrorDuplicatedUsername(username)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
@@ -197,7 +195,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(requestBody)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value(errorUsernameNotFound))
+            .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(username)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

@@ -43,7 +43,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
     userService.checkDuplicatedUsername(username);
     passwordService.validatePasswordMatch(password);
     passwordService.validatePasswordSecurity(password.getPassword());
-    userService.save(UserEntity
+    userService.register(UserEntity
       .builder()
         .id(null)
         .username(username)
@@ -57,7 +57,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
     passwordService.validatePasswordMatch(password);
     passwordService.validatePasswordSecurity(password.getPassword());
     passwordService.validateAdminPassword(adminPassword);
-    userService.save(UserEntity
+    userService.register(UserEntity
       .builder()
         .id(null)
         .username(username)

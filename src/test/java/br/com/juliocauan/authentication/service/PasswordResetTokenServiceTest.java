@@ -42,7 +42,6 @@ class PasswordResetTokenServiceTest extends TestContext {
     private final String tokenMock = getRandomToken();
 
     private final String usernameNotPresent = "notPresent@email.test";
-    private final String usernameNotFoundException = "User Not Found with username: " + usernameNotPresent;
     private final String invalidPasswordException = "Passwords don't match!";
     private final String entityNotFoundException = "Password Reset Token not found with token: " + tokenMock;
     private final String expiredPasswordResetTokenException = "Expired Password Reset Token!";
@@ -99,7 +98,7 @@ class PasswordResetTokenServiceTest extends TestContext {
         UsernameNotFoundException exception = assertThrowsExactly(
             UsernameNotFoundException.class,
             () -> passwordResetTokenService.generateToken(usernameNotPresent));
-        assertTrue(exception.getMessage().contentEquals(usernameNotFoundException));
+        assertTrue(exception.getMessage().contentEquals(getErrorUsernameNotFound(usernameNotPresent)));
     }
 
     @Test

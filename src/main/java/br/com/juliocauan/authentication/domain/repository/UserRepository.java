@@ -9,4 +9,6 @@ public interface UserRepository {
     boolean existsByUsername(String username);
     Optional<User> getByUsername(String username);
     List<User> getAll(String usernameContains, String roleName);
+    void register(User user);
+    void delete(User user);
 }

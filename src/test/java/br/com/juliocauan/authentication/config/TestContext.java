@@ -77,6 +77,14 @@ public class TestContext {
         return getRandomString(43);
     }
 
+    public String getErrorUsernameNotFound(String username) {
+        return String.format("Username [%s] not found!", username);
+    }
+
+    public String getErrorDuplicatedUsername(String username) {
+        return String.format("Username [%s] is already taken!", username);
+    }
+
     private String getRandomString(Integer length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

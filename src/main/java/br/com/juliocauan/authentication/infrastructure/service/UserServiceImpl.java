@@ -21,11 +21,6 @@ public final class UserServiceImpl extends UserService {
     private final RoleServiceImpl roleService;
 
     @Override
-    public final User save(User user) {
-        return userRepository.save(new UserEntity(user));
-    }
-
-    @Override
     protected final UserRepository getRepository() {
         return userRepository;
     }
@@ -34,7 +29,7 @@ public final class UserServiceImpl extends UserService {
     public final void updatePassword(User user, String encodedPassword) {
         UserEntity userEntity = new UserEntity(user);
         userEntity.setPassword(encodedPassword);
-        save(userEntity);
+        register(userEntity);
     }
 
     @Override
@@ -46,17 +41,7 @@ public final class UserServiceImpl extends UserService {
             .collect(Collectors.toSet());
         
         user.setRoles(roles);
-        save(user);
-    }
-
-    @Override
-    public final void delete(String username) {
-        delete(getByUsername(username));
-    }
-
-    @Override
-    public final void delete(User user) {
-        userRepository.deleteById(user.getId());
+        register(user);
     }
     
 }

@@ -17,7 +17,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,10 +34,10 @@ public final class UserEntity extends User {
     private Integer id;
 
 	@Email
-	@NotBlank @Size(max = 50) @Column(unique = true)
+	@Column(length = 60, unique = true, nullable = false)
 	private String username;
 
-	@NotBlank @Size(min = 8, max = 120)
+	@NotBlank
 	private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

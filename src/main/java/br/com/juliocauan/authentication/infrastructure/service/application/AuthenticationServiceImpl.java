@@ -12,12 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.service.application.AuthenticationService;
-import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtProvider;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -26,7 +26,6 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
 
   private final AuthenticationManager authenticationManager;
   private final JwtProvider jwtProvider;
-  private final PasswordService passwordService;
   private final UserServiceImpl userService;
   private final RoleServiceImpl roleService;
 
@@ -40,24 +39,24 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
 
   @Override
   public final void registerUser(String username, PasswordMatch password) {
-    passwordService.validatePasswordMatch(password);
+    PasswordUtil.validatePasswordMatch(password);
     userService.register(UserEntity
       .builder()
         .id(null)
         .username(username)
-        .password(passwordService.encode(password.getPassword()))
+        .password(PasswordUtil.encode(password.getPassword()))
       .build());
   }
 
   @Override
   public final void registerAdmin(String username, PasswordMatch password, String adminPassword) {
-    passwordService.validatePasswordMatch(password);
-    passwordService.validateAdminPassword(adminPassword);
+    PasswordUtil.validatePasswordMatch(password);
+    PasswordUtil.validateAdminPassword(adminPassword);
     userService.register(UserEntity
       .builder()
         .id(null)
         .username(username)
-        .password(passwordService.encode(password.getPassword()))
+        .password(PasswordUtil.encode(password.getPassword()))
         .roles(buildRoleSet("ADMIN"))
       .build());
   }

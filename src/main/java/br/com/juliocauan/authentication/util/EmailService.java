@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.domain.service.util;
+package br.com.juliocauan.authentication.util;
 
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailSendException;

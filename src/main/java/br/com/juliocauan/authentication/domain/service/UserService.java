@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
-import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
+import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityExistsException;
 
 public abstract class UserService {
@@ -32,7 +32,7 @@ public abstract class UserService {
 
 	public final void register(User user) {
 		validateUsername(user.getUsername());
-		PasswordService.validatePasswordSecurity(user.getPassword());
+		PasswordUtil.validatePasswordSecurity(user.getPassword());
 		getRepository().register(user);
 	}
 

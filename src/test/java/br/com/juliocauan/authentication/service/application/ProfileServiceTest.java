@@ -17,18 +17,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.ProfileServiceImpl;
+import br.com.juliocauan.authentication.util.PasswordUtil;
 
 class ProfileServiceTest extends TestContext {
 
     private final ProfileServiceImpl profileService;
     private final AuthenticationManager authenticationManager;
-    private final PasswordService passwordService;
 
     private final String username = getRandomUsername();
     private final String password = getRandomPassword();
@@ -39,11 +38,10 @@ class ProfileServiceTest extends TestContext {
 
     public ProfileServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, ProfileServiceImpl profileService,
-            AuthenticationManager authenticationManager, PasswordService passwordService) {
+            AuthenticationManager authenticationManager) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.profileService = profileService;
         this.authenticationManager = authenticationManager;
-        this.passwordService = passwordService;
     }
 
     @BeforeEach
@@ -52,7 +50,7 @@ class ProfileServiceTest extends TestContext {
         userEntity = getUserRepository().save(UserEntity
             .builder()
                 .username(username)
-                .password(passwordService.encode(password))
+                .password(PasswordUtil.encode(password))
                 .roles(null)
             .build());
         deauthenticate();

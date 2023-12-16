@@ -7,9 +7,9 @@ import org.openapitools.model.PasswordMatch;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetTokenRepository;
-import br.com.juliocauan.authentication.domain.service.util.EmailService;
-import br.com.juliocauan.authentication.domain.service.util.PasswordService;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetTokenException;
+import br.com.juliocauan.authentication.util.EmailService;
+import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityNotFoundException;
 
 public abstract class PasswordResetTokenService {
@@ -17,7 +17,6 @@ public abstract class PasswordResetTokenService {
     protected abstract UserService getUserService();
     protected abstract PasswordResetTokenRepository getRepository();
     protected abstract EmailService getEmailService();
-    protected abstract PasswordService getPasswordService();
 
     protected abstract PasswordResetToken saveWithUser(User user);
 
@@ -46,9 +45,9 @@ public abstract class PasswordResetTokenService {
     }
 
     public final void resetPassword(PasswordMatch passwordMatch, String token) {
-        getPasswordService().validatePasswordMatch(passwordMatch);
+        PasswordUtil.validatePasswordMatch(passwordMatch);
         PasswordResetToken passwordResetToken = checkTokenValidation(token);
-        String encodedPassword = getPasswordService().encode(passwordMatch.getPassword());
+        String encodedPassword = PasswordUtil.encode(passwordMatch.getPassword());
         getUserService().updatePassword(passwordResetToken.getUser(), encodedPassword);
         getRepository().deleteById(passwordResetToken.getId());
     }

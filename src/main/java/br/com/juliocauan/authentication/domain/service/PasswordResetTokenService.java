@@ -21,7 +21,7 @@ public abstract class PasswordResetTokenService {
     protected abstract PasswordResetToken saveWithUser(User user);
 
     public final String generateToken(String username) {
-        User user = getUserService().getByUsername(username);
+        User user = getUserService().getBy(username);
         deletePreviousPasswordResetToken(user);
         return saveWithUser(user).getToken();
     }

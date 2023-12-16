@@ -40,7 +40,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   @Override
   public final void registerUser(String username, PasswordMatch password) {
     PasswordUtil.validatePasswordMatch(password);
-    userService.register(UserEntity
+    userService.registerNew(UserEntity
       .builder()
         .id(null)
         .username(username)
@@ -52,7 +52,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   public final void registerAdmin(String username, PasswordMatch password, String adminPassword) {
     PasswordUtil.validatePasswordMatch(password);
     PasswordUtil.validateAdminPassword(adminPassword);
-    userService.register(UserEntity
+    userService.registerNew(UserEntity
       .builder()
         .id(null)
         .username(username)

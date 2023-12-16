@@ -24,10 +24,10 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import br.com.juliocauan.authentication.util.UserMapper;
 
 class UserServiceTest extends TestContext {
 
@@ -83,14 +83,14 @@ class UserServiceTest extends TestContext {
 
     @Test
     void getByUsername(){
-        assertEquals(entity, userService.getByUsername(username));
+        assertEquals(entity, userService.getBy(username));
     }
 
     @Test
     void getByUsername_error_usernameNotFound(){
         getUserRepository().deleteAll();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
-            () -> userService.getByUsername(username));
+            () -> userService.getBy(username));
         assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
 
@@ -159,7 +159,7 @@ class UserServiceTest extends TestContext {
     @Test
     void save(){
         getUserRepository().deleteAll();
-        assertDoesNotThrow(() -> userService.register(entity));
+        assertDoesNotThrow(() -> userService.registerNew(entity));
     }
 
     @Test

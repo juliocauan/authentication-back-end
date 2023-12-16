@@ -19,7 +19,7 @@ public final class ProfileServiceImpl extends ProfileService {
     @Override
     public final void updatePassword(PasswordUpdateForm passwordUpdateForm) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity entity = new UserEntity(userService.getByUsername(username));
+        UserEntity entity = new UserEntity(userService.getBy(username));
 
         PasswordUtil.validatePasswordMatch(passwordUpdateForm.getNewPasswordMatch());
         PasswordUtil.validatePasswordMatch(passwordUpdateForm.getCurrentPassword(), entity.getPassword());
@@ -31,7 +31,7 @@ public final class ProfileServiceImpl extends ProfileService {
     @Override
     public final void closeAccount(String password) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity entity = new UserEntity(userService.getByUsername(username));
+        UserEntity entity = new UserEntity(userService.getBy(username));
         PasswordUtil.validatePasswordMatch(password, entity.getPassword());
         userService.delete(username);
     }

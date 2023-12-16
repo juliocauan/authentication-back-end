@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.infrastructure.model.mapper;
+package br.com.juliocauan.authentication.util;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,10 +9,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
+import lombok.experimental.UtilityClass;
 
-public interface UserMapper {
+@UtilityClass
+public final class UserMapper {
 
-    static UserPrincipal domainToUserPrincipal(User model) {
+    public static UserPrincipal domainToUserPrincipal(User model) {
         UserPrincipal userPrincipal = new UserPrincipal();
         Set<SimpleGrantedAuthority> authorities = model.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
@@ -22,7 +24,7 @@ public interface UserMapper {
         return userPrincipal;
     }
 
-    static UserInfo domainToUserInfo(User model){
+    public static UserInfo domainToUserInfo(User model){
         return new UserInfo()
             .id(model.getId())
             .username(model.getUsername())

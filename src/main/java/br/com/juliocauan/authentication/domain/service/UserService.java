@@ -10,16 +10,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
 import br.com.juliocauan.authentication.util.PasswordUtil;
+import br.com.juliocauan.authentication.util.UserMapper;
 import jakarta.persistence.EntityExistsException;
 
 public abstract class UserService {
 
 	protected abstract UserRepository getRepository();
+
 	protected abstract RoleService getRoleService();
 
-	public final User getByUsername(String username) {
+	public final User getBy(String username) {
 		return getRepository().getByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username [%s] not found!", username)));
 	}
@@ -30,41 +31,40 @@ public abstract class UserService {
 				.collect(Collectors.toList());
 	}
 
-	public final void register(User user) {
-		validateDuplicate(user.getUsername());
-		PasswordUtil.validateSecurity(user.getPassword());
-		user = User.changePassword(user, PasswordUtil.encode(user.getPassword()));
+	public final void registerNew(User user) {
+		checkForDuplicate(user.getUsername());
+		user = setNewEncodedPassword(user, user.getPassword());
 		getRepository().register(user);
 	}
 
-	public final void delete(String username) {
-		this.delete(this.getByUsername(username));
+	private final void checkForDuplicate(String username) {
+		if (getRepository().getByUsername(username).isPresent())
+			throw new EntityExistsException(String.format("Username [%s] is already taken!", username));
 	}
 
-	public final void delete(User user) {
-		getRepository().delete(user);
+	private final User setNewEncodedPassword(User user, String password) {
+		PasswordUtil.validateSecurity(password);
+		return User.changePassword(user, PasswordUtil.encode(password));
+	}
+
+	public final void delete(String username) {
+		getRepository().delete(getBy(username));
 	}
 
 	public final void updatePassword(String username, String newPassword) {
-		User user = getByUsername(username);
-		PasswordUtil.validateSecurity(newPassword);
-		user = User.changePassword(user, PasswordUtil.encode(newPassword));
+		User user = getBy(username);
+		user = setNewEncodedPassword(user, newPassword);
 		getRepository().register(user);
 	}
 
 	public final void updateRoles(String username, Set<String> roleNames) {
-        User user = getByUsername(username);
-        Set<Role> roles = roleNames.stream()
-            .map(getRoleService()::getByName)
-            .collect(Collectors.toSet());
-        
-        user = User.changeRoles(user, roles);
-        getRepository().register(user);
-	}
+		User user = getBy(username);
+		Set<Role> roles = roleNames.stream()
+				.map(getRoleService()::getByName)
+				.collect(Collectors.toSet());
 
-	private final void validateDuplicate(String username) {
-		if (getRepository().getByUsername(username).isPresent())
-			throw new EntityExistsException(String.format("Username [%s] is already taken!", username));
+		user = User.changeRoles(user, roles);
+		getRepository().register(user);
 	}
 
 }

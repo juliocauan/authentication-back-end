@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openapitools.model.UserInfo;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.Role;
@@ -14,13 +15,16 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public final class AdminServiceImpl implements AdminService{
-    
+public final class AdminServiceImpl implements AdminService {
+
     private final UserServiceImpl userService;
     private final RoleServiceImpl roleService;
 
     @Override
     public final void delete(String roleName) {
+        //TODO refactor this
+        if (roleName.equals("ADMIN"))
+            throw new BadCredentialsException("You can not delete [ADMIN] role!");
         Role role = roleService.getByName(roleName);
         List<UserInfo> users = userService.getUserInfos(null, role.getName());
         users.forEach(user -> {

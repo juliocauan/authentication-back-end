@@ -41,7 +41,6 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   @Override
   public final void registerUser(String username, PasswordMatch password) {
     passwordService.validatePasswordMatch(password);
-    passwordService.validatePasswordSecurity(password.getPassword());
     userService.register(UserEntity
       .builder()
         .id(null)
@@ -53,7 +52,6 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   @Override
   public final void registerAdmin(String username, PasswordMatch password, String adminPassword) {
     passwordService.validatePasswordMatch(password);
-    passwordService.validatePasswordSecurity(password.getPassword());
     passwordService.validateAdminPassword(adminPassword);
     userService.register(UserEntity
       .builder()

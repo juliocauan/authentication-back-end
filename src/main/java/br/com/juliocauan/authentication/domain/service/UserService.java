@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.model.mapper.UserMapper;
@@ -15,10 +16,7 @@ import jakarta.persistence.EntityExistsException;
 public abstract class UserService {
 
 	protected abstract UserRepository getRepository();
-
-	public abstract void updatePassword(User user, String encodedPassword);
-
-	public abstract void updateRoles(String username, Set<String> roles);
+	protected abstract RoleService getRoleService();
 
 	public final User getByUsername(String username) {
 		return getRepository().getByUsername(username)
@@ -42,6 +40,21 @@ public abstract class UserService {
 
 	public final void delete(User user) {
 		getRepository().delete(user);
+	}
+
+	public final void updatePassword(User user, String encodedPassword) {
+		User updatedUser = User.changePassword(user, encodedPassword);
+		getRepository().register(updatedUser);
+	}
+
+	public final void updateRoles(String username, Set<String> roleNames) {
+        User user = getByUsername(username);
+        Set<Role> roles = roleNames.stream()
+            .map(getRoleService()::getByName)
+            .collect(Collectors.toSet());
+        
+        user = User.changeRoles(user, roles);
+        getRepository().register(user);
 	}
 
 	private final void validateUsername(String username) {

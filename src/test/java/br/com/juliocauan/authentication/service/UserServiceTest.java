@@ -188,8 +188,7 @@ class UserServiceTest extends TestContext {
     @Test
     void updatePassword() {
         User userBeforeUpdate = getUserRepository().save(entity);
-        String newEncodedPassword = encoder.encode(password);
-        assertDoesNotThrow(() -> userService.updatePassword(userBeforeUpdate, newEncodedPassword));
+        assertDoesNotThrow(() -> userService.updatePassword(userBeforeUpdate.getUsername(), password));
         
         User userAfterUpdate = getUserRepository().findById(userBeforeUpdate.getId()).get();
         assertNotEquals(userBeforeUpdate.getPassword(), userAfterUpdate.getPassword());

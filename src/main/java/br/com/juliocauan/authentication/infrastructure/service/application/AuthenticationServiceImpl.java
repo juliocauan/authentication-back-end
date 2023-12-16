@@ -44,7 +44,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
       .builder()
         .id(null)
         .username(username)
-        .password(PasswordUtil.encode(password.getPassword()))
+        .password(password.getPassword())
       .build());
   }
 
@@ -56,7 +56,7 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
       .builder()
         .id(null)
         .username(username)
-        .password(PasswordUtil.encode(password.getPassword()))
+        .password(password.getPassword())
         .roles(buildRoleSet("ADMIN"))
       .build());
   }

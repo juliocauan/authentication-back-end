@@ -47,8 +47,7 @@ public abstract class PasswordResetTokenService {
     public final void resetPassword(PasswordMatch passwordMatch, String token) {
         PasswordUtil.validatePasswordMatch(passwordMatch);
         PasswordResetToken passwordResetToken = checkTokenValidation(token);
-        String encodedPassword = PasswordUtil.encode(passwordMatch.getPassword());
-        getUserService().updatePassword(passwordResetToken.getUser(), encodedPassword);
+        getUserService().updatePassword(passwordResetToken.getUser().getUsername(), passwordMatch.getPassword());
         getRepository().deleteById(passwordResetToken.getId());
     }
     

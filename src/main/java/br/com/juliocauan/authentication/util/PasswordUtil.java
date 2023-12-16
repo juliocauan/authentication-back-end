@@ -42,7 +42,7 @@ public final class PasswordUtil {
             throw new InvalidPasswordException("Passwords don't match!");
     }
 
-    public static void validatePasswordSecurity(String password) {
+    public static void validateSecurity(String password) {
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=.*[\\d]).{8,}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);

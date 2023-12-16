@@ -31,8 +31,9 @@ public abstract class UserService {
 	}
 
 	public final void register(User user) {
-		validateUsername(user.getUsername());
-		PasswordUtil.validatePasswordSecurity(user.getPassword());
+		validateDuplicate(user.getUsername());
+		PasswordUtil.validateSecurity(user.getPassword());
+		user = User.changePassword(user, PasswordUtil.encode(user.getPassword()));
 		getRepository().register(user);
 	}
 
@@ -44,9 +45,11 @@ public abstract class UserService {
 		getRepository().delete(user);
 	}
 
-	public final void updatePassword(User user, String encodedPassword) {
-		User updatedUser = User.changePassword(user, encodedPassword);
-		getRepository().register(updatedUser);
+	public final void updatePassword(String username, String newPassword) {
+		User user = getByUsername(username);
+		PasswordUtil.validateSecurity(newPassword);
+		user = User.changePassword(user, PasswordUtil.encode(newPassword));
+		getRepository().register(user);
 	}
 
 	public final void updateRoles(String username, Set<String> roleNames) {
@@ -59,8 +62,8 @@ public abstract class UserService {
         getRepository().register(user);
 	}
 
-	private final void validateUsername(String username) {
-		if (getRepository().existsByUsername(username))
+	private final void validateDuplicate(String username) {
+		if (getRepository().getByUsername(username).isPresent())
 			throw new EntityExistsException(String.format("Username [%s] is already taken!", username));
 	}
 

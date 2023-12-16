@@ -69,14 +69,6 @@ class UserRepositoryTest extends TestContext {
     }
 
     @Test
-    void existsByUsername(){
-        assertTrue(getUserRepository().existsByUsername(username));
-
-        getUserRepository().deleteAll();
-        assertFalse(getUserRepository().existsByUsername(username));
-    }
-
-    @Test
     void getByUsername(){
         assertEquals(entity, getUserRepository().getByUsername(username).get());
     }

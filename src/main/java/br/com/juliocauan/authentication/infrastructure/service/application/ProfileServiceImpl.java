@@ -23,10 +23,9 @@ public final class ProfileServiceImpl extends ProfileService {
 
         PasswordUtil.validatePasswordMatch(passwordUpdateForm.getNewPasswordMatch());
         PasswordUtil.validatePasswordMatch(passwordUpdateForm.getCurrentPassword(), entity.getPassword());
-        PasswordUtil.validatePasswordSecurity(passwordUpdateForm.getNewPasswordMatch().getPassword());
+        PasswordUtil.validateSecurity(passwordUpdateForm.getNewPasswordMatch().getPassword());
         
-        String newEncodedPassword = PasswordUtil.encode(passwordUpdateForm.getNewPasswordMatch().getPassword());
-        userService.updatePassword(entity, newEncodedPassword);
+        userService.updatePassword(username, passwordUpdateForm.getNewPasswordMatch().getPassword());
     }
 
     @Override

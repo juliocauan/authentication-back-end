@@ -12,6 +12,7 @@ import org.openapitools.model.UserInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
@@ -62,6 +63,7 @@ public class AdminController implements AdminApi {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<OkResponse> _deleteRole(DeleteRoleRequest deleteRoleRequest) {
       String role = deleteRoleRequest.getRole();
       adminService.delete(role);

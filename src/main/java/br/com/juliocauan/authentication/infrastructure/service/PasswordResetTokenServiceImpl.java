@@ -2,12 +2,9 @@ package br.com.juliocauan.authentication.infrastructure.service;
 
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
-import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetTokenRepository;
 import br.com.juliocauan.authentication.domain.service.PasswordResetTokenService;
 import br.com.juliocauan.authentication.domain.service.UserService;
-import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
 import br.com.juliocauan.authentication.util.EmailService;
 import lombok.AllArgsConstructor;
@@ -31,12 +28,7 @@ public final class PasswordResetTokenServiceImpl extends PasswordResetTokenServi
     }
 
     @Override
-    protected final PasswordResetToken saveWithUser(User user) {
-        return passwordResetTokenRepository.save(new PasswordResetTokenEntity(user));
-    }
-
-    @Override
-    protected EmailService getEmailService() {
+    protected final EmailService getEmailService() {
         return emailService;
     }
     

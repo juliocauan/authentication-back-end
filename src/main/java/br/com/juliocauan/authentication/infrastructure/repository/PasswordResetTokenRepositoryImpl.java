@@ -3,6 +3,7 @@ package br.com.juliocauan.authentication.infrastructure.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetTokenRepository;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
 
@@ -11,6 +12,11 @@ public interface PasswordResetTokenRepositoryImpl extends PasswordResetTokenRepo
     @Override
     default void delete(PasswordResetToken passwordResetToken) {
         this.deleteById(passwordResetToken.getId());
+    }
+
+    @Override
+    default PasswordResetToken register(User user) {
+        return this.save(new PasswordResetTokenEntity(user));
     }
     
 }

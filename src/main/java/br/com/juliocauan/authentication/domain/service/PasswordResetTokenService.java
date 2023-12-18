@@ -14,16 +14,14 @@ import jakarta.persistence.EntityNotFoundException;
 
 public abstract class PasswordResetTokenService {
 
-    protected abstract UserService getUserService();
     protected abstract PasswordResetTokenRepository getRepository();
+    protected abstract UserService getUserService();
     protected abstract EmailService getEmailService();
-
-    protected abstract PasswordResetToken saveWithUser(User user);
 
     public final String generateToken(String username) {
         User user = getUserService().getBy(username);
         deletePreviousPasswordResetToken(user);
-        return saveWithUser(user).getToken();
+        return getRepository().register(user).getToken();
     }
     
     private final void deletePreviousPasswordResetToken(User user) {
@@ -32,14 +30,15 @@ public abstract class PasswordResetTokenService {
             getRepository().delete(oldToken.get());
     }
 
+    //TODO refactor this
     public final void sendEmail(String username, String token) {
         getEmailService().sendEmail(
             username, 
             "Reset your password!", 
-            buildEmailBody(token));
+            getEmailBodyTemplate(token));
     }   
     
-    private final String buildEmailBody(String token) {
+    private final String getEmailBodyTemplate(String token) {
         return "To reset your password, use the following token: %s %n%n This token will last %d minutes".formatted(
                 token, PasswordResetToken.TOKEN_EXPIRATION_MINUTES);    
     }
@@ -55,14 +54,14 @@ public abstract class PasswordResetTokenService {
         PasswordResetToken passwordResetToken = getByToken(token);
         if(passwordResetToken.isExpired()){
             getRepository().delete(passwordResetToken);
-            throw new ExpiredPasswordResetTokenException("Expired Password Reset Token!");
+            throw new ExpiredPasswordResetTokenException("Expired Token!");
         }
         return passwordResetToken;
     }
 
     private final PasswordResetToken getByToken(String token) {
         return getRepository().getByToken(token)
-            .orElseThrow(() -> new EntityNotFoundException("Password Reset Token not found with token: " + token));
+            .orElseThrow(() -> new EntityNotFoundException("Token [%s] not found!".formatted(token)));
     }
 
 }

@@ -101,11 +101,6 @@ class PasswordResetTokenServiceTest extends TestContext {
     }
 
     @Test
-    void sendEmail() {
-        assertDoesNotThrow(() -> passwordResetTokenService.sendEmail(username, tokenMock));
-    }
-
-    @Test
     void resetPassword() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation(password);
         PasswordResetToken passwordResetTokenBeforeUpdate = passwordResetTokenRepository.save(PasswordResetTokenEntity

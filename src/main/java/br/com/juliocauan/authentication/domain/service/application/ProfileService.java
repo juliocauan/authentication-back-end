@@ -14,8 +14,8 @@ public abstract class ProfileService {
         getUserService().updatePassword(user.getUsername(), newPassword);
     }
 
-    public final void closeAccount(String password) {
-        User user = validate(password);
+    public final void closeAccount(String currentPassword) {
+        User user = validate(currentPassword);
         getUserService().delete(user.getUsername());
     }
 

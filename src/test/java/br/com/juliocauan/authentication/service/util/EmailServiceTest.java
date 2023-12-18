@@ -11,11 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.util.EmailService;
+import br.com.juliocauan.authentication.util.EmailUtil;
 
 class EmailServiceTest extends TestContext {
-
-    private final EmailService emailService;
 
     private final String receiver = getRandomUsername();
     private final String subject = "Test Subject";
@@ -24,20 +22,19 @@ class EmailServiceTest extends TestContext {
     private final String errorMailSend = "The recipient address is not a valid address!";
 
     public EmailServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, EmailService emailService) {
+            ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.emailService = emailService;
     }
 
     @Test
     void sendEmail() {
-        assertDoesNotThrow(() -> emailService.sendEmail(receiver, subject, message));
+        assertDoesNotThrow(() -> EmailUtil.sendEmail(receiver, subject, message));
     }
 
     @Test
     void sendEmail_error_mailSend() {
         MailSendException exception = assertThrowsExactly(MailSendException.class,
-            () -> emailService.sendEmail("null", "null", null));
+            () -> EmailUtil.sendEmail("null", "null", null));
         
         assertEquals(errorMailSend, exception.getMessage());
     }

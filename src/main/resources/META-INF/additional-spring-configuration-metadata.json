@@ -1,5 +1,7 @@
-{"properties": [{
-  "name": "REGISTER_ADMIN_PASSWORD",
-  "type": "java.lang.String",
-  "description": "Password used to register new ADMIN"
-}]}
+{"properties": [
+  {
+    "name": "ADMIN_KEY",
+    "type": "java.lang.String",
+    "description": "Password used to register new ADMIN"
+  }
+]}

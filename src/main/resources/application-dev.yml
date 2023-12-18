@@ -8,4 +8,4 @@ spring:
         username: admin@authentication.dev
         password: admin
 
-REGISTER_ADMIN_PASSWORD: "@Admin1234"
+ADMIN_KEY: "@Password123"

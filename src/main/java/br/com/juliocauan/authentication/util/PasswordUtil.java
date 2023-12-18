@@ -55,7 +55,7 @@ public final class PasswordUtil {
     }
 
     public static void validateAdminPassword(String adminPassword) {
-        if(!matches(adminPassword, encode(env.getProperty("REGISTER_ADMIN_PASSWORD"))))
+        if(!matches(adminPassword, encode(env.getProperty("ADMIN_KEY"))))
             throw new InvalidPasswordException("Admin Password is incorrect!");
     }
 

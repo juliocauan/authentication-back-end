@@ -45,7 +45,7 @@ class AuthControllerTest extends TestContext {
     private final String tokenMock = getRandomToken();
 
     private final String okMessage = "User registered successfully!";
-    private final String okEmailPasswordResetToken = "Email sent to " + username + " successfully!";
+    private final String okEmailPasswordResetToken = "Email sent to [" + username + "] successfully!";
     private final String okResetUserPassword = "Password updated successfully!";
     
     private final String invalidPasswordError = "Passwords don't match!";
@@ -73,7 +73,7 @@ class AuthControllerTest extends TestContext {
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        signupForm.username(username).password(new PasswordMatch().password(password).passwordConfirmation(password));
+        signupForm.username(username).match(new PasswordMatch().password(password).passwordConfirmation(password));
         signinForm.username(username).password(password);
         passwordMatch.password(newPassword).passwordConfirmation(newPassword);
     }
@@ -107,7 +107,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void signup_error_invalidSignupForm() throws Exception{
-        signupForm.username("aaaaaaaaaaaaa").password(new PasswordMatch().password("12345").passwordConfirmation("12345"));
+        signupForm.username("aaaaaaaaaaaaa").match(new PasswordMatch().password("12345").passwordConfirmation("12345"));
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)

@@ -8,4 +8,4 @@ spring:
         username: ${APP_EMAIL_USERNAME}
         password: ${APP_EMAIL_PASSWORD}
 
-REGISTER_ADMIN_PASSWORD: ${REGISTER_ADMIN_PASSWORD:"@Admin1234"}
+ADMIN_KEY: ${ADMIN_KEY:"@Admin1234"}

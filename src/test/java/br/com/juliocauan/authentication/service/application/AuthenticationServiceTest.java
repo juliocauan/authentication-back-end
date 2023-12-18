@@ -55,7 +55,7 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void registerUser(){
-        assertDoesNotThrow(() -> authenticationService.registerUser(username, password));
+        assertDoesNotThrow(() -> authenticationService.registerUser(username, password.getPassword()));
         assertEquals(1, getUserRepository().findAll().size());
 
         UserEntity user = getUserRepository().findAll().get(0);
@@ -72,13 +72,13 @@ class AuthenticationServiceTest extends TestContext {
         .build());
 
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
-            () -> authenticationService.registerUser(username, password));
+            () -> authenticationService.registerUser(username, password.getPassword()));
         assertEquals(getErrorUsernameDuplicated(username), exception.getMessage());
     }
 
     @Test
     void authenticate(){
-        authenticationService.registerUser(username, password);
+        authenticationService.registerUser(username, password.getPassword());
         JWT response = authenticationService.authenticate(username, passwordRandom);
         assertTrue(response.getToken().contains("."));
     }

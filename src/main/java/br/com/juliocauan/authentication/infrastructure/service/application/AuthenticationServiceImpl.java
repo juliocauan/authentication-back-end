@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.openapitools.model.JWT;
-import org.openapitools.model.PasswordMatch;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,25 +37,21 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @Override
-  public final void registerUser(String username, PasswordMatch password) {
-    PasswordUtil.validatePasswordMatch(password);
+  public final void registerUser(String username, String password) {
     userService.registerNew(UserEntity
       .builder()
-        .id(null)
         .username(username)
-        .password(password.getPassword())
+        .password(password)
       .build());
   }
 
   @Override
-  public final void registerAdmin(String username, PasswordMatch password, String adminPassword) {
-    PasswordUtil.validatePasswordMatch(password);
-    PasswordUtil.validateAdminPassword(adminPassword);
+  public final void registerAdmin(String username, String password, String adminKey) {
+    PasswordUtil.validateAdminPassword(adminKey);
     userService.registerNew(UserEntity
       .builder()
-        .id(null)
         .username(username)
-        .password(password.getPassword())
+        .password(password)
         .roles(buildRoleSet("ADMIN"))
       .build());
   }

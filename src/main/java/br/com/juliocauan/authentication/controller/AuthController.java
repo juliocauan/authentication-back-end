@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.PasswordResetTokenServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
+import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -23,14 +24,6 @@ public class AuthController implements AuthApi {
 	private final AuthenticationServiceImpl authenticationService;
   private final PasswordResetTokenServiceImpl passwordResetTokenService;
 
-	@Override
-  public ResponseEntity<OkResponse> _signup(SignupForm signupForm) {
-    authenticationService.registerUser(
-        signupForm.getUsername(),
-        signupForm.getPassword());
-    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("User registered successfully!"));
-  }
-
   @Override
   public ResponseEntity<JWT> _login(SigninForm signinForm) {
     JWT jwt = authenticationService.authenticate(
@@ -39,12 +32,22 @@ public class AuthController implements AuthApi {
     return ResponseEntity.status(HttpStatus.OK).body(jwt);
   }
 
+	@Override
+  public ResponseEntity<OkResponse> _signup(SignupForm signupForm) {
+    PasswordUtil.validatePasswordMatch(signupForm.getMatch());
+    authenticationService.registerUser(
+        signupForm.getUsername(),
+        signupForm.getMatch().getPassword());
+    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("User registered successfully!"));
+  }
+
   @Override
   public ResponseEntity<OkResponse> _signupAdmin(SignupFormAdmin signupFormAdmin) {
+    PasswordUtil.validatePasswordMatch(signupFormAdmin.getMatch());
     authenticationService.registerAdmin(
         signupFormAdmin.getUsername(),
-        signupFormAdmin.getPassword(),
-        signupFormAdmin.getAdminPassword());
+        signupFormAdmin.getMatch().getPassword(),
+        signupFormAdmin.getAdminKey());
     return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("Admin registered successfully!"));
   }
 
@@ -54,7 +57,7 @@ public class AuthController implements AuthApi {
       String token = passwordResetTokenService.generateToken(username);
       passwordResetTokenService.sendEmail(username, token);
       return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
-              "Email sent to %s successfully!".formatted(username)));
+              "Email sent to [%s] successfully!".formatted(username)));
   }
 
   @Override

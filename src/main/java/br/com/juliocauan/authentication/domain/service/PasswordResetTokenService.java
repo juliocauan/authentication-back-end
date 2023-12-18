@@ -7,7 +7,7 @@ import org.openapitools.model.PasswordMatch;
 import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetTokenRepository;
-import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetTokenException;
+import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -44,7 +44,7 @@ public abstract class PasswordResetTokenService {
         PasswordResetToken passwordResetToken = getByToken(token);
         if(passwordResetToken.isExpired()){
             getRepository().delete(passwordResetToken);
-            throw new ExpiredPasswordResetTokenException("Expired Token!");
+            throw new ExpiredPasswordResetException("Expired Token!");
         }
         return passwordResetToken;
     }

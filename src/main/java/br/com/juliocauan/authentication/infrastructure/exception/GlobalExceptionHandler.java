@@ -54,12 +54,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<Object> handleInvalidOldPassword(InvalidPasswordException ex){
+    public ResponseEntity<Object> handleInvalidPassword(InvalidPasswordException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
+    }
+
+    @ExceptionHandler(ExpiredPasswordResetException.class)
+    public ResponseEntity<Object> handleExpiredPasswordReset(ExpiredPasswordResetException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
@@ -71,11 +76,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));
-    }
-
-    @ExceptionHandler(ExpiredPasswordResetTokenException.class)
-    public ResponseEntity<Object> handleExpiredPasswordResetToken(ExpiredPasswordResetTokenException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
 }

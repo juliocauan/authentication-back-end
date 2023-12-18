@@ -49,8 +49,7 @@ class AuthControllerTest extends TestContext {
     private final String okResetUserPassword = "Password updated successfully!";
     
     private final String invalidPasswordError = "Passwords don't match!";
-    private final String errorTokenNotFound = "Password Reset Token not found with token: " + tokenMock;
-    private final String errorTokenExpired = "Expired Password Reset Token!";
+    private final String errorTokenExpired = "Expired Token!";
     private final String errorValidation = "Input validation error!";
     private final String errorBadCredentials = "Bad credentials";
 
@@ -129,7 +128,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(getErrorDuplicatedUsername(username)))
+            .andExpect(jsonPath("$.message").value(getErrorUsernameDuplicated(username)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
@@ -234,7 +233,7 @@ class AuthControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value(errorTokenNotFound))
+            .andExpect(jsonPath("$.message").value(getErrorPasswordResetTokenNotFound(tokenMock)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

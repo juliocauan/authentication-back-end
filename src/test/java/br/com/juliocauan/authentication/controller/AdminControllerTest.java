@@ -41,7 +41,6 @@ class AdminControllerTest extends TestContext {
     private final String usernameManager = "manager@email.com";
     private final String usernameUser = "user@email.com";
     
-    private final String okAlterUserRole = "Patched user roles successfully!";
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     private final String roleManager = "MANAGER";
@@ -67,9 +66,9 @@ class AdminControllerTest extends TestContext {
         saveUser(usernameAdmin, "ADMIN");
     }
 
-    private final void saveUser(String username, String enumRole) {
+    private final void saveUser(String username, String roleName) {
         Set<RoleEntity> roles = new HashSet<>();
-        roles.add( new RoleEntity(getRoleRepository().getByName(enumRole).get()) );
+        roles.add( new RoleEntity(getRoleRepository().getByName(roleName).get()) );
         getUserRepository().save(UserEntity
             .builder()
                 .id(null)
@@ -77,6 +76,10 @@ class AdminControllerTest extends TestContext {
                 .password(encoder.encode(password))
                 .roles(roles)
             .build());
+    }
+
+    private final String getOkAlterUserRoles(String username, Set<String> roles) {
+        return "Patched [%s] successfully! Roles: %s".formatted(username, roles);
     }
 
     private final String getBearerToken(String username){
@@ -101,7 +104,7 @@ class AdminControllerTest extends TestContext {
                 .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.message").value(okAlterUserRole));
+            .andExpect(jsonPath("$.message").value(getOkAlterUserRoles(updateUserRolesForm.getUsername(), updateUserRolesForm.getRoles())));
     }
 
     @Test
@@ -178,7 +181,7 @@ class AdminControllerTest extends TestContext {
         getMockMvc().perform(
             get(url)
                 .header(authorizationHeader, getBearerToken(usernameAdmin))
-                .queryParam("username", "manag"))
+                .queryParam("usernameContains", "manag"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$", hasSize(1)))
@@ -210,7 +213,7 @@ class AdminControllerTest extends TestContext {
         getMockMvc().perform(
             get(url)
                 .header(authorizationHeader, getBearerToken(usernameAdmin))
-                .queryParam("username", "admin")
+                .queryParam("usernameContains", "admin")
                 .queryParam("role", roleUser))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

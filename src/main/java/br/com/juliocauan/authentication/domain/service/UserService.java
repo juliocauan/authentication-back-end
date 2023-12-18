@@ -51,12 +51,14 @@ public abstract class UserService {
 		getRepository().delete(getBy(username));
 	}
 
+	//TODO check this: consults database twice before being this method is called
 	public final void updatePassword(String username, String newPassword) {
 		User user = getBy(username);
 		user = setNewEncodedPassword(user, newPassword);
 		getRepository().register(user);
 	}
 
+	//TODO check this: consults database twice before being this method is called
 	public final void updateRoles(String username, Set<String> roleNames) {
 		User user = getBy(username);
 		Set<Role> roles = roleNames.stream()

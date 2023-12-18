@@ -73,7 +73,7 @@ class AuthenticationServiceTest extends TestContext {
 
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
             () -> authenticationService.registerUser(username, password));
-        assertEquals(getErrorDuplicatedUsername(username), exception.getMessage());
+        assertEquals(getErrorUsernameDuplicated(username), exception.getMessage());
     }
 
     @Test

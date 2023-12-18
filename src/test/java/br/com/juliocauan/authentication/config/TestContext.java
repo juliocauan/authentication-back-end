@@ -81,8 +81,12 @@ public class TestContext {
         return String.format("Username [%s] not found!", username);
     }
 
-    public String getErrorDuplicatedUsername(String username) {
+    public String getErrorUsernameDuplicated(String username) {
         return String.format("Username [%s] is already taken!", username);
+    }
+
+    public String getErrorPasswordResetTokenNotFound(String token) {
+        return String.format("Token [%s] not found!", token);
     }
 
     private String getRandomString(Integer length) {

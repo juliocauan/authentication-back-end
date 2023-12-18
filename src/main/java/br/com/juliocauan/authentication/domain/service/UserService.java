@@ -47,6 +47,7 @@ public abstract class UserService {
 		return User.changePassword(user, PasswordUtil.encode(password));
 	}
 
+	//TODO check this: consults database twice before being this method is called
 	public final void delete(String username) {
 		getRepository().delete(getBy(username));
 	}

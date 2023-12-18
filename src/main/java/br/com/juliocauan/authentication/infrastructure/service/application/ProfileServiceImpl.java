@@ -1,13 +1,11 @@
 package br.com.juliocauan.authentication.infrastructure.service.application;
 
-import org.openapitools.model.PasswordUpdateForm;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.domain.service.application.ProfileService;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
-import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -17,23 +15,13 @@ public final class ProfileServiceImpl extends ProfileService {
     private final UserServiceImpl userService;
 
     @Override
-    public final void updatePassword(PasswordUpdateForm passwordUpdateForm) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity entity = new UserEntity(userService.getBy(username));
-
-        PasswordUtil.validatePasswordMatch(passwordUpdateForm.getNewPasswordMatch());
-        PasswordUtil.validatePasswordMatch(passwordUpdateForm.getCurrentPassword(), entity.getPassword());
-        PasswordUtil.validateSecurity(passwordUpdateForm.getNewPasswordMatch().getPassword());
-        
-        userService.updatePassword(username, passwordUpdateForm.getNewPasswordMatch().getPassword());
+    protected final String getLoggedUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     @Override
-    public final void closeAccount(String password) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserEntity entity = new UserEntity(userService.getBy(username));
-        PasswordUtil.validatePasswordMatch(password, entity.getPassword());
-        userService.delete(username);
+    protected final UserService getUserService() {
+        return userService;
     }
 
 }

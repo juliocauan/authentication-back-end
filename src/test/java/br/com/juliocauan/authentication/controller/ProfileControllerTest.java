@@ -64,7 +64,7 @@ class ProfileControllerTest extends TestContext {
     void updateUserPassword() throws Exception{
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .currentPassword(password)
-            .newPasswordMatch(new PasswordMatch()
+            .match(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
         
@@ -91,7 +91,7 @@ class ProfileControllerTest extends TestContext {
     void updateUserPassword_error_passwordMatch() throws Exception{
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .currentPassword(password)
-            .newPasswordMatch(new PasswordMatch()
+            .match(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(password));
         
@@ -109,7 +109,7 @@ class ProfileControllerTest extends TestContext {
     void updateUserPassword_error_invalidPassword() throws Exception{
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
             .currentPassword(newPassword)
-            .newPasswordMatch(new PasswordMatch()
+            .match(new PasswordMatch()
                 .password(newPassword)
                 .passwordConfirmation(newPassword));
         

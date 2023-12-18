@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.PasswordMatch;
-import org.openapitools.model.PasswordUpdateForm;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,52 +67,24 @@ class ProfileServiceTest extends TestContext {
     @Test
     void updatePassword() {
         authenticate();
-        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .currentPassword(password)
-            .newPasswordMatch(new PasswordMatch()
-                .password(newPassword)
-                .passwordConfirmation(newPassword));
-        
-        profileService.updatePassword(passwordUpdateForm);
+        profileService.updatePassword(password, newPassword);
         UserEntity userWithAlteredPassword = getUserRepository().findById(userEntity.getId()).get();
         assertNotEquals(userEntity.getPassword(), userWithAlteredPassword.getPassword());
         assertEquals(userEntity.getPassword().length(), userWithAlteredPassword.getPassword().length());
     }
 
     @Test
-    void updatePassword_error_passwordMatch() {
-        authenticate();
-        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .currentPassword(password)
-            .newPasswordMatch(new PasswordMatch()
-                .password(password)
-                .passwordConfirmation(newPassword));
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> profileService.updatePassword(passwordUpdateForm));
-        assertEquals(invalidPasswordError, exception.getMessage());
-
-        deauthenticate();
-        assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));
-    }
-
-    @Test
     void updatePassword_error_invalidPassword() {
         authenticate();
-        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .currentPassword(newPassword)
-            .newPasswordMatch(new PasswordMatch()
-                .password(newPassword)
-                .passwordConfirmation(newPassword));
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> profileService.updatePassword(passwordUpdateForm));
+            () -> profileService.updatePassword(newPassword, newPassword));
         assertEquals(invalidPasswordError, exception.getMessage());
     }
 
     @Test
     void updatePassword_error() {
         deauthenticate();
-        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm();
-        assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(passwordUpdateForm));
+        assertThrowsExactly(NullPointerException.class, () -> profileService.updatePassword(null, null));
     }
     
 }

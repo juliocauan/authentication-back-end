@@ -101,7 +101,7 @@ class AdminControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
+                .content(writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(getOkAlterUserRoles(updateUserRolesForm.getUsername(), updateUserRolesForm.getRoles())));
@@ -126,7 +126,7 @@ class AdminControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken(usernameManager))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
+                .content(writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isForbidden());
         
         saveUser(usernameUser, roleUser);
@@ -136,7 +136,7 @@ class AdminControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken(usernameUser))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
+                .content(writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isForbidden());
     }
 
@@ -150,7 +150,7 @@ class AdminControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken(usernameAdmin))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(updateUserRolesForm)))
+                .content(writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isNotFound())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(usernameUser)))

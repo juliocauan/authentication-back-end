@@ -72,7 +72,7 @@ class ProfileControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
+                .content(writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value(updatedPasswordMessage));
@@ -99,7 +99,7 @@ class ProfileControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
+                .content(writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(invalidPasswordError));
@@ -117,7 +117,7 @@ class ProfileControllerTest extends TestContext {
             patch(url)
                 .header(authorizationHeader, getBearerToken())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordUpdateForm)))
+                .content(writeValueAsString(passwordUpdateForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(invalidPasswordError));

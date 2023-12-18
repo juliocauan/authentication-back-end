@@ -38,9 +38,6 @@ public class TestContext {
     private final RoleRepositoryImpl roleRepository;
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
-    private final RandomGenerator randomGenerator = RandomGenerator.getDefault();
-
-    private final String characters = "ABCDEFGHIJKLMnopqrstuvwxyz0123456789";
 
     @BeforeAll
     public void setup(){
@@ -53,8 +50,8 @@ public class TestContext {
         return mockMvc;
     }
 
-    public ObjectMapper getObjectMapper() {
-        return objectMapper;
+    public String writeValueAsString(Object value) throws Exception{
+        return objectMapper.writeValueAsString(value);
     }
 
     public UserRepositoryImpl getUserRepository() {
@@ -85,11 +82,13 @@ public class TestContext {
         return String.format("Username [%s] is already taken!", username);
     }
 
-    public String getErrorPasswordResetTokenNotFound(String token) {
+    public String getErrorPasswordResetNotFound(String token) {
         return String.format("Token [%s] not found!", token);
     }
 
     private String getRandomString(Integer length) {
+        final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        RandomGenerator randomGenerator = RandomGenerator.getDefault();
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             int index = randomGenerator.nextInt(characters.length());

@@ -99,7 +99,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signupForm)))
+                .content(writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.message").value(okMessage));
@@ -111,7 +111,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signupForm)))
+                .content(writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorValidation))
@@ -125,7 +125,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlSignup)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signupForm)))
+                .content(writeValueAsString(signupForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(getErrorUsernameDuplicated(username)))
@@ -139,7 +139,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signinForm)))
+                .content(writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.token").isNotEmpty());
@@ -151,7 +151,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signinForm)))
+                .content(writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorValidation))
@@ -164,7 +164,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlSignin)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(signinForm)))
+                .content(writeValueAsString(signinForm)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorBadCredentials))
@@ -179,7 +179,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlForgotPassword)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(requestBody)))
+                .content(writeValueAsString(requestBody)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value(okEmailPasswordResetToken));
@@ -191,7 +191,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             post(urlForgotPassword)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(requestBody)))
+                .content(writeValueAsString(requestBody)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(username)))
@@ -205,7 +205,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             patch(urlForgotPasswordWithToken, tokenMock)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordMatch)))
+                .content(writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value(okResetUserPassword));
@@ -217,7 +217,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             patch(urlForgotPasswordWithToken, tokenMock)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordMatch)))
+                .content(writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(invalidPasswordError))
@@ -230,10 +230,10 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             patch(urlForgotPasswordWithToken, tokenMock)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordMatch)))
+                .content(writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value(getErrorPasswordResetTokenNotFound(tokenMock)))
+            .andExpect(jsonPath("$.message").value(getErrorPasswordResetNotFound(tokenMock)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
@@ -249,7 +249,7 @@ class AuthControllerTest extends TestContext {
         getMockMvc().perform(
             patch(urlForgotPasswordWithToken, tokenMock)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(getObjectMapper().writeValueAsString(passwordMatch)))
+                .content(writeValueAsString(passwordMatch)))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value(errorTokenExpired))

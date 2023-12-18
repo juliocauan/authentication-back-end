@@ -128,7 +128,7 @@ class PasswordResetTokenServiceTest extends TestContext {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation(password);
         EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
-        assertEquals(getErrorPasswordResetTokenNotFound(tokenMock), exception.getMessage());
+        assertEquals(getErrorPasswordResetNotFound(tokenMock), exception.getMessage());
     }
 
     @Test

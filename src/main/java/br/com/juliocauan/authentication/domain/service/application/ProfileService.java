@@ -22,7 +22,7 @@ public abstract class ProfileService {
     private final User validate(String currentPassword) {
         String username = getLoggedUsername();
         User loggedUser = getUserService().getBy(username);
-        PasswordUtil.validatePasswordMatch(currentPassword, loggedUser.getPassword());
+        PasswordUtil.validateMatch(currentPassword, loggedUser.getPassword());
         return loggedUser;
     }
 }

@@ -35,7 +35,7 @@ public class AuthController implements AuthApi {
 
 	@Override
   public ResponseEntity<OkResponse> _signup(SignupForm signupForm) {
-    PasswordUtil.validatePasswordMatch(signupForm.getMatch());
+    PasswordUtil.validateMatch(signupForm.getMatch());
     authenticationService.registerUser(
         signupForm.getUsername(),
         signupForm.getMatch().getPassword());
@@ -44,7 +44,7 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<OkResponse> _signupAdmin(SignupFormAdmin signupFormAdmin) {
-    PasswordUtil.validatePasswordMatch(signupFormAdmin.getMatch());
+    PasswordUtil.validateMatch(signupFormAdmin.getMatch());
     authenticationService.registerAdmin(
         signupFormAdmin.getUsername(),
         signupFormAdmin.getMatch().getPassword(),

@@ -23,7 +23,7 @@ public abstract class AuthenticationService {
     }
 
     public final void registerAdmin(String username, String password, String adminKey) {
-        PasswordUtil.validateAdminPassword(adminKey);
+        PasswordUtil.validateAdminKey(adminKey);
         User admin = User.newUser(username, password);
         admin = User.changeRoles(admin, adminSet());
         getUserService().registerNew(admin);

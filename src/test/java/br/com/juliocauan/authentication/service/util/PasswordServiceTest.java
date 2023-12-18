@@ -33,16 +33,16 @@ class PasswordServiceTest extends TestContext {
     @Test
     void checkPasswordConfirmation() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password1).passwordConfirmation(password1);
-        assertDoesNotThrow(() -> PasswordUtil.validatePasswordMatch(passwordMatch));
+        assertDoesNotThrow(() -> PasswordUtil.validateMatch(passwordMatch));
         
         passwordMatch.password(password1).passwordConfirmation(password2);
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> PasswordUtil.validatePasswordMatch(passwordMatch));
+            () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(invalidPasswordError, exception.getMessage());
 
         passwordMatch.password(password2).passwordConfirmation(password1);
         exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> PasswordUtil.validatePasswordMatch(passwordMatch));
+            () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(invalidPasswordError, exception.getMessage());
     }
 
@@ -51,12 +51,12 @@ class PasswordServiceTest extends TestContext {
         PasswordMatch passwordMatch = new PasswordMatch().password(password1).passwordConfirmation(password2);
         
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> PasswordUtil.validatePasswordMatch(passwordMatch));
+            () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(invalidPasswordError, exception.getMessage());
 
         passwordMatch.password(password2).passwordConfirmation(password1);
         exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> PasswordUtil.validatePasswordMatch(passwordMatch));
+            () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(invalidPasswordError, exception.getMessage());
     }
 
@@ -70,14 +70,14 @@ class PasswordServiceTest extends TestContext {
     @Test
     void checkCurrentPassword() {
         String encodedPassword = PasswordUtil.encode(password1);
-        assertDoesNotThrow(() -> PasswordUtil.validatePasswordMatch(password1, encodedPassword));
+        assertDoesNotThrow(() -> PasswordUtil.validateMatch(password1, encodedPassword));
     }
 
     @Test
     void checkCurrentPassword_error_invalidPassword() {
         String encodedPassword = PasswordUtil.encode(password1);
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-            () -> PasswordUtil.validatePasswordMatch(encodedPassword, password2));
+            () -> PasswordUtil.validateMatch(encodedPassword, password2));
         assertEquals(invalidPasswordError, exception.getMessage());
     }
     

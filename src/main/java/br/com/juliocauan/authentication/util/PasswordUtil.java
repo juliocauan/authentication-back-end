@@ -31,13 +31,13 @@ public final class PasswordUtil {
         return encoder.encode(password);
     }
 
-    public static void validatePasswordMatch(PasswordMatch passwordMatch) {
-        String encodedPassword = encode(passwordMatch.getPassword());
-        String rawPassword = passwordMatch.getPasswordConfirmation();
-        validatePasswordMatch(rawPassword, encodedPassword);
+    public static void validateMatch(PasswordMatch passwordMatch) {
+        String rawPassword = passwordMatch.getPassword();
+        String encodedPassword = encode(passwordMatch.getPasswordConfirmation());
+        validateMatch(rawPassword, encodedPassword);
     }
 
-    public static void validatePasswordMatch(String rawPassword, String encodedPassword) {
+    public static void validateMatch(String rawPassword, String encodedPassword) {
         if(!matches(rawPassword, encodedPassword))
             throw new InvalidPasswordException("Passwords don't match!");
     }
@@ -54,7 +54,7 @@ public final class PasswordUtil {
                 "1 number");
     }
 
-    public static void validateAdminPassword(String adminPassword) {
+    public static void validateAdminKey(String adminPassword) {
         if(!matches(adminPassword, encode(env.getProperty("ADMIN_KEY"))))
             throw new InvalidPasswordException("Admin Password is incorrect!");
     }

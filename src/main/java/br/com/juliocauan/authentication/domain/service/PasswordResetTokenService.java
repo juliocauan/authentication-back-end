@@ -29,7 +29,7 @@ public abstract class PasswordResetTokenService {
     private final void deletePreviousPasswordResetToken(User user) {
         Optional<PasswordResetToken> oldToken = getRepository().getByUser(user);
         if(oldToken.isPresent())
-            getRepository().deleteById(oldToken.get().getId());
+            getRepository().delete(oldToken.get());
     }
 
     public final void sendEmail(String username, String token) {
@@ -48,13 +48,13 @@ public abstract class PasswordResetTokenService {
         PasswordUtil.validatePasswordMatch(passwordMatch);
         PasswordResetToken passwordResetToken = checkTokenValidation(token);
         getUserService().updatePassword(passwordResetToken.getUser().getUsername(), passwordMatch.getPassword());
-        getRepository().deleteById(passwordResetToken.getId());
+        getRepository().delete(passwordResetToken);
     }
     
     private final PasswordResetToken checkTokenValidation(String token) {
         PasswordResetToken passwordResetToken = getByToken(token);
         if(passwordResetToken.isExpired()){
-            getRepository().deleteById(passwordResetToken.getId());
+            getRepository().delete(passwordResetToken);
             throw new ExpiredPasswordResetTokenException("Expired Password Reset Token!");
         }
         return passwordResetToken;

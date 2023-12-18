@@ -62,7 +62,7 @@ class PasswordResetTokenEntityTest extends TestContext {
 
     @Test
     void onUserDelete_deletePasswordResetToken() {
-        Long id = passwordResetToken.getId();
+        Integer id = passwordResetToken.getId();
         assertTrue(passwordResetTokenRepository.findById(id).isPresent());
         getUserRepository().deleteById(userEntity.getId());
         assertFalse(passwordResetTokenRepository.findById(id).isPresent());

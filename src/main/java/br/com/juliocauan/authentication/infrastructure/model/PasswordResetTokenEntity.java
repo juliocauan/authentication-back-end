@@ -32,7 +32,7 @@ public final class PasswordResetTokenEntity extends PasswordResetToken {
     
     @Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotBlank @Size(min = 43, max = 43)
     private String token;

@@ -68,6 +68,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
+    @ExceptionHandler(AdminException.class)
+    public ResponseEntity<Object> handleAdmin(AdminException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
+    }
+
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<Object> handleUsernameNotFound(UsernameNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));

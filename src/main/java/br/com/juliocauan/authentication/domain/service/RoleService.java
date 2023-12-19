@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.domain.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.security.authentication.BadCredentialsException;
 
@@ -20,10 +19,8 @@ public abstract class RoleService {
                                                 String.format("Role [%s] not found!", name)));
         }
 
-        public final List<String> getAll(String nameContains) {
-                return getRepository().getAll(nameContains).stream()
-                                .map(Role::getName)
-                                .collect(Collectors.toList());
+        public final List<Role> getAll(String nameContains) {
+                return getRepository().getAll(nameContains);
         }
 
         public final void register(String role) {

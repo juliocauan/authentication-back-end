@@ -14,8 +14,6 @@ public abstract class UserService {
 
 	protected abstract UserRepository getRepository();
 
-	protected abstract RoleService getRoleService();
-
 	public final User getBy(String username) {
 		return getRepository().getByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException(String.format("Username [%s] not found!", username)));

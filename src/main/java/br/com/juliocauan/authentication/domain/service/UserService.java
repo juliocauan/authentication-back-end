@@ -30,6 +30,7 @@ public abstract class UserService {
 		getRepository().register(user);
 	}
 
+	//TODO check this: consults database twice before being this method is called
 	public final void update(User user) {
 		if(!isPresent(user.getUsername()))
 			throw new EntityNotFoundException(String.format("Username [%s] not found!", user.getUsername()));

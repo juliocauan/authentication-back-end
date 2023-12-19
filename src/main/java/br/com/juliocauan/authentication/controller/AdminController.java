@@ -52,8 +52,8 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<List<String>> _getRoles(String contains) {
-      List<String> response = adminService.getAllRoles(contains);
+    public ResponseEntity<List<String>> _getRoles(String nameContains) {
+      List<String> response = adminService.getAllRoles(nameContains);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

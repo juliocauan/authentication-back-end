@@ -40,8 +40,8 @@ class UserDetailsServiceTest extends TestContext {
     }
 
     @Override @BeforeAll
-    public void setup(){
-        super.setup();
+    public void beforeAll(){
+        super.beforeAll();
         getRoleRepository().findAll().forEach(role -> roles.add(role));
     }
 

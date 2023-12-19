@@ -37,8 +37,8 @@ class PasswordResetRepositoryTest extends TestContext {
     }
 
     @Override @BeforeAll
-    public void setup(){
-        super.setup();
+    public void beforeAll(){
+        super.beforeAll();
         userEntity = getUserRepository().save(UserEntity.builder()
             .id(null)
             .username(username)

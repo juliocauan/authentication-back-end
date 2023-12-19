@@ -16,7 +16,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class RoleEntityTest extends TestContext {
 
-    private final String defaultRoleName = "MANAGER";
+    private final String manager = "MANAGER";
 
     public RoleEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
@@ -28,32 +28,27 @@ class RoleEntityTest extends TestContext {
     }
 
     @BeforeEach
-    public void standard() {
+    public void beforeEach() {
         getRoleRepository().deleteAll();
     }
 
     @Test
-    void save() {
-        assertDoesNotThrow(() -> saveRole(defaultRoleName));
-    }
-
-    @Test
-    void save_constraint_length() {
-        String maxLengthName = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    void name_maxLength() {
+        String maxLengthName = getRandomString(40);
         assertDoesNotThrow(() -> saveRole(maxLengthName));
         assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(maxLengthName + "A"));
     }
 
     @Test
-    void save_constraint_notNull() {
+    void name_notNull() {
         assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(null));
     }
 
     @Test
-    void save_constraint_unique() {
-        saveRole(defaultRoleName);
-        assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(defaultRoleName));
-        assertDoesNotThrow(() -> saveRole(defaultRoleName + "A"));
+    void name_unique() {
+        saveRole(manager);
+        assertThrowsExactly(DataIntegrityViolationException.class, () -> saveRole(manager));
+        assertDoesNotThrow(() -> saveRole(manager + "A"));
     }
-    
+
 }

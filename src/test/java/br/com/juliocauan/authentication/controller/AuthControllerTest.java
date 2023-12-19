@@ -65,8 +65,8 @@ class AuthControllerTest extends TestContext {
     }
 
     @Override
-    public void setup() {
-        super.setup();
+    public void beforeAll() {
+        super.beforeAll();
         getRoleRepository().save(RoleEntity.builder().name("USER").build());
     }
 

@@ -2,7 +2,7 @@ package br.com.juliocauan.authentication.domain.model;
 
 import java.time.LocalDateTime;
 
-public abstract class PasswordResetToken {
+public abstract class PasswordReset {
 
     protected static final int TOKEN_LENGTH = 32;
     public static final int TOKEN_EXPIRATION_MINUTES = 10;

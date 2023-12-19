@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS auth.users_roles
     role_id SMALLINT REFERENCES auth.roles(id),
     PRIMARY KEY(user_id, role_id)
 );
-CREATE TABLE IF NOT EXISTS auth.password_reset_tokens
+CREATE TABLE IF NOT EXISTS auth.password_reset
 (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,

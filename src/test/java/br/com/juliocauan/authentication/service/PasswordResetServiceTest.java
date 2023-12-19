@@ -18,23 +18,23 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
+import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
+import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.service.PasswordResetTokenServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
 
-class PasswordResetTokenServiceTest extends TestContext {
+class PasswordResetServiceTest extends TestContext {
 
-    private final PasswordResetTokenServiceImpl passwordResetTokenService;
-    private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
+    private final PasswordResetServiceImpl passwordResetTokenService;
+    private final PasswordResetRepositoryImpl passwordResetTokenRepository;
     private final UserServiceImpl userService;
 
     private final String username = getRandomUsername();
@@ -43,13 +43,13 @@ class PasswordResetTokenServiceTest extends TestContext {
 
     private final String usernameNotPresent = "notPresent@email.test";
     private final String invalidPasswordException = "Passwords don't match!";
-    private final String expiredPasswordResetTokenException = "Expired Token!";
+    private final String expiredPasswordResetException = "Expired Token!";
 
     private UserEntity user;
 
-    public PasswordResetTokenServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetTokenServiceImpl passwordResetTokenService,
-            PasswordResetTokenRepositoryImpl passwordResetTokenRepository, UserServiceImpl userService) {
+    public PasswordResetServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetServiceImpl passwordResetTokenService,
+            PasswordResetRepositoryImpl passwordResetTokenRepository, UserServiceImpl userService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetTokenService = passwordResetTokenService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
@@ -71,7 +71,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void generateToken() {
         String token = assertDoesNotThrow(() -> passwordResetTokenService.generateToken(user.getUsername()));
-        PasswordResetToken passwordResetToken = passwordResetTokenRepository.getByToken(token).get();
+        PasswordReset passwordResetToken = passwordResetTokenRepository.getByToken(token).get();
         
         assertEquals(user, passwordResetToken.getUser());
         assertEquals(token, passwordResetToken.getToken());
@@ -80,13 +80,13 @@ class PasswordResetTokenServiceTest extends TestContext {
     }
     
     @Test
-    void generateToken_branch_deletePreviousPasswordResetToken() {
-        PasswordResetToken passwordResetTokenBefore = passwordResetTokenRepository.save(PasswordResetTokenEntity.builder()
+    void generateToken_branch_deletePreviousPasswordReset() {
+        PasswordReset passwordResetTokenBefore = passwordResetTokenRepository.save(PasswordResetEntity.builder()
             .token(tokenMock)
             .user(user)
         .build());
         String token = assertDoesNotThrow(() -> passwordResetTokenService.generateToken(user.getUsername()));
-        PasswordResetToken passwordResetTokenAfter = passwordResetTokenRepository.getByToken(token).get();
+        PasswordReset passwordResetTokenAfter = passwordResetTokenRepository.getByToken(token).get();
         
         assertNotEquals(passwordResetTokenBefore, passwordResetTokenAfter);
         assertFalse(passwordResetTokenRepository.getByToken(passwordResetTokenBefore.getToken()).isPresent());
@@ -103,7 +103,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void resetPassword() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation(password);
-        PasswordResetToken passwordResetTokenBeforeUpdate = passwordResetTokenRepository.save(PasswordResetTokenEntity
+        PasswordReset passwordResetTokenBeforeUpdate = passwordResetTokenRepository.save(PasswordResetEntity
             .builder()
                 .token(tokenMock)
                 .user(user)
@@ -134,7 +134,7 @@ class PasswordResetTokenServiceTest extends TestContext {
     @Test
     void resetPassword_error_isExpired() {
         PasswordMatch passwordMatch = new PasswordMatch().password(password).passwordConfirmation(password);
-        Integer id = passwordResetTokenRepository.save(PasswordResetTokenEntity
+        Integer id = passwordResetTokenRepository.save(PasswordResetEntity
             .builder()
                 .expireDate(LocalDateTime.now().minusSeconds(1))
                 .token(tokenMock)
@@ -142,7 +142,7 @@ class PasswordResetTokenServiceTest extends TestContext {
             .build()).getId();
         ExpiredPasswordResetException exception = assertThrowsExactly(ExpiredPasswordResetException.class,
             () -> passwordResetTokenService.resetPassword(passwordMatch, tokenMock));
-        assertEquals(expiredPasswordResetTokenException, exception.getMessage());
+        assertEquals(expiredPasswordResetException, exception.getMessage());
         assertFalse(passwordResetTokenRepository.findById(id).isPresent());
     }
     

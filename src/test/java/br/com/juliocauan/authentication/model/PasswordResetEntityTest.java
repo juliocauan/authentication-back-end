@@ -13,26 +13,26 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.model.PasswordResetTokenEntity;
+import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
-import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetTokenRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-class PasswordResetTokenEntityTest extends TestContext {
+class PasswordResetEntityTest extends TestContext {
 
-    private final PasswordResetTokenRepositoryImpl passwordResetTokenRepository;
+    private final PasswordResetRepositoryImpl passwordResetTokenRepository;
 
     private final String username = getRandomUsername();
     private final String password = getRandomPassword();
     private final String token = getRandomToken();
 
     private UserEntity userEntity;
-    private PasswordResetTokenEntity passwordResetToken;
+    private PasswordResetEntity passwordResetToken;
 
-    public PasswordResetTokenEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetTokenRepositoryImpl passwordResetTokenRepository) {
+    public PasswordResetEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetTokenRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
@@ -47,7 +47,7 @@ class PasswordResetTokenEntityTest extends TestContext {
             .roles(new HashSet<RoleEntity>())
         .build());
 
-        passwordResetToken = passwordResetTokenRepository.save(PasswordResetTokenEntity.builder()
+        passwordResetToken = passwordResetTokenRepository.save(PasswordResetEntity.builder()
             .token(token)
             .user(userEntity)
         .build());
@@ -61,7 +61,7 @@ class PasswordResetTokenEntityTest extends TestContext {
     }
 
     @Test
-    void onUserDelete_deletePasswordResetToken() {
+    void onUserDelete_deletePasswordReset() {
         Integer id = passwordResetToken.getId();
         assertTrue(passwordResetTokenRepository.findById(id).isPresent());
         getUserRepository().deleteById(userEntity.getId());

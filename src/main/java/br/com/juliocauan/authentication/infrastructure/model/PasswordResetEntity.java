@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
-import br.com.juliocauan.authentication.domain.model.PasswordResetToken;
+import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -24,11 +24,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@Entity @Table(name = "password_reset_tokens", schema = "auth")
+@Entity @Table(name = "password_reset", schema = "auth")
 @Data @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public final class PasswordResetTokenEntity extends PasswordResetToken {
+public final class PasswordResetEntity extends PasswordReset {
     
     @Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +45,7 @@ public final class PasswordResetTokenEntity extends PasswordResetToken {
     @Builder.Default @EqualsAndHashCode.Exclude
     private LocalDateTime expireDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_MINUTES);
 
-    public PasswordResetTokenEntity(User user) {
+    public PasswordResetEntity(User user) {
         this();
         this.token = generateToken();
         this.user = new UserEntity(user);

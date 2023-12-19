@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.service.PasswordResetTokenServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 import br.com.juliocauan.authentication.util.EmailUtil;
 import br.com.juliocauan.authentication.util.PasswordUtil;
@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 public class AuthController implements AuthApi {
 
 	private final AuthenticationServiceImpl authenticationService;
-  private final PasswordResetTokenServiceImpl passwordResetTokenService;
+  private final PasswordResetServiceImpl passwordResetTokenService;
 
   @Override
   public ResponseEntity<JWT> _login(SigninForm signinForm) {

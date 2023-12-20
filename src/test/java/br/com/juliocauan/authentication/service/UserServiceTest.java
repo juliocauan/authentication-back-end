@@ -26,7 +26,6 @@ import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 
 class UserServiceTest extends TestContext {
 
@@ -93,7 +92,7 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void getUsersbranch_usernameContainsAndRole() {
+    void getUsers_branch_usernameContainsAndRole() {
         User expectedUser = saveUser();
         saveUser();
         List<User> foundUsers = userService.getUsers("@", getRoleName());
@@ -102,7 +101,7 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void getUsersbranch_usernameContainsAndNull() {
+    void getUsers_branch_usernameContainsAndNull() {
         User expectedUser = saveUser();
         saveUser();
         List<User> foundUsers = userService.getUsers("@", null);
@@ -111,7 +110,7 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void getUsersbranch_nullAndRole() {
+    void getUsers_branch_nullAndRole() {
         User expectedUser = saveUser();
         saveUser();
         List<User> foundUsers = userService.getUsers(null, getRoleName());
@@ -120,7 +119,7 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void getUsersbranch_nullAndNull() {
+    void getUsers_branch_nullAndNull() {
         User expectedUser = saveUser();
         saveUser();
         List<User> foundUsers = userService.getUsers(null, null);
@@ -129,19 +128,19 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void getUsersbranch_usernameNotContainsAndRole() {
+    void getUsers_branch_usernameNotContainsAndRole() {
         List<User> foundUsers = userService.getUsers("NOT_CONTAINS", getRoleName());
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void getUsersbranch_usernameContainsAndRoleNotPresent() {
+    void getUsers_branch_usernameContainsAndRoleNotPresent() {
         List<User> foundUsers = userService.getUsers("@", "NOT_ROLE");
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void getUsersbranch_usernameNotContainsAndRoleNotPresent() {
+    void getUsers_branch_usernameNotContainsAndRoleNotPresent() {
         List<User> foundUsers = userService.getUsers("NOT_CONTAINS", "NOT_ROLE");
         assertTrue(foundUsers.isEmpty());
     }
@@ -188,7 +187,7 @@ class UserServiceTest extends TestContext {
     @Test
     void update_error_entityNotFound() {
         User user = getUser();
-        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
                 () -> userService.update(user));
         assertEquals(getErrorUsernameNotFound(user.getUsername()), exception.getMessage());
     }

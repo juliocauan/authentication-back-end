@@ -8,7 +8,6 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 
 public abstract class UserService {
 
@@ -50,7 +49,7 @@ public abstract class UserService {
 	//TODO check this: consults database twice before being this method is called
 	public final void update(User user) {
 		if(!isPresent(user.getUsername()))
-			throw new EntityNotFoundException(exceptionNotFound(user.getUsername()));
+			throw new UsernameNotFoundException(exceptionNotFound(user.getUsername()));
 		getRepository().register(user);
 	}
 

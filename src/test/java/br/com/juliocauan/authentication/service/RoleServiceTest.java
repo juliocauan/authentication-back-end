@@ -57,21 +57,21 @@ class RoleServiceTest extends TestContext {
     @Test
     void getAll_givenPresentNameContains_thenNotEmpty() {
         saveRole("ROLE");
-        List<Role> roles = getRoleRepository().getAll("ROLE");
+        List<Role> roles = roleService.getAll("ROLE");
         assertEquals(1, roles.size());
     }
 
     @Test
     void getAll_givenNullNameContains_thenNotEmpty() {
         saveRole("ROLE");
-        List<Role> roles = getRoleRepository().getAll(null);
+        List<Role> roles = roleService.getAll(null);
         assertEquals(1, roles.size());
     }
 
     @Test
     void getAll_givenNotPresentNameContains_thenEmpty() {
         saveRole("ROLE");
-        List<Role> roles = getRoleRepository().getAll("AAA");
+        List<Role> roles = roleService.getAll("AAA");
         assertTrue(roles.isEmpty());
     }
 

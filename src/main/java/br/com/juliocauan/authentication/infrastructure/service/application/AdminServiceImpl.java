@@ -12,18 +12,18 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public final class AdminServiceImpl extends AdminService {
-    
+public class AdminServiceImpl extends AdminService {
+
     private final UserServiceImpl userService;
     private final RoleServiceImpl roleService;
 
     @Override
-    protected UserService getUserService() {
+    protected final UserService getUserService() {
         return userService;
     }
 
     @Override
-    protected RoleService getRoleService() {
+    protected final RoleService getRoleService() {
         return roleService;
     }
 
@@ -31,5 +31,5 @@ public final class AdminServiceImpl extends AdminService {
     protected final String getLoggedUsername() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
-    
+
 }

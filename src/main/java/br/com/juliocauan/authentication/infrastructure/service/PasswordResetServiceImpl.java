@@ -16,13 +16,13 @@ public final class PasswordResetServiceImpl extends PasswordResetService {
     private final UserServiceImpl userService;
 
     @Override
-    protected final UserService getUserService() {
-        return userService;
+    protected final PasswordResetRepository getRepository() {
+        return passwordResetTokenRepository;
     }
 
     @Override
-    protected final PasswordResetRepository getRepository() {
-        return passwordResetTokenRepository;
+    protected final UserService getUserService() {
+        return userService;
     }
     
 }

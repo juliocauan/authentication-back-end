@@ -68,7 +68,8 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<OkResponse> _resetPassword(PasswordMatch passwordMatch, String token) {
-      passwordResetTokenService.resetPassword(passwordMatch, token);
+      PasswordUtil.validateMatch(passwordMatch);
+      passwordResetTokenService.resetPassword(passwordMatch.getPassword(), token);
       return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
   }
 

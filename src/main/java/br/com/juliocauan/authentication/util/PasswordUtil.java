@@ -47,11 +47,7 @@ public final class PasswordUtil {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
         if(!matcher.matches())
-            throw new InvalidPasswordException("Password is not strong. It must have at least: " + 
-                "1 lower case character, " + 
-                "1 upper case character, " +
-                "1 special character, " +
-                "1 number");
+            throw new InvalidPasswordException("Password is not strong!");
     }
 
     public static void validateAdminKey(String adminPassword) {

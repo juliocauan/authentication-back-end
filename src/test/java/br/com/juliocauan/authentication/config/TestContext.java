@@ -64,9 +64,8 @@ public class TestContext {
         return roleRepository;
     }
 
-    //TODO remove later
     public String getRandomUsername() {
-        return getRandomString(12) + "@email.test";
+        return getRandomUsername(null);
     }
 
     public String getRandomUsername(Integer length) {

@@ -19,14 +19,14 @@ public abstract class AuthenticationService {
     public abstract JWT authenticate(String username, String password);
 
     public final void registerUser(String username, String password) {
-        getUserService().registerNew(User.newUser(username, password));
+        getUserService().register(User.newUser(username, password));
     }
 
     public final void registerAdmin(String username, String password, String adminKey) {
         PasswordUtil.validateAdminKey(adminKey);
         User admin = User.newUser(username, password);
         admin = User.changeRoles(admin, adminSet());
-        getUserService().registerNew(admin);
+        getUserService().register(admin);
     }
 
     private final Set<Role> adminSet() {

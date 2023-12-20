@@ -1,8 +1,6 @@
 package br.com.juliocauan.authentication.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,26 +19,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
+import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 
 class UserServiceTest extends TestContext {
 
     private final UserServiceImpl userService;
     private final PasswordEncoder encoder;
 
-    private final String username = getRandomUsername();
-    private final String usernameContains = "test";
-    private final String usernameNotContains = "@tset";
-    private final String password = getRandomPassword();
-    private final String roleManager = "MANAGER";
-    private final String roleAdmin = "ADMIN";
-    private final String roleUser = "USER";
-
-    private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
 
     public UserServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -50,126 +42,195 @@ class UserServiceTest extends TestContext {
         this.encoder = encoder;
     }
 
-    @Override @BeforeAll
-    public void beforeAll(){
+    @Override
+    @BeforeAll
+    public void beforeAll() {
         super.beforeAll();
-        getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
-        getRoleRepository().save(RoleEntity.builder().name(roleUser).build());
-        roles.add(new RoleEntity(getRoleRepository().getByName(roleAdmin).get()));
+        roles.add(getRoleRepository().findAll().get(0));
     }
 
     @BeforeEach
-    void standard(){
+    void standard() {
         getUserRepository().deleteAll();
-        entity = getUserRepository().save(
-            UserEntity.builder()
-                .password(encoder.encode(password))
-                .username(username)
-                .roles(roles)
-            .build());
     }
 
-    private final void saveSecondUser() {
-        getUserRepository().save(UserEntity
-            .builder()
-                .id(null)
-                .username(username + "2")
-                .password(encoder.encode(password))
+    private final UserEntity getUser() {
+        return UserEntity
+                .builder()
+                .username(getRandomUsername(null))
+                .password(getRandomPassword())
                 .roles(roles)
-            .build());
+                .build();
+    }
+
+    private final UserEntity saveUser() {
+        return getUserRepository().save(getUser());
+    }
+
+    private final String getRoleName() {
+        return roles.stream().findFirst().get().getName();
     }
 
     @Test
-    void getByUsername(){
-        assertEquals(entity, userService.getBy(username));
+    void getByUsername() {
+        User expectedUser = saveUser();
+        assertEquals(expectedUser, userService.getByUsername(expectedUser.getUsername()));
     }
 
     @Test
-    void getByUsername_error_usernameNotFound(){
-        getUserRepository().deleteAll();
+    void getByUsername_error_usernameNotFound() {
+        String username = getRandomUsername();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
-            () -> userService.getBy(username));
+                () -> userService.getByUsername(username));
         assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
 
     @Test
-    void getUserInfos() {
-        User expectedUserInfo = entity;
-        List<User> foundUserInfos = userService.getUsers(usernameContains, roleAdmin);
-        assertEquals(1, foundUserInfos.size());
-        assertEquals(expectedUserInfo, foundUserInfos.get(0));
+    void getUsers() {
+        User expectedUser = saveUser();
+        List<User> foundUsers = userService.getUsers("@", getRoleName());
+        assertEquals(1, foundUsers.size());
+        assertEquals(expectedUser, foundUsers.get(0));
     }
 
     @Test
-    void getUserInfosbranch_usernameContainsAndRole() {
-        saveSecondUser();
-        User expectedUserInfo = entity;
-        List<User> foundUserInfos = userService.getUsers(usernameContains, roleAdmin);
-        assertEquals(2, foundUserInfos.size());
-        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    void getUsersbranch_usernameContainsAndRole() {
+        User expectedUser = saveUser();
+        saveUser();
+        List<User> foundUsers = userService.getUsers("@", getRoleName());
+        assertEquals(2, foundUsers.size());
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
-    void getUserInfosbranch_usernameContainsAndNull() {
-        saveSecondUser();
-        User expectedUserInfo = entity;
-        List<User> foundUserInfos = userService.getUsers(usernameContains, null);
-        assertEquals(2, foundUserInfos.size());
-        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    void getUsersbranch_usernameContainsAndNull() {
+        User expectedUser = saveUser();
+        saveUser();
+        List<User> foundUsers = userService.getUsers("@", null);
+        assertEquals(2, foundUsers.size());
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
-    void getUserInfosbranch_nullAndRole() {
-        saveSecondUser();
-        User expectedUserInfo = entity;
-        List<User> foundUserInfos = userService.getUsers(null, roleAdmin);
-        assertEquals(2, foundUserInfos.size());
-        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    void getUsersbranch_nullAndRole() {
+        User expectedUser = saveUser();
+        saveUser();
+        List<User> foundUsers = userService.getUsers(null, getRoleName());
+        assertEquals(2, foundUsers.size());
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
-    void getUserInfosbranch_nullAndNull() {
-        saveSecondUser();
-        User expectedUserInfo = entity;
-        List<User> foundUserInfos = userService.getUsers(null, null);
-        assertEquals(2, foundUserInfos.size());
-        assertTrue(foundUserInfos.contains(expectedUserInfo));
+    void getUsersbranch_nullAndNull() {
+        User expectedUser = saveUser();
+        saveUser();
+        List<User> foundUsers = userService.getUsers(null, null);
+        assertEquals(2, foundUsers.size());
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
-    void getUserInfosbranch_usernameNotContainsAndRole() {
-        List<User> foundUserInfos = userService.getUsers(usernameNotContains, roleAdmin);
-        assertTrue(foundUserInfos.isEmpty());
+    void getUsersbranch_usernameNotContainsAndRole() {
+        List<User> foundUsers = userService.getUsers("NOT_CONTAINS", getRoleName());
+        assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void getUserInfosbranch_usernameContainsAndRoleNotPresent() {
-        List<User> foundUserInfos = userService.getUsers(usernameContains, roleUser);
-        assertTrue(foundUserInfos.isEmpty());
+    void getUsersbranch_usernameContainsAndRoleNotPresent() {
+        List<User> foundUsers = userService.getUsers("@", "NOT_ROLE");
+        assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void getUserInfosbranch_usernameNotContainsAndRoleNotPresent() {
-        List<User> foundUserInfos = userService.getUsers(usernameNotContains, roleUser);
-        assertTrue(foundUserInfos.isEmpty());
+    void getUsersbranch_usernameNotContainsAndRoleNotPresent() {
+        List<User> foundUsers = userService.getUsers("NOT_CONTAINS", "NOT_ROLE");
+        assertTrue(foundUsers.isEmpty());
     }
 
     @Test
-    void save(){
-        getUserRepository().deleteAll();
-        assertDoesNotThrow(() -> userService.registerNew(entity));
+    void register() {
+        User expectedUser = getUser();
+        userService.register(expectedUser);
+        User user = getUserRepository().findAll().get(0);
+
+        assertEquals(expectedUser.getUsername(), user.getUsername());
+        assertEquals(expectedUser.getRoles(), user.getRoles());
+        assertTrue(encoder.matches(expectedUser.getPassword(), user.getPassword()));
     }
-    
+
+    @Test
+    void register_error_entityExists() {
+        User user = saveUser();
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+                () -> userService.register(user));
+        assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
+    }
+
+    @Test
+    void register_error_passwordSecurity() {
+        UserEntity user = getUser();
+        user.setPassword("12345tyui");
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+                () -> userService.register(user));
+        assertEquals("Password is not strong!", exception.getMessage());
+    }
+
+    @Test
+    void update() {
+        UserEntity expectedUser = saveUser();
+        String newPassword = getRandomPassword();
+        expectedUser.setPassword(newPassword);
+
+        userService.update(expectedUser);
+        UserEntity user = getUserRepository().findAll().get(0);
+        assertEquals(expectedUser, user);
+    }
+
+    @Test
+    void update_error_entityNotFound() {
+        User user = getUser();
+        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
+                () -> userService.update(user));
+        assertEquals(getErrorUsernameNotFound(user.getUsername()), exception.getMessage());
+    }
+
+    @Test
+    void delete() {
+        User user = saveUser();
+        userService.delete(user.getUsername());
+        assertTrue(getUserRepository().findAll().isEmpty());
+    }
+
+    @Test
+    void delete_error_usernameNotFound() {
+        String username = getRandomUsername();
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class, () -> userService.delete(username));
+        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+    }
+
     @Test
     void updatePassword() {
-        User userBeforeUpdate = getUserRepository().save(entity);
-        assertDoesNotThrow(() -> userService.updatePassword(userBeforeUpdate.getUsername(), password));
-        
-        User userAfterUpdate = getUserRepository().findById(userBeforeUpdate.getId()).get();
-        assertNotEquals(userBeforeUpdate.getPassword(), userAfterUpdate.getPassword());
-        assertEquals(userBeforeUpdate.getId(), userAfterUpdate.getId());
-        assertEquals(userBeforeUpdate.getUsername(), userAfterUpdate.getUsername());
-        assertEquals(userBeforeUpdate.getRoles(), userAfterUpdate.getRoles());
+        User user = saveUser();
+        String newPassword = getRandomPassword();
+        userService.updatePassword(user.getUsername(), newPassword);
+        assertTrue(encoder.matches(newPassword, getUserRepository().findAll().get(0).getPassword()));
     }
-    
+
+    @Test
+    void updatePassword_error_usernameNotFound() {
+        String username = getRandomUsername();
+        String newPassword = getRandomPassword();
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class, () -> userService.updatePassword(username, newPassword));
+        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+    }
+
+    @Test
+    void updatePassword_error_passwordSecurity() {
+        User user = saveUser();
+        String newPassword = "12345tyui";
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+                () -> userService.updatePassword(user.getUsername(), newPassword));
+        assertEquals("Password is not strong!", exception.getMessage());
+    }
+
 }

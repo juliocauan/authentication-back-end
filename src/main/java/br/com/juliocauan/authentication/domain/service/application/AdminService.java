@@ -29,7 +29,7 @@ public abstract class AdminService {
 
     // TODO check this: consults database twice before being this method is called
     public final void updateUserRoles(String username, Set<String> newRoles) {
-        User user = getUserService().getBy(username);
+        User user = getUserService().getByUsername(username);
         Set<Role> roles = newRoles.stream()
                 .map(getRoleService()::getByName)
                 .collect(Collectors.toSet());

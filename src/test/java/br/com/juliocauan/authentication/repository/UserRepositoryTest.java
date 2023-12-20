@@ -55,7 +55,7 @@ class UserRepositoryTest extends TestContext {
         return getUserRepository().save(getUser());
     }
 
-    private final String getFirstRole() {
+    private final String getRoleName() {
         return roles.stream().findFirst().get().getName();
     }
 
@@ -74,7 +74,7 @@ class UserRepositoryTest extends TestContext {
     @Test
     void getAll() {
         User expectedUser = saveUser();
-        String roleName = getFirstRole();
+        String roleName = getRoleName();
 
         List<User> foundUsers = getUserRepository().getAll("@", roleName);
 
@@ -86,7 +86,7 @@ class UserRepositoryTest extends TestContext {
     void getAll_branch_usernameContainsAndRole() {
         User expectedUser = saveUser();
         saveUser();
-        String roleName = getFirstRole();
+        String roleName = getRoleName();
 
         List<User> foundUsers = getUserRepository().getAll("@", roleName);
 
@@ -108,7 +108,7 @@ class UserRepositoryTest extends TestContext {
     void getAll_branch_nullAndRole() {
         User expectedUser = saveUser();
         saveUser();
-        String roleName = getFirstRole();
+        String roleName = getRoleName();
 
         List<User> foundUsers = getUserRepository().getAll(null, roleName);
         assertEquals(2, foundUsers.size());
@@ -127,7 +127,7 @@ class UserRepositoryTest extends TestContext {
 
     @Test
     void getAll_branch_usernameNotContainsAndRole() {
-        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", getFirstRole());
+        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", getRoleName());
         assertTrue(foundUsers.isEmpty());
     }
 

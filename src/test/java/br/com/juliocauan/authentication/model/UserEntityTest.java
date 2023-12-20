@@ -63,7 +63,7 @@ class UserEntityTest extends TestContext {
         assertDoesNotThrow(() -> saveUserWithUsername(username));
         assertThrows(DataIntegrityViolationException.class, () -> saveUserWithUsername(username));
     }
-    
+
     @Test
     void username_notNull() {
         String username = null;

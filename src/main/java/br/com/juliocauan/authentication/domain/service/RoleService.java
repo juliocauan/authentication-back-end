@@ -2,10 +2,9 @@ package br.com.juliocauan.authentication.domain.service;
 
 import java.util.List;
 
-import org.springframework.security.authentication.BadCredentialsException;
-
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.repository.RoleRepository;
+import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -30,8 +29,8 @@ public abstract class RoleService {
         }
 
         public final void delete(Role role) {
-                if(role.getName().equals("ADMIN"))
-                        throw new BadCredentialsException("You can not delete [ADMIN] role!");
+                if (role.getName().equals("ADMIN"))
+                        throw new AdminException("Role [ADMIN] can not be deleted!");
                 getRepository().delete(role);
         }
 

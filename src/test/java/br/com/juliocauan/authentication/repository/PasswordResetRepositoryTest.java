@@ -1,9 +1,8 @@
 package br.com.juliocauan.authentication.repository;
 
-import org.junit.jupiter.api.BeforeAll;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.PasswordReset;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
@@ -20,61 +21,76 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class PasswordResetRepositoryTest extends TestContext {
 
-    private final PasswordResetRepositoryImpl passwordResetTokenRepository;
-
-    private final String username = getRandomUsername();
-    private final String password = getRandomPassword();
-    private final String tokenPresent = getRandomToken();
-    private final String tokenNotPresent = getRandomToken();
-
-    private UserEntity userEntity;
-    private PasswordResetEntity expectedEntity;
+    private final PasswordResetRepositoryImpl passwordResetRepository;
 
     public PasswordResetRepositoryTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetTokenRepository) {
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
-    }
-
-    @Override @BeforeAll
-    public void beforeAll(){
-        super.beforeAll();
-        userEntity = getUserRepository().save(UserEntity.builder()
-            .id(null)
-            .username(username)
-            .password(password)
-            .roles(null)
-        .build());
+        this.passwordResetRepository = passwordResetRepository;
     }
 
     @BeforeEach
     void standard(){
-        passwordResetTokenRepository.deleteAll();
-        expectedEntity = passwordResetTokenRepository.save(PasswordResetEntity.builder()
-            .id(null)
-            .token(tokenPresent)
-            .user(userEntity)
-        .build());
+        passwordResetRepository.deleteAll();
+        getUserRepository().deleteAll();
+    }
+
+    private final UserEntity saveUser() {
+        return getUserRepository().save(UserEntity
+                .builder()
+                .username(getRandomUsername())
+                .password(getRandomPassword())
+                .build());
+    }
+
+    private final PasswordResetEntity savePasswordReset() {
+        UserEntity user = saveUser();
+        return passwordResetRepository.save(PasswordResetEntity
+                .builder()
+                .user(user)
+                .token(getRandomToken())
+                .build());
     }
 
     @Test
     void getByToken() {
-        assertEquals(expectedEntity, passwordResetTokenRepository.getByToken(tokenPresent).get());
+        PasswordReset passwordReset = savePasswordReset();
+        String token = passwordReset.getToken();
+        assertEquals(passwordReset, passwordResetRepository.getByToken(token).get());
     }
 
     @Test
     void getByToken_notPresent() {
-        assertFalse(passwordResetTokenRepository.getByToken(tokenNotPresent).isPresent());
+        assertFalse(passwordResetRepository.getByToken(getRandomToken()).isPresent());
     }
 
     @Test
     void getByUser() {
-        assertEquals(expectedEntity, passwordResetTokenRepository.getByUser(userEntity).get());
+        PasswordReset passwordReset = savePasswordReset();
+        User user = passwordReset.getUser();
+        assertEquals(passwordReset, passwordResetRepository.getByUser(user).get());
     }
 
     @Test
     void getByUser_notPresent() {
-        assertFalse(passwordResetTokenRepository.getByUser(null).isPresent());
+        User user = saveUser();
+        assertFalse(passwordResetRepository.getByUser(user).isPresent());
+    }
+
+    @Test
+    void register() {
+        User user = saveUser();
+        PasswordReset passwordReset = passwordResetRepository.register(user);
+        assertEquals(user, passwordReset.getUser());
+        assertFalse(passwordReset.isExpired());
+    }
+
+    @Test
+    void delete() {
+        PasswordReset passwordReset = savePasswordReset();
+        assertFalse(passwordResetRepository.findAll().isEmpty());
+        passwordResetRepository.delete(passwordReset);
+        assertTrue(passwordResetRepository.findAll().isEmpty());
     }
     
 }

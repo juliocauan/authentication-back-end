@@ -10,13 +10,13 @@ import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity
 public interface PasswordResetRepositoryImpl extends PasswordResetRepository, JpaRepository<PasswordResetEntity, Integer> {
 
     @Override
-    default void delete(PasswordReset passwordResetToken) {
-        this.deleteById(passwordResetToken.getId());
+    default PasswordReset register(User user) {
+        return this.save(new PasswordResetEntity(user));
     }
 
     @Override
-    default PasswordReset register(User user) {
-        return this.save(new PasswordResetEntity(user));
+    default void delete(PasswordReset passwordResetToken) {
+        this.deleteById(passwordResetToken.getId());
     }
     
 }

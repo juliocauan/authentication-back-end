@@ -1,5 +1,6 @@
 package br.com.juliocauan.authentication.repository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,10 +23,19 @@ class RoleRepositoryTest extends TestContext {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }
 
+    @BeforeEach
+    public void beforeEach() {
+        getRoleRepository().deleteAll();
+    }
+
+    private final RoleEntity saveRole(String name) {
+        return getRoleRepository().save(RoleEntity.builder().name(name).build());
+    }
+
     @Test
     void getByName_givenPresentName_thenIsPresent() {
-        RoleEntity expectedEntity = getRoleRepository().findAll().get(0);
-        assertEquals(expectedEntity, getRoleRepository().getByName(expectedEntity.getName()).get());
+        RoleEntity expectedEntity = saveRole("ROLE");
+        assertEquals(expectedEntity, getRoleRepository().getByName("ROLE").get());
     }
 
     @Test
@@ -35,20 +45,37 @@ class RoleRepositoryTest extends TestContext {
 
     @Test
     void getAll_givenPresentNameContains_thenNotEmpty() {
-        List<Role> roles = assertDoesNotThrow(() -> getRoleRepository().getAll("ADMIN"));
+        saveRole("ROLE");
+        List<Role> roles = getRoleRepository().getAll("ROLE");
         assertEquals(1, roles.size());
     }
 
     @Test
     void getAll_givenNullNameContains_thenNotEmpty() {
-        List<Role> roles = assertDoesNotThrow(() -> getRoleRepository().getAll(null));
+        saveRole("ROLE");
+        List<Role> roles = getRoleRepository().getAll(null);
         assertEquals(1, roles.size());
     }
 
     @Test
     void getAll_givenNotPresentNameContains_thenEmpty() {
-        List<Role> roles = assertDoesNotThrow(() -> getRoleRepository().getAll("NOT_A_ROLE"));
+        saveRole("ROLE");
+        List<Role> roles = getRoleRepository().getAll("AAA");
         assertTrue(roles.isEmpty());
+    }
+
+    @Test
+    void register() {
+        getRoleRepository().register("ROLE");
+        RoleEntity role = getRoleRepository().findAll().get(0);
+        assertEquals("ROLE", role.getName());
+    }
+
+    @Test
+    void delete() {
+        Role role = saveRole("ROLE");
+        getRoleRepository().delete(role);
+        assertTrue(getRoleRepository().findAll().isEmpty());
     }
 
 }

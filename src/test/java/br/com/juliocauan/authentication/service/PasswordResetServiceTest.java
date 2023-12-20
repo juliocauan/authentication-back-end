@@ -44,7 +44,7 @@ class PasswordResetServiceTest extends TestContext {
     }
 
     @BeforeEach
-    void standard() {
+    void beforeEach() {
         passwordResetRepository.deleteAll();
         getUserRepository().deleteAll();
     }

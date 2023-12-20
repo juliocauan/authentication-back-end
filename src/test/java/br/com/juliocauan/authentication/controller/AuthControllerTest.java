@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.time.LocalDateTime;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EmailPasswordResetUrlRequest;
@@ -64,14 +65,14 @@ class AuthControllerTest extends TestContext {
         this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
-    @Override
+    @Override @BeforeAll
     public void beforeAll() {
         super.beforeAll();
         getRoleRepository().save(RoleEntity.builder().name("USER").build());
     }
 
     @BeforeEach
-    void standard(){
+    void beforeEach(){
         getUserRepository().deleteAll();
         signupForm.username(username).match(new PasswordMatch().password(password).passwordConfirmation(password));
         signinForm.username(username).password(password);

@@ -36,7 +36,8 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
 
   @Override
   public final JWT authenticate(String username, String password) {
-    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+        username, password);
     Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);
     return new JWT().token(jwtProvider.generateToken(auth));

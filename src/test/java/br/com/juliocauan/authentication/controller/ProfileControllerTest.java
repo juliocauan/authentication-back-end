@@ -45,7 +45,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     @BeforeEach
-    void standard(){
+    void beforeEach(){
         getUserRepository().deleteAll();
         getUserRepository().save(UserEntity
             .builder()

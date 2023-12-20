@@ -42,15 +42,14 @@ class UserServiceTest extends TestContext {
         this.encoder = encoder;
     }
 
-    @Override
-    @BeforeAll
+    @Override @BeforeAll
     public void beforeAll() {
         super.beforeAll();
         roles.add(getRoleRepository().findAll().get(0));
     }
 
     @BeforeEach
-    void standard() {
+    void beforeEach() {
         getUserRepository().deleteAll();
     }
 

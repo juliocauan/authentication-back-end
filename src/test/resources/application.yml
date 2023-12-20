@@ -26,3 +26,5 @@ spring:
                     auth: true
                     starttls:
                         enable: true
+
+ADMIN_KEY: "@Admin123"

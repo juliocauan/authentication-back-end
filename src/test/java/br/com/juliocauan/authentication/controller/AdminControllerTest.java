@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UpdateUserRolesForm;
@@ -53,7 +54,7 @@ class AdminControllerTest extends TestContext {
         this.encoder = encoder;
     }
 
-    @Override
+    @Override @BeforeAll
     public void beforeAll() {
         super.beforeAll();
         getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
@@ -61,7 +62,7 @@ class AdminControllerTest extends TestContext {
     }
 
     @BeforeEach
-    void standard(){
+    void beforeEach(){
         getUserRepository().deleteAll();
         saveUser(usernameAdmin, "ADMIN");
     }

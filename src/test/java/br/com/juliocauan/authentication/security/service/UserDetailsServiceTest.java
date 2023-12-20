@@ -46,7 +46,7 @@ class UserDetailsServiceTest extends TestContext {
     }
 
     @BeforeEach
-    void standard(){
+    void beforeEach(){
         getUserRepository().deleteAll();
         entity = UserEntity.builder()
             .password(password)

@@ -38,7 +38,7 @@ class UserRepositoryTest extends TestContext {
     }
 
     @BeforeEach
-    void standard(){
+    void beforeEach(){
         getUserRepository().deleteAll();
     }
 

@@ -52,7 +52,7 @@ public final class PasswordUtil {
 
     public static void validateAdminKey(String adminPassword) {
         if(!matches(adminPassword, encode(env.getProperty("ADMIN_KEY"))))
-            throw new InvalidPasswordException("Admin Password is incorrect!");
+            throw new InvalidPasswordException("Admin Key is incorrect!");
     }
 
     private static boolean matches(String rawPassword, String encodedPassword) {

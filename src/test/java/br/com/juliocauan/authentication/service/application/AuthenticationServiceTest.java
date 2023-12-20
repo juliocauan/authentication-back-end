@@ -1,19 +1,21 @@
 package br.com.juliocauan.authentication.service.application;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.JWT;
-import org.openapitools.model.PasswordMatch;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
+import br.com.juliocauan.authentication.domain.model.User;
+import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -24,70 +26,95 @@ class AuthenticationServiceTest extends TestContext {
 
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
-
-    private final String username = getRandomUsername();
-    private final String passwordRandom = getRandomPassword();
-    private final String errorBadCredentials = "Bad credentials";
-
-    private final String roleManager = "MANAGER";
-    private final String roleUser = "USER";
-    private final PasswordMatch password = new PasswordMatch();
+    private final String adminKey = "@Admin123";
 
     public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
+            PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;
         this.encoder = encoder;
     }
 
-    @Override
-    public void beforeAll() {
-        super.beforeAll();
-        getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
-        getRoleRepository().save(RoleEntity.builder().name(roleUser).build());
-        password.password(passwordRandom).passwordConfirmation(passwordRandom);
-    }
-
     @BeforeEach
-    void standard(){
+    void beforeEach() {
         getUserRepository().deleteAll();
     }
 
-    @Test
-    void registerUser(){
-        assertDoesNotThrow(() -> authenticationService.registerUser(username, password.getPassword()));
-        assertEquals(1, getUserRepository().findAll().size());
+    private final UserEntity getUser() {
+        return UserEntity
+                .builder()
+                .username(getRandomUsername())
+                .password(getRandomPassword())
+                .build();
+    }
 
-        UserEntity user = getUserRepository().findAll().get(0);
-        assertEquals(username, user.getUsername());
-        assertTrue(encoder.matches(password.getPassword(), user.getPassword()));
+    private final UserEntity saveUser() {
+        return getUserRepository().save(getUser());
     }
 
     @Test
-    void registerUser_duplicatedUserError(){
-        getUserRepository().save(UserEntity.builder()
-            .id(null)
-            .username(username)
-            .password(password.getPassword())
-        .build());
+    void authenticate() {
+        UserEntity user = getUser();
+        String rawPassword = user.getPassword();
+        user.setPassword(encoder.encode(rawPassword));
+        getUserRepository().save(user);
+        JWT jwt = authenticationService.authenticate(user.getUsername(), rawPassword);
+        assertTrue(jwt.getToken().contains("."));
+    }
+
+    @Test
+    void authenticate_error_badCredentials() {
+        BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
+                () -> authenticationService.authenticate(getRandomPassword(), getRandomPassword()));
+        assertEquals("Bad credentials", exception.getMessage());
+    }
+
+    @Test
+    void registerUser() {
+        User expectedUser = getUser();
+        authenticationService.registerUser(expectedUser.getUsername(), expectedUser.getPassword());
+
+        User user = getUserRepository().findAll().get(0);
+        assertEquals(expectedUser.getUsername(), user.getUsername());
+        assertTrue(encoder.matches(expectedUser.getPassword(), user.getPassword()));
+    }
+
+    @Test
+    void registerUser_error_entityExists() {
+        User user = saveUser();
 
         EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
-            () -> authenticationService.registerUser(username, password.getPassword()));
-        assertEquals(getErrorUsernameDuplicated(username), exception.getMessage());
+                () -> authenticationService.registerUser(user.getUsername(), user.getPassword()));
+        assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
     }
 
     @Test
-    void authenticate(){
-        authenticationService.registerUser(username, password.getPassword());
-        JWT response = authenticationService.authenticate(username, passwordRandom);
-        assertTrue(response.getToken().contains("."));
+    void registerUser_error_passwordSecurity() {
+        String password = "1234567itsq";
+
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+                () -> authenticationService.registerUser(getRandomUsername(), password));
+        assertEquals("Password is not strong!", exception.getMessage());
     }
 
     @Test
-    void authenticate_badCredentialsError(){
-        BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
-            () -> authenticationService.authenticate(username, passwordRandom));
-        assertEquals(errorBadCredentials, exception.getMessage());
+    void registerAdmin() {
+        String username = getRandomUsername();
+        String password = getRandomPassword();
+        authenticationService.registerAdmin(username, password, adminKey);
+
+        User user = getUserRepository().findAll().get(0);
+        assertEquals(username, user.getUsername());
+        assertTrue(encoder.matches(password, user.getPassword()));
+        assertEquals("ADMIN", user.getRoles().stream().findFirst().get().getName());
+    }
+
+    @Test
+    void registerAdmin_error_adminKey() {
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+                () -> authenticationService.registerAdmin(getRandomUsername(), getRandomPassword(), "NOT_THE_KEY"));
+        assertEquals("Admin Key is incorrect!", exception.getMessage());
     }
 
 }

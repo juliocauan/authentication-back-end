@@ -14,6 +14,7 @@ import br.com.juliocauan.authentication.util.PasswordUtil;
 public abstract class AuthenticationService {
 
     protected abstract UserService getUserService();
+
     protected abstract RoleService getRoleService();
 
     public abstract JWT authenticate(String username, String password);

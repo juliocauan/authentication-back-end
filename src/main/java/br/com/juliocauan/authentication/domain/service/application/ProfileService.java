@@ -6,8 +6,9 @@ import br.com.juliocauan.authentication.util.PasswordUtil;
 
 public abstract class ProfileService {
 
-    protected abstract String getLoggedUsername();
     protected abstract UserService getUserService();
+
+    protected abstract String getLoggedUsername();
 
     public final void updatePassword(String currentPassword, String newPassword) {
         User user = validate(currentPassword);

@@ -15,13 +15,13 @@ public final class ProfileServiceImpl extends ProfileService {
     private final UserServiceImpl userService;
 
     @Override
-    protected final String getLoggedUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+    protected final UserService getUserService() {
+        return userService;
     }
 
     @Override
-    protected final UserService getUserService() {
-        return userService;
+    protected final String getLoggedUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }

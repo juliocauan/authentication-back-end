@@ -24,14 +24,6 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class UserRepositoryTest extends TestContext {
 
-    private final String username = getRandomUsername();
-    private final String usernameContains = "test";
-    private final String usernameNotContains = "asd";
-    private final String password = getRandomPassword();
-    private final String roleManager = "MANAGER";
-    private final String roleAdmin = "ADMIN";
-
-    private UserEntity entity;
     private Set<RoleEntity> roles = new HashSet<>();
     
     public UserRepositoryTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -42,99 +34,128 @@ class UserRepositoryTest extends TestContext {
     @Override @BeforeAll
     public void beforeAll(){
         super.beforeAll();
-        getRoleRepository().save(RoleEntity.builder().name(roleManager).build());
-        roles.add(new RoleEntity(getRoleRepository().getByName(roleManager).get()));
+        roles.add(getRoleRepository().findAll().get(0));
     }
 
     @BeforeEach
     void standard(){
         getUserRepository().deleteAll();
-        entity = getUserRepository().save(
-            UserEntity.builder()
-                .id(null)
-                .username(username)
-                .password(password)
-                .roles(roles)
-            .build());
     }
 
-    private final void saveSecondUser() {
-        getUserRepository().save(UserEntity
+    private final UserEntity getUser() {
+        return UserEntity
             .builder()
-                .id(null)
-                .username(username + "2")
-                .password(password)
+                .username(getRandomUsername(null))
+                .password(getRandomPassword())
                 .roles(roles)
-            .build());
+            .build();
+    }
+
+    private final User saveUser() {
+        return getUserRepository().save(getUser());
+    }
+
+    private final String getFirstRole() {
+        return roles.stream().findFirst().get().getName();
     }
 
     @Test
     void getByUsername(){
-        assertEquals(entity, getUserRepository().getByUsername(username).get());
+        User user = saveUser();
+        assertEquals(user, getUserRepository().getByUsername(user.getUsername()).get());
     }
 
     @Test
     void getByUsername_notPresent(){
         getUserRepository().deleteAll();
-        assertFalse(getUserRepository().getByUsername(username).isPresent());
+        assertFalse(getUserRepository().getByUsername("USERNAME").isPresent());
     }
 
     @Test
     void getAll() {
-        UserEntity expectedUser = entity;
-        List<User> foundUsers = getUserRepository().getAll(usernameContains, roleManager);
+        User expectedUser = saveUser();
+        String roleName = getFirstRole();
+
+        List<User> foundUsers = getUserRepository().getAll("@", roleName);
+
         assertEquals(1, foundUsers.size());
         assertEquals(expectedUser, foundUsers.get(0));
     }
 
     @Test
     void getAll_branch_usernameContainsAndRole() {
-        saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAll(usernameContains, roleManager);
+        User expectedUser = saveUser();
+        saveUser();
+        String roleName = getFirstRole();
+
+        List<User> foundUsers = getUserRepository().getAll("@", roleName);
+
         assertEquals(2, foundUsers.size());
-        assertTrue(foundUsers.contains(entity));
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
     void getAll_branch_usernameContainsAndNull() {
-        saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAll(usernameContains, null);
+        User expectedUser = saveUser();
+        saveUser();
+
+        List<User> foundUsers = getUserRepository().getAll("@", null);
         assertEquals(2, foundUsers.size());
-        assertTrue(foundUsers.contains(entity));
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
     void getAll_branch_nullAndRole() {
-        saveSecondUser();
-        List<User> foundUsers = getUserRepository().getAll(null, roleManager);
+        User expectedUser = saveUser();
+        saveUser();
+        String roleName = getFirstRole();
+
+        List<User> foundUsers = getUserRepository().getAll(null, roleName);
         assertEquals(2, foundUsers.size());
-        assertTrue(foundUsers.contains(entity));
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
     void getAll_branch_nullAndNull() {
-        saveSecondUser();
+        User expectedUser = saveUser();
+        saveUser();
+
         List<User> foundUsers = getUserRepository().getAll(null, null);
         assertEquals(2, foundUsers.size());
-        assertTrue(foundUsers.contains(entity));
+        assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
     void getAll_branch_usernameNotContainsAndRole() {
-        List<User> foundUsers = getUserRepository().getAll(usernameNotContains, roleManager);
+        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", getFirstRole());
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAll_branch_usernameContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAll(usernameContains, roleAdmin);
+        List<User> foundUsers = getUserRepository().getAll("@", "NOT_A_ROLE");
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAll_branch_usernameNotContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAll(usernameNotContains, roleAdmin);
+        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", "NOT_A_ROLE");
         assertTrue(foundUsers.isEmpty());
+    }
+
+    @Test
+    void register() {
+        UserEntity expectedUser = getUser();
+        getUserRepository().register(expectedUser);
+        UserEntity user = getUserRepository().findAll().get(0);
+        assertEquals(expectedUser, user);
+    }
+
+    @Test
+    void delete() {
+        User user = saveUser();
+        getUserRepository().delete(user);
+        assertTrue(getUserRepository().findAll().isEmpty());
     }
 
 }

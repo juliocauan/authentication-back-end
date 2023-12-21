@@ -20,7 +20,7 @@ public class ProfileController implements ProfileApi {
 
     @Override
     public ResponseEntity<OkResponse> _updatePassword(PasswordUpdateForm passwordUpdateForm) {
-        PasswordUtil.validateMatch(passwordUpdateForm.getMatch());
+        PasswordUtil.validatePasswordConfirmation(passwordUpdateForm.getMatch());
         String currentPassword = passwordUpdateForm.getCurrentPassword();
         String newPassword = passwordUpdateForm.getMatch().getPassword();
         profileService.updatePassword(currentPassword, newPassword);

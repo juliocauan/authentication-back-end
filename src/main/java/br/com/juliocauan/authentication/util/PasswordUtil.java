@@ -31,15 +31,15 @@ public final class PasswordUtil {
         return encoder.encode(password);
     }
 
-    public static void validateMatch(PasswordMatch passwordMatch) {
-        String rawPassword = passwordMatch.getPassword();
-        String encodedPassword = encode(passwordMatch.getPasswordConfirmation());
-        validateMatch(rawPassword, encodedPassword);
-    }
-
     public static void validateMatch(String rawPassword, String encodedPassword) {
         if(!matches(rawPassword, encodedPassword))
             throw new InvalidPasswordException("Passwords don't match!");
+    }
+
+    public static void validatePasswordConfirmation(PasswordMatch passwordMatch) {
+        String rawPassword = passwordMatch.getPassword();
+        String encodedPassword = encode(passwordMatch.getPasswordConfirmation());
+        validateMatch(rawPassword, encodedPassword);
     }
 
     public static void validateSecurity(String password) {

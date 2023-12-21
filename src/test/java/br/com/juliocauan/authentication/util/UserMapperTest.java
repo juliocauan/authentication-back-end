@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.model.mapper;
+package br.com.juliocauan.authentication.util;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +17,6 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
-import br.com.juliocauan.authentication.util.UserMapper;
 
 class UserMapperTest extends TestContext {
 

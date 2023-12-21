@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -13,7 +14,9 @@ import java.util.Set;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.DeleteRoleRequest;
 import org.openapitools.model.DeleteUserRequest;
+import org.openapitools.model.RegisterRoleRequest;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +37,7 @@ class AdminControllerTest extends TestContext {
     private final PasswordEncoder encoder;
 
     private final String urlAdminUsers = "/admin/users";
+    private final String urlAdminRoles = "/admin/roles";
     private final String authorizationHeader = "Authorization";
 
     private final String usernameAdmin = getRandomUsername();
@@ -364,6 +368,192 @@ class AdminControllerTest extends TestContext {
                 .header(authorizationHeader, getToken(username))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(writeValueAsString(deleteUserRequest)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void getRoles() throws Exception {
+        saveRole();
+        saveRole();
+
+        getMockMvc().perform(
+            get(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    void getRoles_branch_nameContains() throws Exception {
+        String role = saveRole();
+
+        getMockMvc().perform(
+            get(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .queryParam("nameContains", role))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+    @Test
+    void getRoles_branch_notPresentNameContains() throws Exception {
+        getMockMvc().perform(
+            get(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .queryParam("nameContains", getRandomString(15)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void getRoles_error_unauthenticated() throws Exception {
+        getMockMvc().perform(
+            get(urlAdminRoles))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
+    }
+
+    @Test
+    void getRoles_error_forbidden() throws Exception {
+        String username = getRandomUsername();
+        saveUser(username, saveRole());
+        getMockMvc().perform(
+            get(urlAdminRoles)
+                .header(authorizationHeader, getToken(username)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void registerRole() throws Exception {
+        String role = getRandomString(5);
+        RegisterRoleRequest registerRoleRequest = new RegisterRoleRequest().role(role);
+        getMockMvc().perform(
+            post(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(registerRoleRequest)))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.message").value("Role [%s] registered successfully!".formatted(role)));
+    }
+    
+    @Test
+    void registerRole_error_invalidInput() throws Exception {
+        RegisterRoleRequest registerRoleRequest = new RegisterRoleRequest().role(getRandomString(2));
+        getMockMvc().perform(
+            post(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(registerRoleRequest)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Input validation error!"))
+            .andExpect(jsonPath("$.fieldErrors", hasSize(1)));
+    }
+    
+    @Test
+    void registerRole_error_roleExists() throws Exception {
+        String role = saveRole();
+        RegisterRoleRequest registerRoleRequest = new RegisterRoleRequest().role(role);
+        getMockMvc().perform(
+            post(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(registerRoleRequest)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Role [%s] already exists!".formatted(role)));
+    }
+
+    @Test
+    void registerRole_error_unauthenticated() throws Exception {
+        getMockMvc().perform(
+            post(urlAdminRoles))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
+    }
+
+    @Test
+    void registerRole_error_forbidden() throws Exception {
+        String username = getRandomUsername();
+        String role = saveRole();
+        RegisterRoleRequest registerRoleRequest = new RegisterRoleRequest().role(role);
+        saveUser(username, role);
+        getMockMvc().perform(
+            post(urlAdminRoles)
+                .header(authorizationHeader, getToken(username))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(registerRoleRequest)))
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void deleteRole() throws Exception {
+        String role = saveRole();
+        DeleteRoleRequest deleteRoleRequest = new DeleteRoleRequest().role(role);
+        getMockMvc().perform(
+            delete(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(deleteRoleRequest)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("Role [%s] deleted successfully!".formatted(role)));
+    }
+
+    @Test
+    void deleteRole_error_invalidInput() throws Exception {
+        DeleteRoleRequest deleteRoleRequest = new DeleteRoleRequest().role(getRandomString(2));
+        getMockMvc().perform(
+            delete(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(deleteRoleRequest)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Input validation error!"))
+            .andExpect(jsonPath("$.fieldErrors", hasSize(1)));
+    }
+
+    @Test
+    void deleteRole_error_roleNotFound() throws Exception {
+        String role = getRandomString(15);
+        DeleteRoleRequest deleteRoleRequest = new DeleteRoleRequest().role(role);
+        getMockMvc().perform(
+            delete(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(deleteRoleRequest)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value("Role [%s] not found!".formatted(role)));
+    }
+
+    @Test
+    void deleteRole_error_adminException() throws Exception {
+        DeleteRoleRequest deleteRoleRequest = new DeleteRoleRequest().role("ADMIN");
+        getMockMvc().perform(
+            delete(urlAdminRoles)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(deleteRoleRequest)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("Role [ADMIN] can not be deleted!"));
+    }
+
+    @Test
+    void deleteRole_error_unauthenticated() throws Exception {
+        getMockMvc().perform(
+            delete(urlAdminRoles))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
+    }
+
+    @Test
+    void deleteRole_error_forbidden() throws Exception {
+        String username = getRandomUsername();
+        String role = saveRole();
+        DeleteRoleRequest deleteRoleRequest = new DeleteRoleRequest().role(role);
+        saveUser(username, role);
+        getMockMvc().perform(
+            delete(urlAdminRoles)
+                .header(authorizationHeader, getToken(username))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(deleteRoleRequest)))
             .andExpect(status().isForbidden());
     }
     

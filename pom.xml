@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.juliocauan</groupId>
 	<artifactId>authentication</artifactId>
-	<version>1.2.0</version>
+	<version>1.2.1</version>
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>
@@ -110,6 +110,7 @@
 					<excludes>
 						<exclude>org/openapitools/**</exclude>
 						<exclude>br/com/juliocauan/authentication/AuthenticationApplication.class</exclude>
+						<exclude>br/com/juliocauan/authentication/infrastructure/config/DevConfig.class</exclude>
 					</excludes>
 				 </configuration>
 				<executions>

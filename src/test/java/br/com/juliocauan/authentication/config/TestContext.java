@@ -69,7 +69,7 @@ public class TestContext {
     }
 
     public String getRandomUsername(Integer length) {
-        length = (length == null || length <= 11) ? 1 : (length - 11);
+        length = (length == null || length <= 11) ? 5 : (length - 11);
         return getRandomString(length) + "@email.test";
     }
 

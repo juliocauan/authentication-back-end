@@ -1,12 +1,14 @@
 package br.com.juliocauan.authentication.controller;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.model.CloseAccountRequest;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.PasswordUpdateForm;
 import org.springframework.http.MediaType;
@@ -30,97 +32,142 @@ class ProfileControllerTest extends TestContext {
     private final String authorizationHeader = "Authorization";
 
     private final String username = getRandomUsername();
-    private final String password = getRandomPassword();
-    private final String newPassword = getRandomPassword();
-
-    private final String updatedPasswordMessage = "Password updated successfully!";
-    private final String invalidPasswordError = "Passwords don't match!";
+    private final String rawPassword = getRandomPassword();
+    private final String errorInvalidPassword = "Passwords don't match!";
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     public ProfileControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
+            PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;
         this.encoder = encoder;
     }
 
     @BeforeEach
-    void beforeEach(){
+    void beforeEach() {
         getUserRepository().deleteAll();
         getUserRepository().save(UserEntity
-            .builder()
-                .id(null)
+                .builder()
                 .username(username)
-                .password(encoder.encode(password))
-                .roles(null)
-            .build());
+                .password(encoder.encode(rawPassword))
+                .build());
     }
 
-    private final String getBearerToken(){
-        return "Bearer " + authenticationService.authenticate(username, password).getToken();
+    private final String getBearerToken() {
+        return "Bearer " + authenticationService.authenticate(username, rawPassword).getToken();
     }
 
     @Test
-    void updateUserPassword() throws Exception{
+    void updateUserPassword() throws Exception {
+        String newPassword = getRandomPassword();
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .currentPassword(password)
-            .match(new PasswordMatch()
-                .password(newPassword)
-                .passwordConfirmation(newPassword));
-        
+                .currentPassword(rawPassword)
+                .match(new PasswordMatch()
+                        .password(newPassword)
+                        .passwordConfirmation(newPassword));
+
         getMockMvc().perform(
-            patch(url)
-                .header(authorizationHeader, getBearerToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(passwordUpdateForm)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value(updatedPasswordMessage));
+                patch(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(passwordUpdateForm)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Password updated successfully!"));
     }
 
     @Test
-    void updateUserPassword_error_unauthorized() throws Exception{
-        getMockMvc().perform(
-            patch(url))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isUnauthorized())
-            .andExpect(jsonPath("$.message").value(errorNotAuthorized));
-    }
-
-    @Test
-    void updateUserPassword_error_passwordMatch() throws Exception{
+    void updateUserPassword_error_invalidInput() throws Exception {
+        String invalidInput = getRandomString(5);
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .currentPassword(password)
-            .match(new PasswordMatch()
-                .password(newPassword)
-                .passwordConfirmation(password));
-        
+                .currentPassword(invalidInput)
+                .match(new PasswordMatch()
+                        .password(invalidInput)
+                        .passwordConfirmation(invalidInput));
+
         getMockMvc().perform(
-            patch(url)
-                .header(authorizationHeader, getBearerToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(passwordUpdateForm)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(invalidPasswordError));
+                patch(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(passwordUpdateForm)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Input validation error!"))
+                .andExpect(jsonPath("$.fieldErrors", hasSize(3)));
     }
 
     @Test
-    void updateUserPassword_error_invalidPassword() throws Exception{
+    void updateUserPassword_error_passwordConfirmation() throws Exception {
         PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
-            .currentPassword(newPassword)
-            .match(new PasswordMatch()
-                .password(newPassword)
-                .passwordConfirmation(newPassword));
-        
+                .currentPassword(rawPassword)
+                .match(new PasswordMatch()
+                        .password(getRandomPassword())
+                        .passwordConfirmation(getRandomPassword()));
+
         getMockMvc().perform(
-            patch(url)
-                .header(authorizationHeader, getBearerToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(passwordUpdateForm)))
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(invalidPasswordError));
+                patch(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(passwordUpdateForm)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(errorInvalidPassword));
+    }
+
+    @Test
+    void updateUserPassword_error_incorrectPassword() throws Exception {
+        String newPassword = getRandomPassword();
+        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
+                .currentPassword(newPassword)
+                .match(new PasswordMatch()
+                        .password(newPassword)
+                        .passwordConfirmation(newPassword));
+
+        getMockMvc().perform(
+                patch(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(passwordUpdateForm)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(errorInvalidPassword));
+    }
+
+    @Test
+    void updateUserPassword_error_unauthorized() throws Exception {
+        getMockMvc().perform(
+                patch(url))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(errorNotAuthorized));
+    }
+
+    @Test
+    void closeAccount() throws Exception {
+        CloseAccountRequest closeAccountRequest = new CloseAccountRequest().password(rawPassword);
+        getMockMvc().perform(
+                delete(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(closeAccountRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Closed account successfully!"));
+    }
+
+    @Test
+    void closeAccount_error_incorrectPassword() throws Exception {
+        CloseAccountRequest closeAccountRequest = new CloseAccountRequest().password(getRandomPassword());
+        getMockMvc().perform(
+                delete(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(closeAccountRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(errorInvalidPassword));
+    }
+
+    @Test
+    void closeAccount_error_unauthorized() throws Exception {
+        getMockMvc().perform(
+                delete(url))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(errorNotAuthorized));
     }
 
 }

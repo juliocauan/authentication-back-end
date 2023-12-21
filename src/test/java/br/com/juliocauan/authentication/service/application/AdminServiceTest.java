@@ -170,7 +170,7 @@ class AdminServiceTest extends TestContext {
         String newRole = saveRole();
         User user = saveUser(oldRole);
         adminService.updateUserRoles(user.getUsername(), getRoleSet(newRole));
-        User userAfter = getUserRepository().findAll().get(1);
+        User userAfter = getUserRepository().getByUsername(user.getUsername()).get();
 
         assertEquals(user.getUsername(), userAfter.getUsername());
         assertNotEquals(user.getRoles().stream().findFirst().get(), userAfter.getRoles().stream().findFirst().get());

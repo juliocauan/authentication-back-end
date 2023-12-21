@@ -27,14 +27,14 @@ public abstract class UserService {
 	}
 
 	public final void register(User user) {
-		if(isPresent(user.getUsername()))
-			throw new EntityExistsException(exceptionDuplicated(user.getUsername()));
+		validateDuplicate(user.getUsername());
 		user = setNewEncodedPassword(user, user.getPassword());
 		getRepository().register(user);
 	}
 
-	private final boolean isPresent(String username) {
-		return getRepository().getByUsername(username).isPresent();
+	private final void validateDuplicate(String username) {
+		if(getRepository().getByUsername(username).isPresent())
+			throw new EntityExistsException(exceptionDuplicated(username));
 	}
 
 	private final String exceptionDuplicated(String username) {
@@ -46,21 +46,19 @@ public abstract class UserService {
 		return User.changePassword(user, PasswordUtil.encode(password));
 	}
 
-	//TODO check this: consults database twice before being this method is called
 	public final void update(User user) {
-		if(!isPresent(user.getUsername()))
-			throw new UsernameNotFoundException(exceptionNotFound(user.getUsername()));
 		getRepository().register(user);
 	}
 
-	//TODO check this: consults database twice before being this method is called
-	public final void delete(String username) {
-		getRepository().delete(getByUsername(username));
+	public final void delete(User user) {
+		getRepository().delete(user);
 	}
 
-	//TODO check this: consults database twice before being this method is called
-	public final void updatePassword(String username, String newPassword) {
-		User user = getByUsername(username);
+	public final void delete(String username) {
+		delete(getByUsername(username));
+	}
+
+	public final void updatePassword(User user, String newPassword) {
 		user = setNewEncodedPassword(user, newPassword);
 		getRepository().register(user);
 	}

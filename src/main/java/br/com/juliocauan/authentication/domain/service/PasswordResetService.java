@@ -33,7 +33,7 @@ public abstract class PasswordResetService {
 
     public final void resetPassword(String newPassword, String token) {
         PasswordReset passwordResetToken = checkTokenValidation(token);
-        getUserService().updatePassword(passwordResetToken.getUser().getUsername(), newPassword);
+        getUserService().updatePassword(passwordResetToken.getUser(), newPassword);
         getRepository().delete(passwordResetToken);
     }
 

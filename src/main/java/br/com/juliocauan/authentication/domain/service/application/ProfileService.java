@@ -12,12 +12,12 @@ public abstract class ProfileService {
 
     public final void updatePassword(String currentPassword, String newPassword) {
         User user = validate(currentPassword);
-        getUserService().updatePassword(user.getUsername(), newPassword);
+        getUserService().updatePassword(user, newPassword);
     }
 
     public final void closeAccount(String currentPassword) {
         User user = validate(currentPassword);
-        getUserService().delete(user.getUsername());
+        getUserService().delete(user);
     }
 
     private final User validate(String currentPassword) {

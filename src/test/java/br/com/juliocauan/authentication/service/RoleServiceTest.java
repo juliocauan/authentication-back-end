@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
-import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -95,13 +94,6 @@ class RoleServiceTest extends TestContext {
         Role role = saveRole("ROLE");
         roleService.delete(role);
         assertTrue(getRoleRepository().findAll().isEmpty());
-    }
-
-    @Test
-    void delete_error_adminException() {
-        Role role = saveRole("ADMIN");
-        AdminException exception = assertThrowsExactly(AdminException.class, () -> roleService.delete(role));
-        assertEquals("Role [ADMIN] can not be deleted!", exception.getMessage());
     }
 
 }

@@ -27,7 +27,6 @@ public abstract class AdminService {
                 .collect(Collectors.toList());
     }
 
-    // TODO check this: consults database twice before being this method is called
     public final void updateUserRoles(String username, Set<String> newRoles) {
         validateSelf(username);
         User user = getUserService().getByUsername(username);
@@ -59,11 +58,10 @@ public abstract class AdminService {
         getRoleService().register(role);
     }
 
-    //TODO refactor: make this transactional so you don't have to check if ROLE is ADMIN twice
     public final void deleteRole(String roleName) {
-        Role role = getRoleService().getByName(roleName);
-        if (role.getName().equals("ADMIN"))
+        if (roleName.equals("ADMIN"))
                 throw new AdminException("Role [ADMIN] can not be deleted!");
+        Role role = getRoleService().getByName(roleName);
         List<User> users = getUserService().getUsers(null, role.getName());
         users.forEach(user -> {
             Set<? extends Role> roles = user.getRoles();

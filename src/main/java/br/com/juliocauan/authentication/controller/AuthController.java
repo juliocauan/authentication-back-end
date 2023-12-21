@@ -73,7 +73,6 @@ public class AuthController implements AuthApi {
         "Email sent to [%s] successfully!".formatted(username)));
   }
 
-  //TODO include username at response
   @Override
   public ResponseEntity<OkResponse> _passwordReset(PasswordMatch passwordMatch, String token) {
     PasswordUtil.validatePasswordConfirmation(passwordMatch);

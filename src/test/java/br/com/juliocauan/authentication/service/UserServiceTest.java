@@ -41,7 +41,8 @@ class UserServiceTest extends TestContext {
         this.encoder = encoder;
     }
 
-    @Override @BeforeAll
+    @Override
+    @BeforeAll
     public void beforeAll() {
         super.beforeAll();
         roles.add(getRoleRepository().findAll().get(0));
@@ -185,14 +186,6 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void update_error_entityNotFound() {
-        User user = getUser();
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
-                () -> userService.update(user));
-        assertEquals(getErrorUsernameNotFound(user.getUsername()), exception.getMessage());
-    }
-
-    @Test
     void delete() {
         User user = saveUser();
         userService.delete(user.getUsername());
@@ -202,24 +195,24 @@ class UserServiceTest extends TestContext {
     @Test
     void delete_error_usernameNotFound() {
         String username = getRandomUsername();
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class, () -> userService.delete(username));
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+                () -> userService.delete(username));
         assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+    }
+
+    @Test
+    void deleteWithUser() {
+        User user = saveUser();
+        userService.delete(user);
+        assertTrue(getUserRepository().findAll().isEmpty());
     }
 
     @Test
     void updatePassword() {
         User user = saveUser();
         String newPassword = getRandomPassword();
-        userService.updatePassword(user.getUsername(), newPassword);
+        userService.updatePassword(user, newPassword);
         assertTrue(encoder.matches(newPassword, getUserRepository().findAll().get(0).getPassword()));
-    }
-
-    @Test
-    void updatePassword_error_usernameNotFound() {
-        String username = getRandomUsername();
-        String newPassword = getRandomPassword();
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class, () -> userService.updatePassword(username, newPassword));
-        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
 
     @Test
@@ -227,7 +220,7 @@ class UserServiceTest extends TestContext {
         User user = saveUser();
         String newPassword = "12345tyui";
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-                () -> userService.updatePassword(user.getUsername(), newPassword));
+                () -> userService.updatePassword(user, newPassword));
         assertEquals("Password is not strong!", exception.getMessage());
     }
 

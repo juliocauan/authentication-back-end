@@ -1,7 +1,7 @@
 package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.AuthApi;
-import org.openapitools.model.EmailPasswordResetUrlRequest;
+import org.openapitools.model.EmailPasswordResetRequest;
 import org.openapitools.model.JWT;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.PasswordMatch;
@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthController implements AuthApi {
 
-	private final AuthenticationServiceImpl authenticationService;
+  private final AuthenticationServiceImpl authenticationService;
   private final PasswordResetServiceImpl passwordResetTokenService;
 
   @Override
@@ -33,44 +33,52 @@ public class AuthController implements AuthApi {
     return ResponseEntity.status(HttpStatus.OK).body(jwt);
   }
 
-	@Override
+  @Override
   public ResponseEntity<OkResponse> _signup(SignupForm signupForm) {
+    String username = signupForm.getUsername();
+    String password = signupForm.getMatch().getPassword();
+
     PasswordUtil.validatePasswordConfirmation(signupForm.getMatch());
-    authenticationService.registerUser(
-        signupForm.getUsername(),
-        signupForm.getMatch().getPassword());
-    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("User registered successfully!"));
+
+    authenticationService.registerUser(username, password);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(new OkResponse().message("User [%s] registered successfully!".formatted(username)));
   }
 
   @Override
   public ResponseEntity<OkResponse> _signupAdmin(SignupFormAdmin signupFormAdmin) {
+    String username = signupFormAdmin.getUsername();
+    String password = signupFormAdmin.getMatch().getPassword();
+    String adminKey = signupFormAdmin.getAdminKey();
+
     PasswordUtil.validatePasswordConfirmation(signupFormAdmin.getMatch());
-    authenticationService.registerAdmin(
-        signupFormAdmin.getUsername(),
-        signupFormAdmin.getMatch().getPassword(),
-        signupFormAdmin.getAdminKey());
-    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message("Admin registered successfully!"));
+    PasswordUtil.validateAdminKey(adminKey);
+
+    authenticationService.registerAdmin(username, password);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(new OkResponse().message("Admin [%s] registered successfully!".formatted(username)));
   }
 
   @Override
-  public ResponseEntity<OkResponse> _emailPasswordResetUrl(EmailPasswordResetUrlRequest requestBody) {
-      String username = requestBody.getUsername();
-      String token = passwordResetTokenService.generateToken(username);
+  public ResponseEntity<OkResponse> _emailPasswordReset(EmailPasswordResetRequest requestBody) {
+    String username = requestBody.getUsername();
+    String token = passwordResetTokenService.generateToken(username);
 
-      EmailUtil.sendEmail(
-          username, 
-          "Reset your password!", 
-          passwordResetTokenService.getEmailTemplate(token));
-  
-      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
-              "Email sent to [%s] successfully!".formatted(username)));
+    EmailUtil.sendEmail(
+        username,
+        "Reset your password!",
+        passwordResetTokenService.getEmailTemplate(token));
+
+    return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
+        "Email sent to [%s] successfully!".formatted(username)));
   }
 
+  //TODO include username at response
   @Override
-  public ResponseEntity<OkResponse> _resetPassword(PasswordMatch passwordMatch, String token) {
-      PasswordUtil.validatePasswordConfirmation(passwordMatch);
-      passwordResetTokenService.resetPassword(passwordMatch.getPassword(), token);
-      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
+  public ResponseEntity<OkResponse> _passwordReset(PasswordMatch passwordMatch, String token) {
+    PasswordUtil.validatePasswordConfirmation(passwordMatch);
+    passwordResetTokenService.resetPassword(passwordMatch.getPassword(), token);
+    return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
   }
 
 }

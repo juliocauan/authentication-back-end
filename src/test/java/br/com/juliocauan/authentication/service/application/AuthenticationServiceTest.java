@@ -26,7 +26,6 @@ class AuthenticationServiceTest extends TestContext {
 
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
-    private final String adminKey = "@Admin123";
 
     public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
@@ -102,7 +101,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerAdmin() {
         String username = getRandomUsername();
         String password = getRandomPassword();
-        authenticationService.registerAdmin(username, password, adminKey);
+        authenticationService.registerAdmin(username, password);
 
         User user = getUserRepository().findAll().get(0);
         assertEquals(username, user.getUsername());
@@ -111,10 +110,21 @@ class AuthenticationServiceTest extends TestContext {
     }
 
     @Test
-    void registerAdmin_error_adminKey() {
+    void registerAdmin_error_entityExists() {
+        User user = saveUser();
+
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+                () -> authenticationService.registerAdmin(user.getUsername(), user.getPassword()));
+        assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
+    }
+
+    @Test
+    void registerAdmin_error_passwordSecurity() {
+        String password = "1234567itsq";
+
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-                () -> authenticationService.registerAdmin(getRandomUsername(), getRandomPassword(), "NOT_THE_KEY"));
-        assertEquals("Admin Key is incorrect!", exception.getMessage());
+                () -> authenticationService.registerAdmin(getRandomUsername(), password));
+        assertEquals("Password is not strong!", exception.getMessage());
     }
 
 }

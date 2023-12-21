@@ -9,7 +9,6 @@ import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.service.RoleService;
 import br.com.juliocauan.authentication.domain.service.UserService;
-import br.com.juliocauan.authentication.util.PasswordUtil;
 
 public abstract class AuthenticationService {
 
@@ -23,8 +22,7 @@ public abstract class AuthenticationService {
         getUserService().register(User.newUser(username, password));
     }
 
-    public final void registerAdmin(String username, String password, String adminKey) {
-        PasswordUtil.validateAdminKey(adminKey);
+    public final void registerAdmin(String username, String password) {
         User admin = User.newUser(username, password);
         admin = User.changeRoles(admin, adminSet());
         getUserService().register(admin);

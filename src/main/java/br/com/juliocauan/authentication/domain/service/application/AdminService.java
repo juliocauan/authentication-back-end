@@ -29,6 +29,7 @@ public abstract class AdminService {
 
     // TODO check this: consults database twice before being this method is called
     public final void updateUserRoles(String username, Set<String> newRoles) {
+        validateSelf(username);
         User user = getUserService().getByUsername(username);
         Set<Role> roles = newRoles.stream()
                 .map(getRoleService()::getByName)
@@ -38,9 +39,13 @@ public abstract class AdminService {
         getUserService().update(user);
     }
 
-    public final void deleteUser(String username) {
+    private final void validateSelf(String username) {
         if (getLoggedUsername().equals(username))
-            throw new AdminException("You can not delete your own account here!");
+            throw new AdminException("You can not update/delete your own account here!");
+    }
+
+    public final void deleteUser(String username) {
+        validateSelf(username);
         getUserService().delete(username);
     }
 
@@ -54,13 +59,16 @@ public abstract class AdminService {
         getRoleService().register(role);
     }
 
+    //TODO refactor: make this transactional so you don't have to check if ROLE is ADMIN twice
     public final void deleteRole(String roleName) {
         Role role = getRoleService().getByName(roleName);
-        List<UserInfo> users = getUserInfos(null, role.getName());
+        if (role.getName().equals("ADMIN"))
+                throw new AdminException("Role [ADMIN] can not be deleted!");
+        List<User> users = getUserService().getUsers(null, role.getName());
         users.forEach(user -> {
-            Set<String> roles = user.getRoles();
-            roles.remove(role.getName());
-            updateUserRoles(user.getUsername(), roles);
+            Set<? extends Role> roles = user.getRoles();
+            roles.remove(role);
+            getUserService().update(User.changeRoles(user, roles));
         });
         getRoleService().delete(role);
     }

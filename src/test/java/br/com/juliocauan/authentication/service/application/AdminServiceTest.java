@@ -8,58 +8,87 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserInfo;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
+import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
 import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
 import br.com.juliocauan.authentication.util.UserMapper;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
 class AdminServiceTest extends TestContext {
 
     private final AdminServiceImpl adminService;
-    private final String role = getRandomString(15);
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder encoder;
+
+    private final String rawPassword = getRandomPassword();
 
     public AdminServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AdminServiceImpl adminService) {
+            ObjectMapper objectMapper, MockMvc mockMvc, AdminServiceImpl adminService,
+            AuthenticationManager authenticationManager, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.adminService = adminService;
+        this.authenticationManager = authenticationManager;
+        this.encoder = encoder;
     }
 
     @BeforeEach
     public void beforeEach() {
         getUserRepository().deleteAll();
         getRoleRepository().deleteAll();
-        saveRole(role);
+        deauthenticate();
     }
 
-    private final UserEntity getUser() {
+    private final User authenticate() {
+        String role = saveRole();
+        User user = saveUser(role);
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user.getUsername(),
+                rawPassword);
+        Authentication auth = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        return user;
+    }
+
+    private final void deauthenticate() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
+    private final UserEntity getUser(String role) {
         return UserEntity
                 .builder()
                 .username(getRandomUsername())
-                .password(getRandomPassword())
+                .password(encoder.encode(rawPassword))
                 .roles(Collections.singleton(new RoleEntity(getRoleRepository().getByName(role).get())))
                 .build();
     }
 
-    private final UserEntity saveUser() {
-        return getUserRepository().save(getUser());
+    private final UserEntity saveUser(String role) {
+        return getUserRepository().save(getUser(role));
     }
 
-    private final RoleEntity saveRole(String name) {
-        return getRoleRepository().save(RoleEntity.builder().name(name).build());
+    private final String saveRole() {
+        return getRoleRepository().save(RoleEntity.builder().name(getRandomString(15)).build()).getName();
     }
 
     private final Set<String> getRoleSet(String name) {
@@ -68,7 +97,8 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void getUserInfos() {
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser());
+        String role = saveRole();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
         List<UserInfo> userInfos = adminService.getUserInfos("@", role);
         assertEquals(1, userInfos.size());
         assertEquals(expectedUserInfo, userInfos.get(0));
@@ -76,8 +106,9 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void getUserInfos_branch_usernameContainsAndRole() {
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser());
-        saveUser();
+        String role = saveRole();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        saveUser(role);
         List<UserInfo> userInfos = adminService.getUserInfos("@", role);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
@@ -85,8 +116,9 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void getUserInfos_branch_usernameContainsAndNull() {
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser());
-        saveUser();
+        String role = saveRole();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        saveUser(role);
         List<UserInfo> userInfos = adminService.getUserInfos("@", null);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
@@ -94,8 +126,9 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void getUserInfos_branch_nullAndRole() {
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser());
-        saveUser();
+        String role = saveRole();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        saveUser(role);
         List<UserInfo> userInfos = adminService.getUserInfos(null, role);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
@@ -103,8 +136,9 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void getUserInfos_branch_nullAndNull() {
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser());
-        saveUser();
+        String role = saveRole();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        saveUser(role);
         List<UserInfo> userInfos = adminService.getUserInfos(null, null);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
@@ -112,6 +146,7 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void getUserInfos_branch_usernameNotContainsAndRole() {
+        String role = saveRole();
         List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", role);
         assertTrue(userInfos.isEmpty());
     }
@@ -130,11 +165,12 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void updateUserRoles() {
-        User user = saveUser();
-        String newRole = getRandomString(15);
-        saveRole(newRole);
+        authenticate();
+        String oldRole = saveRole();
+        String newRole = saveRole();
+        User user = saveUser(oldRole);
         adminService.updateUserRoles(user.getUsername(), getRoleSet(newRole));
-        User userAfter = getUserRepository().findAll().get(0);
+        User userAfter = getUserRepository().findAll().get(1);
 
         assertEquals(user.getUsername(), userAfter.getUsername());
         assertNotEquals(user.getRoles().stream().findFirst().get(), userAfter.getRoles().stream().findFirst().get());
@@ -142,8 +178,19 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
+    void updateUserRoles_error_adminException() {
+        User user = authenticate();
+        String role = saveRole();
+        AdminException exception = assertThrowsExactly(AdminException.class,
+                () -> adminService.updateUserRoles(user.getUsername(), getRoleSet(role)));
+        assertEquals("You can not update/delete your own account here!", exception.getMessage());
+    }
+
+    @Test
     void updateUserRoles_error_usernameNotFound() {
+        authenticate();
         String username = getRandomUsername();
+        String role = saveRole();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
                 () -> adminService.updateUserRoles(username, getRoleSet(role)));
         assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
@@ -151,7 +198,9 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void updateUserRoles_error_roleNotFound() {
-        User user = saveUser();
+        authenticate();
+        String role = saveRole();
+        User user = saveUser(role);
         String newRole = getRandomString(15);
         EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
                 () -> adminService.updateUserRoles(user.getUsername(), getRoleSet(newRole)));
@@ -160,8 +209,96 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void deleteUser() {
-        User user = saveUser();
-        
+        authenticate();
+        String role = saveRole();
+        User user = saveUser(role);
+        assertEquals(2, getUserRepository().findAll().size());
+        adminService.deleteUser(user.getUsername());
+        assertEquals(1, getUserRepository().findAll().size());
+    }
+
+    @Test
+    void deleteUser_error_notAuthenticated() {
+        deauthenticate();
+        assertThrowsExactly(NullPointerException.class,
+                () -> adminService.deleteUser(getRandomUsername()));
+    }
+
+    @Test
+    void deleteUser_error_adminException() {
+        User user = authenticate();
+        AdminException exception = assertThrowsExactly(AdminException.class,
+                () -> adminService.deleteUser(user.getUsername()));
+        assertEquals("You can not update/delete your own account here!", exception.getMessage());
+    }
+
+    @Test
+    void deleteUser_error_usernameNotFound() {
+        authenticate();
+        String username = getRandomUsername();
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+                () -> adminService.deleteUser(username));
+        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+    }
+
+    @Test
+    void getAllRoles() {
+        String role = saveRole();
+        List<String> roles = adminService.getAllRoles(role.substring(role.length() / 2));
+        assertEquals(1, roles.size());
+        assertEquals(role, roles.get(0));
+    }
+
+    @Test
+    void getAllRoles_branch_nameContains() {
+        String role = saveRole();
+        List<String> roles = adminService.getAllRoles(role.substring(role.length() / 2));
+        assertEquals(1, roles.size());
+        assertEquals(role, roles.get(0));
+    }
+
+    @Test
+    void getAllRoles_branch_nullNameContains() {
+        String role = saveRole();
+        List<String> roles = adminService.getAllRoles(null);
+        assertEquals(role, roles.get(0));
+    }
+
+    @Test
+    void registerRole() {
+        String newRole = getRandomString(15);
+        adminService.registerRole(newRole);
+        assertEquals(newRole, getRoleRepository().findAll().get(0).getName());
+    }
+
+    @Test
+    void registerRole_error_entityExists() {
+        String role = saveRole();
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+                () -> adminService.registerRole(role));
+        assertEquals("Role [%s] already exists!".formatted(role), exception.getMessage());
+    }
+
+    @Test
+    void deleteRole() {
+        String role = saveRole();
+        User user = saveUser(role);
+        assertEquals(getRoleSet(role), user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
+        adminService.deleteRole(role);
+        assertTrue(getRoleRepository().findAll().isEmpty());
+        assertTrue(getUserRepository().findAll().get(0).getRoles().isEmpty());
+    }
+
+    @Test
+    void deleteRole_error_adminException() {
+        String roleAdmin = "ADMIN";
+        getRoleRepository().save(RoleEntity.builder().name(roleAdmin).build());
+        saveUser(roleAdmin);
+
+        AdminException exception = assertThrowsExactly(AdminException.class, () -> adminService.deleteRole(roleAdmin));
+        assertEquals("Role [ADMIN] can not be deleted!", exception.getMessage());
+        assertEquals(getRoleSet(roleAdmin), getUserRepository().findAll().get(0).getRoles().stream().map(Role::getName)
+                .collect(Collectors.toSet()));
     }
 
 }

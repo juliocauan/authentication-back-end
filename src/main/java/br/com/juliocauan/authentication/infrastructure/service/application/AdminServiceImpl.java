@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class AdminServiceImpl extends AdminService {
+public final class AdminServiceImpl extends AdminService {
 
     private final UserServiceImpl userService;
     private final RoleServiceImpl roleService;

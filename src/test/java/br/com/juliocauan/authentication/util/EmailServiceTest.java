@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.mail.MailSendException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.infrastructure.exception.EmailException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
@@ -31,7 +31,7 @@ class EmailServiceTest extends TestContext {
 
     @Test
     void sendEmail_error_mailSend() {
-        MailSendException exception = assertThrowsExactly(MailSendException.class,
+        EmailException exception = assertThrowsExactly(EmailException.class,
             () -> emailService.sendEmail("null", "null", null));
         
         assertEquals("The recipient address is not a valid address!", exception.getMessage());

@@ -1,11 +1,4 @@
 server:
     port: 8443
 
-spring:
-    mail:
-        host: smtp.gmail.com
-        port: 587
-        username: ${APP_EMAIL_USERNAME}
-        password: ${APP_EMAIL_PASSWORD}
-
 ADMIN_KEY: ${ADMIN_KEY}

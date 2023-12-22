@@ -3,9 +3,17 @@ server:
 
 spring:
     mail:
+        protocol: smtp
         host: localhost
         port: 3025
         username: admin@authentication.dev
         password: admin
+        properties:
+            mail:
+                smtp:
+                    useSSL: true
+                    auth: true
+                    starttls:
+                        enable: true
 
 ADMIN_KEY: "@Password123"

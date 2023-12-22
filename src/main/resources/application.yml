@@ -11,12 +11,3 @@ spring:
     sql:
         init:
             mode: always
-    mail:
-        protocol: smtp
-        properties:
-            mail:
-                smtp:
-                    useSSL: true
-                    auth: true
-                    starttls:
-                        enable: true

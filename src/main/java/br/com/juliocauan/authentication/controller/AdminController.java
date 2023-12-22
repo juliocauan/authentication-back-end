@@ -6,6 +6,8 @@ import java.util.Set;
 import org.openapitools.api.AdminApi;
 import org.openapitools.model.DeleteRoleRequest;
 import org.openapitools.model.DeleteUserRequest;
+import org.openapitools.model.EmailAccess;
+import org.openapitools.model.EmailType;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.Page;
 import org.openapitools.model.RegisterRoleRequest;
@@ -78,6 +80,11 @@ public class AdminController implements AdminApi {
       return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         String.format("Role [%s] deleted successfully!", roleName)));
     }
-    
 
+    @Override
+    public ResponseEntity<OkResponse> _setEmailer(EmailAccess emailAccess, EmailType emailerType) {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("Unimplemented method '_setEmailer'");
+    }
+    
 }

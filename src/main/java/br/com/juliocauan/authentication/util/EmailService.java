@@ -1,31 +1,30 @@
 package br.com.juliocauan.authentication.util;
 
-import org.springframework.core.env.Environment;
-import org.springframework.mail.MailSendException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import br.com.juliocauan.authentication.infrastructure.exception.EmailException;
+import br.com.juliocauan.authentication.util.emailers.Emailer;
+import br.com.juliocauan.authentication.util.emailers.GmailEmailer;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public final class EmailService {
 
-    private final JavaMailSender mailSender;
-    private final Environment env;
+    private final GmailEmailer gmailEmailer;
+
+    private Emailer currentEmailer;
     
-    public final void sendEmail(String receiver, String subject, String message) {
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom(env.getProperty("spring.mail.username"));
-        email.setTo(receiver);
-        email.setSubject(subject);
-        email.setText(message);
-        try{
-            mailSender.send(email);
-        } catch (MailSendException e) {
-            throw new MailSendException("The recipient address is not a valid address!");
-        }
+    public void setAsGmailSender(String username, String password) {
+        gmailEmailer.configure(username, password);
+        currentEmailer = gmailEmailer;
+    }
+    
+    public void sendEmail(String receiver, String subject, String message) {
+        if (currentEmailer == null)
+            throw new EmailException("Emailer not set. Call setAsGmailSender first.");
+
+        currentEmailer.sendEmail(receiver, subject, message);
     }
     
 }

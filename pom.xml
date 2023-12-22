@@ -51,6 +51,7 @@
 		</dependency>
 		<!-- !SPRING BOOT -->
 
+		<!-- DATA_FORMAT -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -75,6 +76,9 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>${snakeyaml.version}</version>
 		  </dependency>
+		  <!-- DATA_FORMAT -->
+
+		  <!-- EMAIL -->
 		  <dependency>
 			  <groupId>com.icegreen</groupId>
 			  <artifactId>greenmail</artifactId>
@@ -85,6 +89,7 @@
 			  <artifactId>greenmail-junit5</artifactId>
 			  <version>${greenmail.version}</version>
 		  </dependency>
+		  <!-- EMAIL -->
 	</dependencies>
 
 	<build>

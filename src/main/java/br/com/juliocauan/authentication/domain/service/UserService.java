@@ -2,6 +2,7 @@ package br.com.juliocauan.authentication.domain.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import br.com.juliocauan.authentication.domain.model.User;
@@ -22,9 +23,13 @@ public abstract class UserService {
 		return "Username [%s] not found!".formatted(username);
 	}
 
-	public final List<User> getUsers(String usernameContains, String roleName) {
-		return getRepository().getAll(usernameContains, roleName);
+	public final List<User> getUsers(String usernameContains, String roleName, Pageable pageable) {
+		return getRepository().getAll(usernameContains, roleName, pageable);
 	}
+
+    public List<User> getAllUsers(String roleName) {
+        return getRepository().getAll(roleName);
+    }
 
 	public final void register(User user) {
 		validateDuplicate(user.getUsername());

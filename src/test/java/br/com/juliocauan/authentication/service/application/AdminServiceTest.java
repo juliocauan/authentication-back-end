@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserInfo;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,6 +44,7 @@ class AdminServiceTest extends TestContext {
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
 
+    private final Pageable pageable = PageRequest.ofSize(5);
     private final String rawPassword = getRandomPassword();
 
     public AdminServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -99,7 +102,7 @@ class AdminServiceTest extends TestContext {
     void getUserInfos() {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
-        List<UserInfo> userInfos = adminService.getUserInfos("@", role);
+        List<UserInfo> userInfos = adminService.getUserInfos("@", role, pageable);
         assertEquals(1, userInfos.size());
         assertEquals(expectedUserInfo, userInfos.get(0));
     }
@@ -109,7 +112,7 @@ class AdminServiceTest extends TestContext {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
         saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos("@", role);
+        List<UserInfo> userInfos = adminService.getUserInfos("@", role, pageable);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
     }
@@ -119,7 +122,7 @@ class AdminServiceTest extends TestContext {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
         saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos("@", null);
+        List<UserInfo> userInfos = adminService.getUserInfos("@", null, pageable);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
     }
@@ -129,7 +132,7 @@ class AdminServiceTest extends TestContext {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
         saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos(null, role);
+        List<UserInfo> userInfos = adminService.getUserInfos(null, role, pageable);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
     }
@@ -139,7 +142,7 @@ class AdminServiceTest extends TestContext {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
         saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos(null, null);
+        List<UserInfo> userInfos = adminService.getUserInfos(null, null, pageable);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
     }
@@ -147,20 +150,34 @@ class AdminServiceTest extends TestContext {
     @Test
     void getUserInfos_branch_usernameNotContainsAndRole() {
         String role = saveRole();
-        List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", role);
+        List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", role, pageable);
         assertTrue(userInfos.isEmpty());
     }
 
     @Test
     void getUserInfos_branch_usernameContainsAndRoleNotPresent() {
-        List<UserInfo> userInfos = adminService.getUserInfos("@", "NOT_ROLE");
+        List<UserInfo> userInfos = adminService.getUserInfos("@", "NOT_ROLE", pageable);
         assertTrue(userInfos.isEmpty());
     }
 
     @Test
     void getUserInfos_branch_usernameNotContainsAndRoleNotPresent() {
-        List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", "NOT_ROLE");
+        List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", "NOT_ROLE", pageable);
         assertTrue(userInfos.isEmpty());
+    }
+
+    @Test
+    void getUserInfos_branch_pageable() {
+        Integer expectedNumberOfUsers = pageable.getPageSize();
+        for(int i = 0; i <= expectedNumberOfUsers; i++)
+            saveUser(saveRole());
+
+        List<UserInfo> userInfos = adminService.getUserInfos(null, null, pageable);
+        assertEquals(expectedNumberOfUsers, userInfos.size());
+        
+        Pageable secondPage = PageRequest.of(1, pageable.getPageSize());
+        userInfos = adminService.getUserInfos(null, null, secondPage);
+        assertEquals(1, userInfos.size());
     }
 
     @Test

@@ -11,6 +11,8 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +26,7 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class UserRepositoryTest extends TestContext {
 
+    private final Pageable pageable = PageRequest.ofSize(5);
     private Set<RoleEntity> roles = new HashSet<>();
     
     public UserRepositoryTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -76,7 +79,7 @@ class UserRepositoryTest extends TestContext {
         User expectedUser = saveUser();
         String roleName = getRoleName();
 
-        List<User> foundUsers = getUserRepository().getAll("@", roleName);
+        List<User> foundUsers = getUserRepository().getAll("@", roleName, pageable);
 
         assertEquals(1, foundUsers.size());
         assertEquals(expectedUser, foundUsers.get(0));
@@ -88,7 +91,7 @@ class UserRepositoryTest extends TestContext {
         saveUser();
         String roleName = getRoleName();
 
-        List<User> foundUsers = getUserRepository().getAll("@", roleName);
+        List<User> foundUsers = getUserRepository().getAll("@", roleName, pageable);
 
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
@@ -99,7 +102,7 @@ class UserRepositoryTest extends TestContext {
         User expectedUser = saveUser();
         saveUser();
 
-        List<User> foundUsers = getUserRepository().getAll("@", null);
+        List<User> foundUsers = getUserRepository().getAll("@", null, pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
@@ -110,7 +113,7 @@ class UserRepositoryTest extends TestContext {
         saveUser();
         String roleName = getRoleName();
 
-        List<User> foundUsers = getUserRepository().getAll(null, roleName);
+        List<User> foundUsers = getUserRepository().getAll(null, roleName, pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
@@ -120,26 +123,71 @@ class UserRepositoryTest extends TestContext {
         User expectedUser = saveUser();
         saveUser();
 
-        List<User> foundUsers = getUserRepository().getAll(null, null);
+        List<User> foundUsers = getUserRepository().getAll(null, null, pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
     void getAll_branch_usernameNotContainsAndRole() {
-        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", getRoleName());
+        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", getRoleName(), pageable);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAll_branch_usernameContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAll("@", "NOT_A_ROLE");
+        List<User> foundUsers = getUserRepository().getAll("@", "NOT_A_ROLE", pageable);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getAll_branch_usernameNotContainsAndRoleNotPresent() {
-        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", "NOT_A_ROLE");
+        List<User> foundUsers = getUserRepository().getAll("NOT_CONTAINS", "NOT_A_ROLE", pageable);
+        assertTrue(foundUsers.isEmpty());
+    }
+
+    @Test
+    void getAll_branch_pageable() {
+        Integer expectedNumberOfUsers = pageable.getPageSize();
+        for(int i = 0; i <= expectedNumberOfUsers; i++)
+            saveUser();
+
+        List<User> foundUsers = getUserRepository().getAll(null, null, pageable);
+        assertEquals(expectedNumberOfUsers, foundUsers.size());
+        
+        Pageable secondPage = PageRequest.of(1, pageable.getPageSize());
+        foundUsers = getUserRepository().getAll(null, null, secondPage);
+        assertEquals(1, foundUsers.size());
+    }
+
+    @Test
+    void getAll_branch_onlyRoleName() {
+        User expectedUser = saveUser();
+        String roleName = getRoleName();
+
+        List<User> foundUsers = getUserRepository().getAll(roleName);
+
+        assertEquals(1, foundUsers.size());
+        assertEquals(expectedUser, foundUsers.get(0));
+    }
+
+    @Test
+    void getAll_branch_onlyRoleNameNull() {
+        saveUser();
+        saveUser();
+
+        List<User> foundUsers = getUserRepository().getAll(null);
+
+        assertEquals(2, foundUsers.size());
+    }
+
+    @Test
+    void getAll_branch_onlyRoleIncorrect() {
+        saveUser();
+        saveUser();
+
+        List<User> foundUsers = getUserRepository().getAll("NOT_A_ROLE");
+
         assertTrue(foundUsers.isEmpty());
     }
 

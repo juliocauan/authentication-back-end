@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openapitools.model.UserInfo;
+import org.springframework.data.domain.Pageable;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
@@ -21,8 +22,8 @@ public abstract class AdminService {
 
     protected abstract String getLoggedUsername();
 
-    public final List<UserInfo> getUserInfos(String usernameContains, String role) {
-        return getUserService().getUsers(usernameContains, role).stream()
+    public final List<UserInfo> getUserInfos(String usernameContains, String role, Pageable pageable) {
+        return getUserService().getUsers(usernameContains, role, pageable).stream()
                 .map(UserMapper::domainToUserInfo)
                 .collect(Collectors.toList());
     }
@@ -62,7 +63,7 @@ public abstract class AdminService {
         if (roleName.equals("ADMIN"))
                 throw new AdminException("Role [ADMIN] can not be deleted!");
         Role role = getRoleService().getByName(roleName);
-        List<User> users = getUserService().getUsers(null, role.getName());
+        List<User> users = getUserService().getAllUsers(role.getName());
         users.forEach(user -> {
             Set<? extends Role> roles = user.getRoles();
             roles.remove(role);

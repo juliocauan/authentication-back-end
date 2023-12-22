@@ -7,9 +7,12 @@ import org.openapitools.api.AdminApi;
 import org.openapitools.model.DeleteRoleRequest;
 import org.openapitools.model.DeleteUserRequest;
 import org.openapitools.model.OkResponse;
+import org.openapitools.model.Page;
 import org.openapitools.model.RegisterRoleRequest;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,8 +29,10 @@ public class AdminController implements AdminApi {
     private final AdminServiceImpl adminService;
   
     @Override
-    public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role) {
-      List<UserInfo> response = adminService.getUserInfos(usernameContains, role);
+    public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {
+      Pageable pageable = PageRequest.of(page.getNumber(), page.getSize());
+      
+      List<UserInfo> response = adminService.getUserInfos(usernameContains, role, pageable);
       return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

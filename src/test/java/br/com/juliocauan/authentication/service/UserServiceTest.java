@@ -11,6 +11,8 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +34,7 @@ class UserServiceTest extends TestContext {
     private final UserServiceImpl userService;
     private final PasswordEncoder encoder;
 
+    private final Pageable pageable = PageRequest.ofSize(5);
     private Set<RoleEntity> roles = new HashSet<>();
 
     public UserServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
@@ -87,7 +90,7 @@ class UserServiceTest extends TestContext {
     @Test
     void getUsers() {
         User expectedUser = saveUser();
-        List<User> foundUsers = userService.getUsers("@", getRoleName());
+        List<User> foundUsers = userService.getUsers("@", getRoleName(), pageable);
         assertEquals(1, foundUsers.size());
         assertEquals(expectedUser, foundUsers.get(0));
     }
@@ -96,7 +99,7 @@ class UserServiceTest extends TestContext {
     void getUsers_branch_usernameContainsAndRole() {
         User expectedUser = saveUser();
         saveUser();
-        List<User> foundUsers = userService.getUsers("@", getRoleName());
+        List<User> foundUsers = userService.getUsers("@", getRoleName(), pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
@@ -105,7 +108,7 @@ class UserServiceTest extends TestContext {
     void getUsers_branch_usernameContainsAndNull() {
         User expectedUser = saveUser();
         saveUser();
-        List<User> foundUsers = userService.getUsers("@", null);
+        List<User> foundUsers = userService.getUsers("@", null, pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
@@ -114,7 +117,7 @@ class UserServiceTest extends TestContext {
     void getUsers_branch_nullAndRole() {
         User expectedUser = saveUser();
         saveUser();
-        List<User> foundUsers = userService.getUsers(null, getRoleName());
+        List<User> foundUsers = userService.getUsers(null, getRoleName(), pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
@@ -123,26 +126,64 @@ class UserServiceTest extends TestContext {
     void getUsers_branch_nullAndNull() {
         User expectedUser = saveUser();
         saveUser();
-        List<User> foundUsers = userService.getUsers(null, null);
+        List<User> foundUsers = userService.getUsers(null, null, pageable);
         assertEquals(2, foundUsers.size());
         assertTrue(foundUsers.contains(expectedUser));
     }
 
     @Test
     void getUsers_branch_usernameNotContainsAndRole() {
-        List<User> foundUsers = userService.getUsers("NOT_CONTAINS", getRoleName());
+        List<User> foundUsers = userService.getUsers("NOT_CONTAINS", getRoleName(), pageable);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getUsers_branch_usernameContainsAndRoleNotPresent() {
-        List<User> foundUsers = userService.getUsers("@", "NOT_ROLE");
+        List<User> foundUsers = userService.getUsers("@", "NOT_ROLE", pageable);
         assertTrue(foundUsers.isEmpty());
     }
 
     @Test
     void getUsers_branch_usernameNotContainsAndRoleNotPresent() {
-        List<User> foundUsers = userService.getUsers("NOT_CONTAINS", "NOT_ROLE");
+        List<User> foundUsers = userService.getUsers("NOT_CONTAINS", "NOT_ROLE", pageable);
+        assertTrue(foundUsers.isEmpty());
+    }
+
+    @Test
+    void getUsers_branch_pageable() {
+        Integer expectedNumberOfUsers = pageable.getPageSize();
+        for(int i = 0; i <= expectedNumberOfUsers; i++)
+            saveUser();
+
+        List<User> foundUsers = userService.getUsers(null, null, pageable);
+        assertEquals(expectedNumberOfUsers, foundUsers.size());
+        
+        Pageable secondPage = PageRequest.of(1, pageable.getPageSize());
+        foundUsers = userService.getUsers(null, null, secondPage);
+        assertEquals(1, foundUsers.size());
+    }
+
+    @Test
+    void getAllUsers() {
+        User expectedUser = saveUser();
+        List<User> foundUsers = userService.getAllUsers(getRoleName());
+        assertEquals(1, foundUsers.size());
+        assertEquals(expectedUser, foundUsers.get(0));
+    }
+
+    @Test
+    void getAllUsers_branch_roleNameNull() {
+        saveUser();
+        saveUser();
+        List<User> foundUsers = userService.getAllUsers(null);
+        assertEquals(2, foundUsers.size());
+    }
+
+    @Test
+    void getAllUsers_branch_onlyRoleIncorrect() {
+        saveUser();
+        saveUser();
+        List<User> foundUsers = userService.getAllUsers("NOT_A_ROLE");
         assertTrue(foundUsers.isEmpty());
     }
 

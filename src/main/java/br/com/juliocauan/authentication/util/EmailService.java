@@ -1,29 +1,21 @@
 package br.com.juliocauan.authentication.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public final class EmailUtil {
+import lombok.AllArgsConstructor;
 
-    private static JavaMailSender mailSender;
-    private static Environment env;
+@Service
+@AllArgsConstructor
+public final class EmailService {
 
-    @Autowired
-    private void setMailSender(JavaMailSender mailSender) {
-        EmailUtil.mailSender = mailSender;
-    }
-
-    @Autowired
-    private void setEnvironment(Environment env) {
-        EmailUtil.env = env;
-    }
+    private final JavaMailSender mailSender;
+    private final Environment env;
     
-    public static final void sendEmail(String receiver, String subject, String message) {
+    public final void sendEmail(String receiver, String subject, String message) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom(env.getProperty("spring.mail.username"));
         email.setTo(receiver);

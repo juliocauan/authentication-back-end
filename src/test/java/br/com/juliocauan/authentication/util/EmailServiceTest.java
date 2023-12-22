@@ -16,20 +16,23 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 
 class EmailServiceTest extends TestContext {
 
+    private final EmailService emailService;
+
     public EmailServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc) {
+            ObjectMapper objectMapper, MockMvc mockMvc, EmailService emailService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
+        this.emailService = emailService;
     }
 
     @Test
     void sendEmail() {
-        assertDoesNotThrow(() -> EmailUtil.sendEmail(getRandomUsername(), "Test Subject", "Test Message"));
+        assertDoesNotThrow(() -> emailService.sendEmail(getRandomUsername(), "Test Subject", "Test Message"));
     }
 
     @Test
     void sendEmail_error_mailSend() {
         MailSendException exception = assertThrowsExactly(MailSendException.class,
-            () -> EmailUtil.sendEmail("null", "null", null));
+            () -> emailService.sendEmail("null", "null", null));
         
         assertEquals("The recipient address is not a valid address!", exception.getMessage());
     }

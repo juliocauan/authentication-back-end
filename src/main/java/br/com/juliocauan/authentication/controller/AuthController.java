@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
-import br.com.juliocauan.authentication.util.EmailUtil;
+import br.com.juliocauan.authentication.util.EmailService;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
@@ -24,6 +24,7 @@ public class AuthController implements AuthApi {
 
   private final AuthenticationServiceImpl authenticationService;
   private final PasswordResetServiceImpl passwordResetTokenService;
+  private final EmailService emailService;
 
   @Override
   public ResponseEntity<JWT> _login(SigninForm signinForm) {
@@ -64,7 +65,7 @@ public class AuthController implements AuthApi {
     String username = requestBody.getUsername();
     String token = passwordResetTokenService.generateToken(username);
 
-    EmailUtil.sendEmail(
+    emailService.sendEmail(
         username,
         "Reset your password!",
         passwordResetTokenService.getEmailTemplate(token));

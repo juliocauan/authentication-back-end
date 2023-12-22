@@ -8,7 +8,7 @@ services:
     depends_on:
       - postgres
     env_file:
-      - ./config/.env.dev
+      - .env.dev
     ports:
       - 8080:8080
     networks:
@@ -17,7 +17,7 @@ services:
   postgres:
     image: postgres:alpine
     env_file:
-      - ./config/.env.dev
+      - .env.dev
     volumes:
       - data:/var/lib/postgresql/data
     networks:

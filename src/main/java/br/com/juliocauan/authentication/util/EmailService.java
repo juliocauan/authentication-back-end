@@ -6,17 +6,24 @@ import org.springframework.stereotype.Service;
 import br.com.juliocauan.authentication.infrastructure.exception.EmailException;
 import br.com.juliocauan.authentication.util.emailers.Emailer;
 import br.com.juliocauan.authentication.util.emailers.GmailEmailer;
+import br.com.juliocauan.authentication.util.emailers.GreenMailEmailer;
 import br.com.juliocauan.authentication.util.emailers.MailerSendEmailer;
-import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
 public final class EmailService {
 
     private final GmailEmailer gmailEmailer;
-    private final MailerSendEmailer mailerSendEmailer = new MailerSendEmailer();
+    private final MailerSendEmailer mailerSendEmailer;
+    private final GreenMailEmailer greenMailEmailer;
 
     private Emailer currentEmailer;
+
+    public EmailService(GmailEmailer gmailEmailer) {
+        this.gmailEmailer = gmailEmailer;
+        this.mailerSendEmailer = new MailerSendEmailer();
+        this.greenMailEmailer = new GreenMailEmailer();
+        this.currentEmailer = null;
+    }
 
     public void sendEmail(String receiver, String subject, String message) {
         if (currentEmailer == null)
@@ -31,6 +38,9 @@ public final class EmailService {
 
         if (emailerType == EmailType.MAILER_SEND)
             setAsMailerSend(username, key);
+        
+        if (emailerType == EmailType.GREEN_MAIL)
+            setAsGreenMail(username, key);
     }
 
     private void setAsGmailSender(String username, String password) {
@@ -41,6 +51,11 @@ public final class EmailService {
     private void setAsMailerSend(String username, String token) {
         mailerSendEmailer.configure(username, token);
         currentEmailer = mailerSendEmailer;
+    }
+
+    private void setAsGreenMail(String username, String password) {
+        greenMailEmailer.configure(username, password);
+        currentEmailer = greenMailEmailer;
     }
 
 }

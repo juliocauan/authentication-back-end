@@ -83,4 +83,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));
     }
 
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<Object> handleEmail(EmailException ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(standardError(ex));
+    }
+
 }

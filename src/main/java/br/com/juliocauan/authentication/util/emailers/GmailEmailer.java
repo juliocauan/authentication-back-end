@@ -1,7 +1,5 @@
 package br.com.juliocauan.authentication.util.emailers;
 
-import java.util.Properties;
-
 import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -34,18 +32,8 @@ public final class GmailEmailer implements Emailer {
 
     @Override
     public void configure(String username, String key) {
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-
         mailSender.setUsername(username);
         mailSender.setPassword(key);
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
-
     }
 
 }

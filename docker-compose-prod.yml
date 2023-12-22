@@ -2,12 +2,13 @@ version: '3.9'
 name: authentication
 services:
   server:
-    image: juliocauan/authentication:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - postgres
     env_file:
       - .env
-      - .env.secret
     ports:
       - 8000:8443
     networks:

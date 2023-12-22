@@ -21,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
+import br.com.juliocauan.authentication.util.EmailService;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -28,63 +29,65 @@ import lombok.AllArgsConstructor;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController implements AdminApi {
 
-    private final AdminServiceImpl adminService;
-  
-    @Override
-    public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {
-      Pageable pageable = PageRequest.of(page.getNumber(), page.getSize());
-      
-      List<UserInfo> response = adminService.getUserInfos(usernameContains, role, pageable);
-      return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+  private final AdminServiceImpl adminService;
+  private final EmailService emailService;
 
-    @Override
-    public ResponseEntity<OkResponse> _updateUserRoles(UpdateUserRolesForm updateUserRolesForm) {
-      String username = updateUserRolesForm.getUsername();
-      Set<String> newRoles = updateUserRolesForm.getRoles();
+  @Override
+  public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {
+    Pageable pageable = PageRequest.of(page.getNumber(), page.getSize());
 
-      adminService.updateUserRoles(username, newRoles);
-      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse()
+    List<UserInfo> response = adminService.getUserInfos(usernameContains, role, pageable);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
+
+  @Override
+  public ResponseEntity<OkResponse> _updateUserRoles(UpdateUserRolesForm updateUserRolesForm) {
+    String username = updateUserRolesForm.getUsername();
+    Set<String> newRoles = updateUserRolesForm.getRoles();
+
+    adminService.updateUserRoles(username, newRoles);
+    return ResponseEntity.status(HttpStatus.OK).body(new OkResponse()
         .message("Patched [%s] successfully! Roles: %s".formatted(username, newRoles)));
-    }
+  }
 
-    @Override
-    public ResponseEntity<OkResponse> _deleteUser(DeleteUserRequest deleteUserRequest) {
-      String username = deleteUserRequest.getUsername();
+  @Override
+  public ResponseEntity<OkResponse> _deleteUser(DeleteUserRequest deleteUserRequest) {
+    String username = deleteUserRequest.getUsername();
 
-      adminService.deleteUser(username);
-      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
+    adminService.deleteUser(username);
+    return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         String.format("User [%s] deleted successfully!", username)));
-    }
+  }
 
-    @Override
-    public ResponseEntity<List<String>> _getRoles(String nameContains) {
-      List<String> response = adminService.getAllRoles(nameContains);
-      return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+  @Override
+  public ResponseEntity<List<String>> _getRoles(String nameContains) {
+    List<String> response = adminService.getAllRoles(nameContains);
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
 
-    @Override
-    public ResponseEntity<OkResponse> _registerRole(RegisterRoleRequest registerRoleRequest) {
-      String role = registerRoleRequest.getRole();
-      
-      adminService.registerRole(role);
-      return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message(
+  @Override
+  public ResponseEntity<OkResponse> _registerRole(RegisterRoleRequest registerRoleRequest) {
+    String role = registerRoleRequest.getRole();
+
+    adminService.registerRole(role);
+    return ResponseEntity.status(HttpStatus.CREATED).body(new OkResponse().message(
         String.format("Role [%s] registered successfully!", role)));
-    }
+  }
 
-    @Override
-    public ResponseEntity<OkResponse> _deleteRole(DeleteRoleRequest deleteRoleRequest) {
-      String roleName = deleteRoleRequest.getRole();
+  @Override
+  public ResponseEntity<OkResponse> _deleteRole(DeleteRoleRequest deleteRoleRequest) {
+    String roleName = deleteRoleRequest.getRole();
 
-      adminService.deleteRole(roleName);
-      return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
+    adminService.deleteRole(roleName);
+    return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         String.format("Role [%s] deleted successfully!", roleName)));
-    }
+  }
 
-    @Override
-    public ResponseEntity<OkResponse> _setEmailer(EmailAccess emailAccess, EmailType emailerType) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("Unimplemented method '_setEmailer'");
-    }
-    
+  @Override
+  public ResponseEntity<OkResponse> _setEmailer(EmailAccess emailAccess, EmailType emailerType) {
+    emailService.setEmailer(emailAccess.getUsername(), emailAccess.getKey(), emailerType);
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new OkResponse().message("[%s] set successfully!".formatted(emailerType.getValue())));
+  }
+
 }

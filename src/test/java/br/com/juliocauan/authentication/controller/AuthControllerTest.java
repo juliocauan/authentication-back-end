@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.EmailPasswordResetRequest;
+import org.openapitools.model.EmailType;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
@@ -28,11 +29,13 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.util.EmailService;
 
 class AuthControllerTest extends TestContext {
 
     private final PasswordEncoder encoder;
     private final PasswordResetRepositoryImpl passwordResetTokenRepository;
+    private final EmailService emailService;
 
     private final String urlLogin = "/login";
     private final String urlSignup = "/signup";
@@ -45,10 +48,12 @@ class AuthControllerTest extends TestContext {
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder,
-            PasswordResetRepositoryImpl passwordResetTokenRepository) {
+            PasswordResetRepositoryImpl passwordResetTokenRepository, EmailService emailService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.emailService = emailService;
+        this.emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @BeforeEach

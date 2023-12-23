@@ -15,18 +15,16 @@ import br.com.juliocauan.authentication.infrastructure.repository.UserRepository
 class EmailServiceTest extends TestContext {
 
     private final EmailService emailService;
-    private final String username = "admin@authentication.test";
-    private final String password = "admin";
 
     public EmailServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, EmailService emailService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.emailService = emailService;
+        this.emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @Test
     void sendEmail() {
-        emailService.setEmailer(username, password, EmailType.GREEN_MAIL);
         assertDoesNotThrow(() -> emailService.sendEmail(getRandomUsername(), "Test Subject", "Test Message"));
     }
 

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile;
 import br.com.juliocauan.authentication.util.EmailService;
 
 @Configuration
-@Profile("dev")
+@Profile("test")
 public class TestConfig {
     
     TestConfig(EmailService emailService) {

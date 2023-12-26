@@ -55,7 +55,7 @@ class ProfileControllerTest extends TestContext {
     }
 
     private final String getBearerToken() {
-        return "Bearer " + authenticationService.authenticate(username, rawPassword).getToken();
+        return "Bearer " + authenticationService.authenticate(username, rawPassword).getJWT();
     }
 
     @Test

@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,17 +26,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
+import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.util.EmailService;
 
 class AuthControllerTest extends TestContext {
 
     private final PasswordEncoder encoder;
     private final PasswordResetRepositoryImpl passwordResetTokenRepository;
-    private final EmailService emailService;
 
     private final String urlLogin = "/login";
     private final String urlSignup = "/signup";
@@ -48,12 +48,10 @@ class AuthControllerTest extends TestContext {
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder,
-            PasswordResetRepositoryImpl passwordResetTokenRepository, EmailService emailService) {
+            PasswordResetRepositoryImpl passwordResetTokenRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
-        this.emailService = emailService;
-        this.emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @BeforeEach
@@ -86,7 +84,26 @@ class AuthControllerTest extends TestContext {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(signinForm)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").isNotEmpty());
+                .andExpect(jsonPath("$.roles").isEmpty())
+                .andExpect(jsonPath("$.JWT").isNotEmpty());
+    }
+
+    @Test
+    void login_branch_withRoles() throws Exception {
+        RoleEntity role = getRoleRepository().save(RoleEntity.builder().name("TEST").build());
+        User user = getUserRepository().save(UserEntity.builder()
+                .username(getRandomUsername())
+                .password(encoder.encode(rawPassword))
+                .roles(Collections.singleton(role))        
+        .build());
+        SigninForm signinForm = new SigninForm(user.getUsername(), rawPassword);
+        getMockMvc().perform(
+                post(urlLogin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(signinForm)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roles[0]").value("TEST"))
+                .andExpect(jsonPath("$.JWT").isNotEmpty());
     }
 
     @Test

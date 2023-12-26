@@ -3,7 +3,7 @@ package br.com.juliocauan.authentication.domain.service.application;
 import java.util.Collections;
 import java.util.Set;
 
-import org.openapitools.model.JWT;
+import org.openapitools.model.UserData;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
@@ -16,7 +16,7 @@ public abstract class AuthenticationService {
 
     protected abstract RoleService getRoleService();
 
-    public abstract JWT authenticate(String username, String password);
+    public abstract UserData authenticate(String username, String password);
 
     public final void registerUser(String username, String password) {
         getUserService().register(User.newUser(username, password));

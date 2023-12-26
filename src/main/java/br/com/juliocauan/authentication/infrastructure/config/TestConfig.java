@@ -8,10 +8,10 @@ import br.com.juliocauan.authentication.util.EmailService;
 
 @Configuration
 @Profile("dev")
-public class DevConfig {
+public class TestConfig {
     
-    DevConfig(EmailService emailService) {
-        emailService.setEmailer("admin@authentication.dev", "admin", EmailType.GREEN_MAIL);
+    TestConfig(EmailService emailService) {
+        emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
-    
+
 }

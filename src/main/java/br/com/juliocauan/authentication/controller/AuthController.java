@@ -2,12 +2,12 @@ package br.com.juliocauan.authentication.controller;
 
 import org.openapitools.api.AuthApi;
 import org.openapitools.model.EmailPasswordResetRequest;
-import org.openapitools.model.JWT;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.openapitools.model.SignupFormAdmin;
+import org.openapitools.model.UserData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,11 +27,11 @@ public class AuthController implements AuthApi {
   private final EmailService emailService;
 
   @Override
-  public ResponseEntity<JWT> _login(SigninForm signinForm) {
-    JWT jwt = authenticationService.authenticate(
+  public ResponseEntity<UserData> _login(SigninForm signinForm) {
+    UserData userData = authenticationService.authenticate(
         signinForm.getUsername(),
         signinForm.getPassword());
-    return ResponseEntity.status(HttpStatus.OK).body(jwt);
+    return ResponseEntity.status(HttpStatus.OK).body(userData);
   }
 
   @Override

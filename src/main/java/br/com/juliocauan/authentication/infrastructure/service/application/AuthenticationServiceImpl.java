@@ -1,9 +1,12 @@
 package br.com.juliocauan.authentication.infrastructure.service.application;
 
-import org.openapitools.model.JWT;
+import java.util.stream.Collectors;
+
+import org.openapitools.model.UserData;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +38,15 @@ public final class AuthenticationServiceImpl extends AuthenticationService {
   }
 
   @Override
-  public final JWT authenticate(String username, String password) {
+  public final UserData authenticate(String username, String password) {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
         username, password);
     Authentication auth = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     SecurityContextHolder.getContext().setAuthentication(auth);
-    return new JWT().token(jwtProvider.generateToken(auth));
+    
+    return new UserData()
+      .roles(auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()))
+      .JWT(jwtProvider.generateToken(auth));
   }
 
 }

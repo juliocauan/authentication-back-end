@@ -9,6 +9,7 @@ import br.com.juliocauan.authentication.util.emailers.GmailEmailer;
 import br.com.juliocauan.authentication.util.emailers.GreenMailEmailer;
 import br.com.juliocauan.authentication.util.emailers.MailerSendEmailer;
 
+//TODO refactor
 @Service
 public final class EmailService {
 
@@ -27,7 +28,7 @@ public final class EmailService {
 
     public void sendEmail(String receiver, String subject, String message) {
         if (currentEmailer == null)
-            throw new EmailException("Emailer not set. Call setEmailer first.");
+            throw new EmailException("Emailer not set. ADMIN must set one.");
 
         currentEmailer.sendEmail(receiver, subject, message);
     }

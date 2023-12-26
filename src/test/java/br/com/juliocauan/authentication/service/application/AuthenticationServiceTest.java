@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.JWT;
+import org.openapitools.model.UserData;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,8 +58,9 @@ class AuthenticationServiceTest extends TestContext {
         String rawPassword = user.getPassword();
         user.setPassword(encoder.encode(rawPassword));
         getUserRepository().save(user);
-        JWT jwt = authenticationService.authenticate(user.getUsername(), rawPassword);
-        assertTrue(jwt.getToken().contains("."));
+        UserData userData = authenticationService.authenticate(user.getUsername(), rawPassword);
+        assertTrue(userData.getJWT().contains("."));
+        assertTrue(userData.getRoles().isEmpty());
     }
 
     @Test

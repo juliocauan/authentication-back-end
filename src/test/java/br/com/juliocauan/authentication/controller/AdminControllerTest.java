@@ -74,11 +74,11 @@ class AdminControllerTest extends TestContext {
     }
 
     private final String getAdminToken(){
-        return "Bearer " + authenticationService.authenticate(usernameAdmin, rawPassword).getToken();
+        return "Bearer " + authenticationService.authenticate(usernameAdmin, rawPassword).getJWT();
     }
 
     private final String getToken(String username) {
-        return "Bearer " + authenticationService.authenticate(username, rawPassword).getToken();
+        return "Bearer " + authenticationService.authenticate(username, rawPassword).getJWT();
     }
 
     private final String getOkAlterUserRoles(String username, Set<String> roles) {

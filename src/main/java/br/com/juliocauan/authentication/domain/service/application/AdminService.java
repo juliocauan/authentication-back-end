@@ -34,7 +34,6 @@ public abstract class AdminService {
         Set<Role> roles = newRoles.stream()
                 .map(getRoleService()::getByName)
                 .collect(Collectors.toSet());
-
         user = User.changeRoles(user, roles);
         getUserService().update(user);
     }
@@ -61,7 +60,7 @@ public abstract class AdminService {
 
     public final void deleteRole(String roleName) {
         if (roleName.equals("ADMIN"))
-                throw new AdminException("Role [ADMIN] can not be deleted!");
+            throw new AdminException("Role [ADMIN] can not be deleted!");
         Role role = getRoleService().getByName(roleName);
         List<User> users = getUserService().getAllUsers(role.getName());
         users.forEach(user -> {

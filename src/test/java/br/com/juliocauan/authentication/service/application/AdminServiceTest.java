@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -192,6 +193,18 @@ class AdminServiceTest extends TestContext {
         assertEquals(user.getUsername(), userAfter.getUsername());
         assertNotEquals(user.getRoles().stream().findFirst().get(), userAfter.getRoles().stream().findFirst().get());
         assertEquals(newRole, userAfter.getRoles().stream().findFirst().get().getName());
+    }
+
+    @Test
+    void updateUserRoles_branch_nullRole() {
+        authenticate();
+        String oldRole = saveRole();
+        User user = saveUser(oldRole);
+        adminService.updateUserRoles(user.getUsername(), new HashSet<>());
+        User userAfter = getUserRepository().getByUsername(user.getUsername()).get();
+
+        assertEquals(user.getUsername(), userAfter.getUsername());
+        assertTrue(userAfter.getRoles().isEmpty());
     }
 
     @Test

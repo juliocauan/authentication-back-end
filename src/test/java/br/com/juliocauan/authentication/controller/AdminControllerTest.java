@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hamcrest.Matchers;
@@ -198,6 +199,23 @@ class AdminControllerTest extends TestContext {
                 .content(writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.message").value(getOkAlterUserRoles(username, newRoles)));
+    }
+
+    @Test
+    void updateUserRoles_branch_nullRole() throws Exception{
+        String username = getRandomUsername();
+        saveUser(username, saveRole());
+        UpdateUserRolesForm updateUserRolesForm = new UpdateUserRolesForm()
+            .username(username)
+            .roles(new HashSet<>());
+
+        getMockMvc().perform(
+            patch(urlAdminUsers)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(updateUserRolesForm)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value(getOkAlterUserRoles(username, new HashSet<>())));
     }
 
     @Test

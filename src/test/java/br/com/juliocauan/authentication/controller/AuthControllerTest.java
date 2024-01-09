@@ -31,13 +31,12 @@ import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
-import br.com.juliocauan.authentication.util.EmailService;
+import br.com.juliocauan.authentication.util.EmailUtil;
 
 class AuthControllerTest extends TestContext {
 
     private final PasswordEncoder encoder;
     private final PasswordResetRepositoryImpl passwordResetRepository;
-    private final EmailService emailService;
 
     private final String urlLogin = "/login";
     private final String urlSignup = "/signup";
@@ -50,12 +49,11 @@ class AuthControllerTest extends TestContext {
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder,
-            PasswordResetRepositoryImpl passwordResetRepository, EmailService emailService) {
+            PasswordResetRepositoryImpl passwordResetRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;
         this.passwordResetRepository = passwordResetRepository;
-        this.emailService = emailService;
-        this.emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
+        EmailUtil.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @BeforeEach

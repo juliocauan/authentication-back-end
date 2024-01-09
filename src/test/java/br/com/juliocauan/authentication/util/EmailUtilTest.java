@@ -12,20 +12,17 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-class EmailServiceTest extends TestContext {
+class EmailUtilTest extends TestContext {
 
-    private final EmailService emailService;
-
-    public EmailServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, EmailService emailService) {
+    public EmailUtilTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+            ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.emailService = emailService;
-        this.emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
+        EmailUtil.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @Test
     void sendEmail() {
-        assertDoesNotThrow(() -> emailService.sendEmail(getRandomUsername(), "Test Subject", "Test Message"));
+        assertDoesNotThrow(() -> EmailUtil.sendEmail(getRandomUsername(), "Test Subject", "Test Message"));
     }
 
 }

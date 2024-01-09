@@ -21,7 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
-import br.com.juliocauan.authentication.util.EmailService;
+import br.com.juliocauan.authentication.util.EmailUtil;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -30,7 +30,6 @@ import lombok.AllArgsConstructor;
 public class AdminController implements AdminApi {
 
   private final AdminServiceImpl adminService;
-  private final EmailService emailService;
 
   @Override
   public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {
@@ -85,7 +84,7 @@ public class AdminController implements AdminApi {
 
   @Override
   public ResponseEntity<OkResponse> _setEmailer(EmailAccess emailAccess, EmailType emailerType) {
-    emailService.setEmailer(emailAccess.getUsername(), emailAccess.getKey(), emailerType);
+    EmailUtil.setEmailer(emailAccess.getUsername(), emailAccess.getKey(), emailerType);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new OkResponse().message("[%s] set successfully!".formatted(emailerType.getValue())));
   }

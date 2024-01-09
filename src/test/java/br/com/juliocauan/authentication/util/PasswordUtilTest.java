@@ -18,14 +18,14 @@ import br.com.juliocauan.authentication.infrastructure.exception.InvalidPassword
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
-class PasswordServiceTest extends TestContext {
+class PasswordUtilTest extends TestContext {
 
     private final PasswordEncoder encoder;
 
     private final String errorInvalidPassword = "Passwords don't match!";
     private final String errorWeakPassword = "Password is not strong!";
 
-    public PasswordServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public PasswordUtilTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;

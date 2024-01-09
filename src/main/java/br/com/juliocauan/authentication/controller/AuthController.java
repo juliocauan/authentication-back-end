@@ -65,6 +65,7 @@ public class AuthController implements AuthApi {
     String username = requestBody.getUsername();
     String token = passwordResetTokenService.generateToken(username);
 
+    //TODO send this to service
     emailService.sendEmail(
         username,
         "Reset your password!",

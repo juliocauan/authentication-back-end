@@ -67,43 +67,33 @@ class PasswordResetServiceTest extends TestContext {
     }
 
     @Test
-    void generateToken() {
+    void sendNewToken() {
         User user = saveUser();
-        String token = passwordResetService.generateToken(user.getUsername());
+        passwordResetService.sendNewToken(user.getUsername());
         PasswordReset passwordReset = passwordResetRepository.findAll().get(0);
 
         assertEquals(user, passwordReset.getUser());
-        assertEquals(token, passwordReset.getToken());
+        assertEquals(43, passwordReset.getToken().length());
         assertFalse(passwordReset.isExpired());
     }
 
     @Test
-    void generateToken_error_getByUsername() {
+    void sendNewToken_error_getByUsername() {
         String username = getRandomUsername();
         UsernameNotFoundException exception = assertThrowsExactly(
                 UsernameNotFoundException.class,
-                () -> passwordResetService.generateToken(username));
+                () -> passwordResetService.sendNewToken(username));
         assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
     }
 
     @Test
-    void generateToken_branch_deletePreviousPasswordReset() {
+    void sendNewToken_branch_deletePreviousPasswordReset() {
         PasswordReset passwordResetBefore = savePasswordReset();
-        String newToken = passwordResetService.generateToken(passwordResetBefore.getUser().getUsername());
+        passwordResetService.sendNewToken(passwordResetBefore.getUser().getUsername());
 
         PasswordReset passwordResetAfter = passwordResetRepository.findAll().get(0);
-        assertNotEquals(newToken, passwordResetBefore.getToken());
-        assertEquals(newToken, passwordResetAfter.getToken());
+        assertTrue(passwordResetRepository.getByToken(passwordResetAfter.getToken()).isPresent());
         assertFalse(passwordResetRepository.getByToken(passwordResetBefore.getToken()).isPresent());
-    }
-
-    @Test
-    void getEmailTemplate() {
-        String token = getRandomToken();
-        String expectedValue = "To reset your password, use the following token: %s %n%n This token will last 10 minutes"
-                .formatted(token);
-        String emailTemplate = passwordResetService.getEmailTemplate(token);
-        assertEquals(expectedValue, emailTemplate);
     }
 
     @Test

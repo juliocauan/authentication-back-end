@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
-import br.com.juliocauan.authentication.util.EmailUtil;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
@@ -62,12 +61,7 @@ public class AuthController implements AuthApi {
   @Override
   public ResponseEntity<OkResponse> _emailPasswordReset(EmailPasswordResetRequest requestBody) {
     String username = requestBody.getUsername();
-    String token = passwordResetService.generateToken(username);
-
-    EmailUtil.sendEmail(
-        username,
-        "Reset your password!",
-        passwordResetService.getEmailTemplate(token));
+    passwordResetService.sendNewToken(username);
 
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         "Email sent to [%s] successfully!".formatted(username)));

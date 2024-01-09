@@ -6,6 +6,7 @@ import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
+import br.com.juliocauan.authentication.util.EmailUtil;
 import jakarta.persistence.EntityNotFoundException;
 
 public abstract class PasswordResetService {
@@ -14,10 +15,14 @@ public abstract class PasswordResetService {
 
     protected abstract UserService getUserService();
 
-    public final String generateToken(String username) {
+    public final void sendNewToken(String username) {
         User user = getUserService().getByUsername(username);
         deletePreviousPasswordReset(user);
-        return getRepository().register(user).getToken();
+        String token = getRepository().register(user).getToken();
+        EmailUtil.sendEmail(
+                username,
+                "Reset your password!",
+                getEmailTemplate(token));
     }
 
     private final void deletePreviousPasswordReset(User user) {
@@ -26,7 +31,7 @@ public abstract class PasswordResetService {
             getRepository().delete(oldToken.get());
     }
 
-    public final String getEmailTemplate(String token) {
+    private final String getEmailTemplate(String token) {
         return "To reset your password, use the following token: %s %n%n This token will last %d minutes".formatted(
                 token, PasswordReset.TOKEN_EXPIRATION_MINUTES);
     }

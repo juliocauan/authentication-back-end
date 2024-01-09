@@ -9,5 +9,5 @@ public interface PasswordResetRepository {
     Optional<PasswordReset> getByToken(String token);
     Optional<PasswordReset> getByUser(User user);
     PasswordReset register(User user);
-    void delete(PasswordReset passwordResetToken);
+    void delete(PasswordReset passwordReset);
 }

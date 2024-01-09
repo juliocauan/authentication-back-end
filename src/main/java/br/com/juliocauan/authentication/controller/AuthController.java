@@ -23,7 +23,7 @@ import lombok.AllArgsConstructor;
 public class AuthController implements AuthApi {
 
   private final AuthenticationServiceImpl authenticationService;
-  private final PasswordResetServiceImpl passwordResetTokenService;
+  private final PasswordResetServiceImpl passwordResetService;
   private final EmailService emailService;
 
   @Override
@@ -63,13 +63,12 @@ public class AuthController implements AuthApi {
   @Override
   public ResponseEntity<OkResponse> _emailPasswordReset(EmailPasswordResetRequest requestBody) {
     String username = requestBody.getUsername();
-    String token = passwordResetTokenService.generateToken(username);
+    String token = passwordResetService.generateToken(username);
 
-    //TODO send this to service
     emailService.sendEmail(
         username,
         "Reset your password!",
-        passwordResetTokenService.getEmailTemplate(token));
+        passwordResetService.getEmailTemplate(token));
 
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         "Email sent to [%s] successfully!".formatted(username)));
@@ -78,7 +77,7 @@ public class AuthController implements AuthApi {
   @Override
   public ResponseEntity<OkResponse> _passwordReset(PasswordMatch passwordMatch, String token) {
     PasswordUtil.validatePasswordConfirmation(passwordMatch);
-    passwordResetTokenService.resetPassword(passwordMatch.getPassword(), token);
+    passwordResetService.resetPassword(passwordMatch.getPassword(), token);
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
   }
 

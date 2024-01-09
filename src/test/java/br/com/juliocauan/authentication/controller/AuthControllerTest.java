@@ -36,7 +36,7 @@ import br.com.juliocauan.authentication.util.EmailService;
 class AuthControllerTest extends TestContext {
 
     private final PasswordEncoder encoder;
-    private final PasswordResetRepositoryImpl passwordResetTokenRepository;
+    private final PasswordResetRepositoryImpl passwordResetRepository;
     private final EmailService emailService;
 
     private final String urlLogin = "/login";
@@ -50,10 +50,10 @@ class AuthControllerTest extends TestContext {
 
     public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder,
-            PasswordResetRepositoryImpl passwordResetTokenRepository, EmailService emailService) {
+            PasswordResetRepositoryImpl passwordResetRepository, EmailService emailService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;
-        this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.passwordResetRepository = passwordResetRepository;
         this.emailService = emailService;
         this.emailService.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
@@ -72,7 +72,7 @@ class AuthControllerTest extends TestContext {
     }
 
     private final void savePasswordReset(String token) {
-        passwordResetTokenRepository.save(PasswordResetEntity
+        passwordResetRepository.save(PasswordResetEntity
                 .builder()
                 .token(token)
                 .user(saveUser())
@@ -361,7 +361,7 @@ class AuthControllerTest extends TestContext {
     void resetUserPassword_error_tokenExpired() throws Exception {
         String token = getRandomToken();
         PasswordMatch passwordMatch = new PasswordMatch(rawPassword, rawPassword);
-        passwordResetTokenRepository.save(PasswordResetEntity
+        passwordResetRepository.save(PasswordResetEntity
                 .builder()
                 .token(token)
                 .user(saveUser())

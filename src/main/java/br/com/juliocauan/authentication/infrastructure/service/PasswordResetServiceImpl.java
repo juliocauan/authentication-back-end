@@ -12,12 +12,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public final class PasswordResetServiceImpl extends PasswordResetService {
 
-    private final PasswordResetRepositoryImpl passwordResetTokenRepository;
+    private final PasswordResetRepositoryImpl passwordResetRepository;
     private final UserServiceImpl userService;
 
     @Override
     protected final PasswordResetRepository getRepository() {
-        return passwordResetTokenRepository;
+        return passwordResetRepository;
     }
 
     @Override

@@ -35,11 +35,11 @@ class PasswordResetServiceTest extends TestContext {
     private final PasswordEncoder encoder;
 
     public PasswordResetServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetServiceImpl passwordResetTokenService,
-            PasswordResetRepositoryImpl passwordResetTokenRepository, PasswordEncoder encoder) {
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetServiceImpl passwordResetService,
+            PasswordResetRepositoryImpl passwordResetRepository, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        this.passwordResetService = passwordResetTokenService;
-        this.passwordResetRepository = passwordResetTokenRepository;
+        this.passwordResetService = passwordResetService;
+        this.passwordResetRepository = passwordResetRepository;
         this.encoder = encoder;
     }
 
@@ -70,11 +70,11 @@ class PasswordResetServiceTest extends TestContext {
     void generateToken() {
         User user = saveUser();
         String token = passwordResetService.generateToken(user.getUsername());
-        PasswordReset passwordResetToken = passwordResetRepository.findAll().get(0);
+        PasswordReset passwordReset = passwordResetRepository.findAll().get(0);
 
-        assertEquals(user, passwordResetToken.getUser());
-        assertEquals(token, passwordResetToken.getToken());
-        assertFalse(passwordResetToken.isExpired());
+        assertEquals(user, passwordReset.getUser());
+        assertEquals(token, passwordReset.getToken());
+        assertFalse(passwordReset.isExpired());
     }
 
     @Test

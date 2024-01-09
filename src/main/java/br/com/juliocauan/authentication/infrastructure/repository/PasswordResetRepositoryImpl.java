@@ -15,8 +15,8 @@ public interface PasswordResetRepositoryImpl extends PasswordResetRepository, Jp
     }
 
     @Override
-    default void delete(PasswordReset passwordResetToken) {
-        this.deleteById(passwordResetToken.getId());
+    default void delete(PasswordReset passwordReset) {
+        this.deleteById(passwordReset.getId());
     }
     
 }

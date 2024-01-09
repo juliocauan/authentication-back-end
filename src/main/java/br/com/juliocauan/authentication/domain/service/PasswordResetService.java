@@ -32,18 +32,18 @@ public abstract class PasswordResetService {
     }
 
     public final void resetPassword(String newPassword, String token) {
-        PasswordReset passwordResetToken = checkTokenValidation(token);
-        getUserService().updatePassword(passwordResetToken.getUser(), newPassword);
-        getRepository().delete(passwordResetToken);
+        PasswordReset passwordReset = checkTokenValidation(token);
+        getUserService().updatePassword(passwordReset.getUser(), newPassword);
+        getRepository().delete(passwordReset);
     }
 
     private final PasswordReset checkTokenValidation(String token) {
-        PasswordReset passwordResetToken = getByToken(token);
-        if (passwordResetToken.isExpired()) {
-            getRepository().delete(passwordResetToken);
+        PasswordReset passwordReset = getByToken(token);
+        if (passwordReset.isExpired()) {
+            getRepository().delete(passwordReset);
             throw new ExpiredPasswordResetException("Expired Token!");
         }
-        return passwordResetToken;
+        return passwordReset;
     }
 
     private final PasswordReset getByToken(String token) {

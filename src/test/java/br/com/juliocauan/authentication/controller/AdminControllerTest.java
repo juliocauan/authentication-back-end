@@ -56,12 +56,12 @@ class AdminControllerTest extends TestContext {
     void beforeEach(){
         getUserRepository().deleteAll();
         getRoleRepository().deleteAll();
-        getRoleRepository().save(RoleEntity.builder().name("ADMIN").build());
+        getRoleRepository().save(new RoleEntity("ADMIN"));
         saveUser(usernameAdmin, "ADMIN");
     }
 
     private final String saveRole() {
-        return getRoleRepository().save(RoleEntity.builder().name(getRandomString(15)).build()).getName();
+        return getRoleRepository().save(new RoleEntity(getRandomString(15))).getName();
     }
 
     private final void saveUser(String username, String roleName) {

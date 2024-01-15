@@ -29,7 +29,7 @@ class RoleRepositoryTest extends TestContext {
     }
 
     private final RoleEntity saveRole(String name) {
-        return getRoleRepository().save(RoleEntity.builder().name(name).build());
+        return getRoleRepository().save(new RoleEntity(name));
     }
 
     @Test

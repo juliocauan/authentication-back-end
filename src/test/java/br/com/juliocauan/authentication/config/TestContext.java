@@ -36,7 +36,7 @@ public class TestContext {
     public void beforeAll() {
         userRepository.deleteAll();
         roleRepository.deleteAll();
-        roleRepository.save(RoleEntity.builder().name("ADMIN").build());
+        roleRepository.save(new RoleEntity("ADMIN"));
     }
 
     public MockMvc getMockMvc() {

@@ -7,16 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity @Table(name = "roles", schema = "auth")
 @Getter @EqualsAndHashCode(callSuper = false)
-@AllArgsConstructor @NoArgsConstructor
-@Builder
+@NoArgsConstructor
 public final class RoleEntity extends Role {
     
 	@Id @EqualsAndHashCode.Exclude
@@ -29,6 +26,11 @@ public final class RoleEntity extends Role {
 	public RoleEntity(Role role) {
 		this.id = role.getId();
 		this.name = role.getName();
+	}
+
+	public RoleEntity(String name) {
+		this.id = null;
+		this.name = name;
 	}
 
 }

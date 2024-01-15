@@ -92,7 +92,7 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void login_branch_withRoles() throws Exception {
-        RoleEntity role = getRoleRepository().save(RoleEntity.builder().name("TEST").build());
+        RoleEntity role = getRoleRepository().save(new RoleEntity("TEST"));
         User user = getUserRepository().save(UserEntity.builder()
                 .username(getRandomUsername())
                 .password(encoder.encode(rawPassword))

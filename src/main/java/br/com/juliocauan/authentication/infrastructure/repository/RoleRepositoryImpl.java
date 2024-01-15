@@ -23,7 +23,7 @@ public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<RoleEn
 
     @Override
     default void register(String name) {
-        this.save(RoleEntity.builder().name(name).build());
+        this.save(new RoleEntity(name));
     }
 
     @Override

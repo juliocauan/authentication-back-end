@@ -92,7 +92,7 @@ class AdminServiceTest extends TestContext {
     }
 
     private final String saveRole() {
-        return getRoleRepository().save(RoleEntity.builder().name(getRandomString(15)).build()).getName();
+        return getRoleRepository().save(new RoleEntity(getRandomString(15))).getName();
     }
 
     private final Set<String> getRoleSet(String name) {
@@ -322,7 +322,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void deleteRole_error_adminException() {
         String roleAdmin = "ADMIN";
-        getRoleRepository().save(RoleEntity.builder().name(roleAdmin).build());
+        getRoleRepository().save(new RoleEntity(roleAdmin));
         saveUser(roleAdmin);
 
         AdminException exception = assertThrowsExactly(AdminException.class, () -> adminService.deleteRole(roleAdmin));

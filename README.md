@@ -1,109 +1,80 @@
-# Authentication and Authorization API - Server
+# Autenticação e Autorização API - Servidor
 
 ![youshallnotpass](https://github.com/juliocauan/authentication-server/assets/84354526/e4d27e22-8a5f-4d74-aacc-b95119852c10)
 
-## 📖  Description
+## 📖  Descrição
 
-This is a tutorial to run this API locally on DEV mode. <br/>
-Obs: DEV mode will only mock emails, it won't send real ones. Production mode will be available shortly. <br/>
+Este projeto foi desenvolvido em ambiente Linux, utilizando Ubuntu 22.04 e as tecnologias citadas abaixo. Se você utilizar outro sistema operacional, a configuração inicial do projeto poderá ser um pouco diferente.
 
-Check the [documentation](https://github.com/juliocauan/authentication-docs) to see all endpoints and functionalities.
-<br/>
+Estas instruções ajudarão você a configurar e executar o projeto localmente.
 
-## 📡 Used Technologies 
-<div align="center"> 
+Cheque também a [documentação](https://github.com/juliocauan/authentication-docs) para ver mais detalhes sobre API e suas funcionalidades.
+
+## 📡 Tecnologias usadas 
+<div align="center">
   <img align="left" alt="Spring" title="Spring" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/spring/spring-original.svg">
   <img align="left" alt="OpenAPI (Swagger)" title="OpenAPI (Swagger)" height="30" width="30" src="https://avatars.githubusercontent.com/u/37325267?s=200&v=4">
   <img align="left" alt="Postgresql" title="Postgresql" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original.svg">
   <img align="left" alt="Docker" title="Docker" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg">
   <img align="left" alt="GitHub Actions" title="GitHub Actions" height="30" width="30" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg">
 </div>
-<br/><br/>
+<br/>
 
-## 🚀 Getting Started
-This project was developed in a Linux environment, using Ubuntu 22.04 and the technologies mentioned above. If you use another operating system, the initial project configuration may be slightly different. <br/>
-These instructions will help you set up and run the project locally.
+## 🛠️ Pré-requisitos
 
-### Prerequisites
+- Certifique-se de ter as seguintes ferramentas instaladas:
+  - [Docker](https://www.docker.com/get-started)
+  - [Docker Compose](https://docs.docker.com/compose/install/)
 
-Make sure you have the following tools installed:
+- Portas necessárias:
+  - 8000 (API)
+  - 8001 (Adminer)
 
-- [Java 17](https://www.oracle.com/java/technologies/javase-downloads.html)
-- [Docker](https://www.docker.com/get-started)
-- [Docker Compose](https://docs.docker.com/compose/install/)
+## 🖥 Executando
 
-Also make sure you have the following ports available:
-
-- 8000 (Application)
-- 9000 (Adminer)
-- 5432 (PostgreSQL)
-
-***
-### Installation and Configuration
-
-1. **Clone the repository:**
+- Clone o repositório:
 
     ```bash
-    git clone --recurse-submodules https://github.com/juliocauan/authentication-server.git
+    git clone https://github.com/juliocauan/authentication-server.git
     cd authentication-server
     ```
 
-2. **Package the Project:**
-
-   - Run the following command to package the project without running tests:
+- Inicie a API junto ao PostgreSQL usando:
 
     ```bash
-    ./mvnw clean package -DskipTests
+    docker compose -f "docker-compose-prod.yml" up -d --build
     ```
 
-3. **Running the Project:**
+- Aguarde até que o contêiner esteja rodando.
 
-   - Run the following command to start the API on DEV mode along with PostgreSQL database using Docker Compose:
+## 🚀 Acessando a API
 
-     ```bash
-     docker compose -f "docker-compose-dev.yml" up -d --build
-     ```
+- Com o projeto em execução, acesse a [página Swagger(OpenAPI)](https://app.swaggerhub.com/apis/juliocauan/authentication/1.2.x):
 
-   - Wait until the container is up and running.
-   - API will be running on port 8000 (DEV mode doesn't send real emails)
+- Role para baixo na guia direita desta página:
 
-4. **Access the API:**
+  ![swagger-tutorial](https://github.com/juliocauan/authentication-server/assets/84354526/4ee04ce0-cff0-4df2-8924-8bf997aafb30)
 
-   - With the project running, access the API documentation:
+- No canto inferior direito, você verá isso:
 
-     [Authentication API OpenAPI(Swagger) Documentation](https://app.swaggerhub.com/apis/juliocauan/authentication/1.1.x)
+  ![tutorial1](https://github.com/juliocauan/authentication-server/assets/84354526/882ba442-ad23-4432-a6ca-c7cfd2cbca5c)
 
-   - Scroll down the right tab of this page:
+- Clique em "**Use browser instead**" e a configuração deverá ficar assim:
 
-     ![swagger-tutorial](https://github.com/juliocauan/authentication-server/assets/84354526/4ee04ce0-cff0-4df2-8924-8bf997aafb30)
-   
-   - At the bottom right, you will see this:
+  ![tutorial2](https://github.com/juliocauan/authentication-server/assets/84354526/a90f5a2a-502e-4058-b6f5-92bbc66dddec)
 
-     ![tutorial1](https://github.com/juliocauan/authentication-server/assets/84354526/882ba442-ad23-4432-a6ca-c7cfd2cbca5c)
+- Agora use as informações fornecidas para interagir com a API.
 
-   - Click on "Use browser instead" and the configuration should look like this:
+- PS: Para criar uma conta como ADMIN, a **adminKey** é **@Admin123**
 
-     ![tutorial2](https://github.com/juliocauan/authentication-server/assets/84354526/a90f5a2a-502e-4058-b6f5-92bbc66dddec)
+## 💡 **Uso adicional: Adminer**
 
-   - Now use the provided information to interact with the API.
+- Para verificar o banco de dados, acesse [localhost:8001](http://localhost:8001) e preencha os seguintes campos assim:
+  - System: PostgreSQL
+  - Server: postgres
+  - Username: admin
+  - Password: admin
+  - Database: authentication
 
-5. **Using Adminer:**
-
-      To check the database (Docker Compose must be running), access [http://localhost:9000](http://localhost:9000) and fill the following fields like that:
-    - System: PostgreSQL
-    - Server: postgres
-    - Username: root
-    - Password: secret
-    - Database: auth-dev
-    - Login and change Schema from **public** to **auth**
-
-### Additional Usage
-
-- To package the project and run tests (port 5434 must be available):
-
-  ```bash
-  docker compose -f "docker-compose-test.yml" up -d --build
-  ./mvnw clean package
-  ```
-
-<br/>
+- Faça o login
+- Mude o Schema de **public** para **auth**

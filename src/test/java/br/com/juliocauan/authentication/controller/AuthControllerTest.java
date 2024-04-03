@@ -24,9 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -64,12 +64,8 @@ class AuthControllerTest extends TestContext {
         return getUserRepository().save(new User(getRandomUsername(), encoder.encode(rawPassword)));
     }
 
-    private final void savePasswordReset(String token) {
-        passwordResetRepository.save(PasswordResetEntity
-                .builder()
-                .token(token)
-                .user(saveUser())
-                .build());
+    private final PasswordReset savePasswordReset() {
+        return passwordResetRepository.save(new PasswordReset(saveUser()));
     }
 
     @Test
@@ -292,9 +288,8 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void resetUserPassword() throws Exception {
-        String token = getRandomToken();
         PasswordMatch passwordMatch = new PasswordMatch(rawPassword, rawPassword);
-        savePasswordReset(token);
+        String token = savePasswordReset().getToken();
         getMockMvc().perform(
                 patch(urlForgotPasswordWithToken, token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -319,9 +314,8 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void resetUserPassword_error_passwordMatch() throws Exception {
-        String token = getRandomToken();
         PasswordMatch passwordMatch = new PasswordMatch(getRandomPassword(), getRandomPassword());
-        savePasswordReset(token);
+        String token = savePasswordReset().getToken();
         getMockMvc().perform(
                 patch(urlForgotPasswordWithToken, token)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -348,16 +342,12 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void resetUserPassword_error_tokenExpired() throws Exception {
-        String token = getRandomToken();
         PasswordMatch passwordMatch = new PasswordMatch(rawPassword, rawPassword);
-        passwordResetRepository.save(PasswordResetEntity
-                .builder()
-                .token(token)
-                .user(saveUser())
-                .expireDate(LocalDateTime.now().minusSeconds(1))
-                .build());
+        PasswordReset passwordReset = new PasswordReset(saveUser());
+        passwordReset.setExpireDate(LocalDateTime.now().minusSeconds(1));
+        passwordResetRepository.save(passwordReset);
         getMockMvc().perform(
-                patch(urlForgotPasswordWithToken, token)
+                patch(urlForgotPasswordWithToken, passwordReset.getToken())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(passwordMatch)))
                 .andExpect(status().isBadRequest())

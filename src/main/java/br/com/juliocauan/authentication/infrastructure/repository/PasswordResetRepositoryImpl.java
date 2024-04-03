@@ -5,13 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.PasswordResetRepository;
-import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
 
-public interface PasswordResetRepositoryImpl extends PasswordResetRepository, JpaRepository<PasswordResetEntity, Integer> {
+public interface PasswordResetRepositoryImpl extends PasswordResetRepository, JpaRepository<PasswordReset, Integer> {
 
     @Override
     default PasswordReset register(User user) {
-        return this.save(new PasswordResetEntity(user));
+        return this.save(new PasswordReset(user));
     }
 
     @Override

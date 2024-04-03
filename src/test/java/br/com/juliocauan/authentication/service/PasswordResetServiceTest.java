@@ -20,7 +20,6 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
-import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -52,13 +51,8 @@ class PasswordResetServiceTest extends TestContext {
         return getUserRepository().save(new User(getRandomUsername(), getRandomPassword()));
     }
 
-    private final PasswordResetEntity savePasswordReset() {
-        User user = saveUser();
-        return passwordResetRepository.save(PasswordResetEntity
-                .builder()
-                .user(user)
-                .token(getRandomToken())
-                .build());
+    private final PasswordReset savePasswordReset() {
+        return passwordResetRepository.save(new PasswordReset(saveUser()));
     }
 
     @Test
@@ -113,12 +107,9 @@ class PasswordResetServiceTest extends TestContext {
 
     @Test
     void resetPassword_error_isExpired() {
-        PasswordResetEntity passwordReset = passwordResetRepository.save(PasswordResetEntity
-                .builder()
-                .user(saveUser())
-                .token(getRandomToken())
-                .expireDate(LocalDateTime.now().minusSeconds(1))
-                .build());
+        PasswordReset passwordReset = new PasswordReset(saveUser());
+        passwordReset.setExpireDate(LocalDateTime.now().minusSeconds(1));
+        passwordResetRepository.save(passwordReset);
 
         ExpiredPasswordResetException exception = assertThrowsExactly(ExpiredPasswordResetException.class,
                 () -> passwordResetService.resetPassword(getRandomPassword(), passwordReset.getToken()));

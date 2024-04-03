@@ -1,18 +1,62 @@
 package br.com.juliocauan.authentication.domain.model;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
-public abstract class PasswordReset {
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-    protected static final int TOKEN_LENGTH = 32;
+@Entity @Table(name = "password_reset", schema = "auth")
+@Getter @EqualsAndHashCode
+@NoArgsConstructor
+public final class PasswordReset {
+
+    private static final int TOKEN_LENGTH = 32;
     public static final int TOKEN_EXPIRATION_MINUTES = 10;
 
-    public abstract Integer getId();
-    public abstract User getUser();
-    public abstract String getToken();
-    public abstract LocalDateTime getExpireDate();
+    @Id @EqualsAndHashCode.Exclude
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @NotBlank
+    private String token;
+
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(nullable = false, unique = true, name = "user_id")
+    private User user;
+
+    @NotNull @EqualsAndHashCode.Exclude
+    @Setter
+    private LocalDateTime expireDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_MINUTES);
+
+    public PasswordReset(User user) {
+        this();
+        this.token = generateToken();
+        this.user = user;
+    }
+
+    private String generateToken() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] rawToken = new byte[TOKEN_LENGTH];
+        secureRandom.nextBytes(rawToken);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(rawToken);
+    }
     
     public final boolean isExpired() {
-        return LocalDateTime.now().isAfter(getExpireDate());
+        return LocalDateTime.now().isAfter(this.getExpireDate());
     }
 }

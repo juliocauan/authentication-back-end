@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.model;
+package br.com.juliocauan.authentication.domain.model;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,14 +12,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import jakarta.validation.ConstraintViolationException;
 
-class UserEntityTest extends TestContext {
+class UserTest extends TestContext {
 
-    public UserEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public UserTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }
@@ -30,7 +29,7 @@ class UserEntityTest extends TestContext {
     }
 
     private void saveUser(String username, String password) {
-        getUserRepository().save(UserEntity.builder().username(username).password(password).build());
+        getUserRepository().save(new User(username, password));
     }
 
     private void saveUserWithUsername(String username) {

@@ -12,7 +12,6 @@ import java.util.List;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
@@ -28,13 +27,13 @@ class RoleRepositoryTest extends TestContext {
         getRoleRepository().deleteAll();
     }
 
-    private final RoleEntity saveRole(String name) {
-        return getRoleRepository().save(new RoleEntity(name));
+    private final Role saveRole(String name) {
+        return getRoleRepository().save(new Role(name));
     }
 
     @Test
     void getByName_givenPresentName_thenIsPresent() {
-        RoleEntity expectedEntity = saveRole("ROLE");
+        Role expectedEntity = saveRole("ROLE");
         assertEquals(expectedEntity, getRoleRepository().getByName("ROLE").get());
     }
 
@@ -67,7 +66,7 @@ class RoleRepositoryTest extends TestContext {
     @Test
     void register() {
         getRoleRepository().register("ROLE");
-        RoleEntity role = getRoleRepository().findAll().get(0);
+        Role role = getRoleRepository().findAll().get(0);
         assertEquals("ROLE", role.getName());
     }
 

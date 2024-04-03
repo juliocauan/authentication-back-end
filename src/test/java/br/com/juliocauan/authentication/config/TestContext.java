@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import lombok.AllArgsConstructor;
@@ -36,7 +36,7 @@ public class TestContext {
     public void beforeAll() {
         userRepository.deleteAll();
         roleRepository.deleteAll();
-        roleRepository.save(new RoleEntity("ADMIN"));
+        roleRepository.save(new Role("ADMIN"));
     }
 
     public MockMvc getMockMvc() {

@@ -1,18 +1,16 @@
 package br.com.juliocauan.authentication.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.openapitools.model.UserInfo;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -29,16 +27,9 @@ class UserMapperTest extends TestContext {
     }
     
     private final User getUser(){
-        return new User() {
-            @Override
-            public Integer getId() {return 1;}
-            @Override
-            public String getUsername() {return username;}
-            @Override
-            public String getPassword() {return password;}
-            @Override
-            public Set<Role> getRoles() {return new HashSet<>();}
-        };
+        User user = new User(username, password, new HashSet<>());
+        user.setId(1);
+        return user;
     }
 
     @Test

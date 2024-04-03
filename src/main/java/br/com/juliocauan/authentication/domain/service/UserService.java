@@ -48,7 +48,8 @@ public abstract class UserService {
 
 	private final User setNewEncodedPassword(User user, String password) {
 		PasswordUtil.validateSecurity(password);
-		return User.changePassword(user, PasswordUtil.encode(password));
+		user.setPassword(PasswordUtil.encode(password));
+		return user;
 	}
 
 	public final void update(User user) {

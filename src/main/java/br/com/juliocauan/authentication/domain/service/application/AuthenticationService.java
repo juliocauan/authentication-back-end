@@ -19,12 +19,12 @@ public abstract class AuthenticationService {
     public abstract UserData authenticate(String username, String password);
 
     public final void registerUser(String username, String password) {
-        getUserService().register(User.newUser(username, password));
+        getUserService().register(new User(username, password));
     }
 
     public final void registerAdmin(String username, String password) {
-        User admin = User.newUser(username, password);
-        admin = User.changeRoles(admin, adminSet());
+        User admin = new User(username, password);
+        admin.setRoles(adminSet());
         getUserService().register(admin);
     }
 

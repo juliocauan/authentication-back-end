@@ -18,16 +18,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
 class UserRepositoryTest extends TestContext {
 
     private final Pageable pageable = PageRequest.ofSize(5);
-    private Set<RoleEntity> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
     
     public UserRepositoryTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
@@ -45,13 +44,8 @@ class UserRepositoryTest extends TestContext {
         getUserRepository().deleteAll();
     }
 
-    private final UserEntity getUser() {
-        return UserEntity
-            .builder()
-                .username(getRandomUsername(null))
-                .password(getRandomPassword())
-                .roles(roles)
-            .build();
+    private final User getUser() {
+        return new User(getRandomUsername(null), getRandomPassword(), roles);
     }
 
     private final User saveUser() {
@@ -193,9 +187,9 @@ class UserRepositoryTest extends TestContext {
 
     @Test
     void register() {
-        UserEntity expectedUser = getUser();
+        User expectedUser = getUser();
         getUserRepository().register(expectedUser);
-        UserEntity user = getUserRepository().findAll().get(0);
+        User user = getUserRepository().findAll().get(0);
         assertEquals(expectedUser, user);
     }
 

@@ -30,8 +30,6 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
@@ -78,21 +76,16 @@ class AdminServiceTest extends TestContext {
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 
-    private final UserEntity getUser(String role) {
-        return UserEntity
-                .builder()
-                .username(getRandomUsername())
-                .password(encoder.encode(rawPassword))
-                .roles(Collections.singleton(new RoleEntity(getRoleRepository().getByName(role).get())))
-                .build();
+    private final User getUser(String role) {
+        return new User(getRandomUsername(), encoder.encode(rawPassword), Collections.singleton(getRoleRepository().getByName(role).get()));
     }
 
-    private final UserEntity saveUser(String role) {
+    private final User saveUser(String role) {
         return getUserRepository().save(getUser(role));
     }
 
     private final String saveRole() {
-        return getRoleRepository().save(new RoleEntity(getRandomString(15))).getName();
+        return getRoleRepository().save(new Role(getRandomString(15))).getName();
     }
 
     private final Set<String> getRoleSet(String name) {
@@ -322,7 +315,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void deleteRole_error_adminException() {
         String roleAdmin = "ADMIN";
-        getRoleRepository().save(new RoleEntity(roleAdmin));
+        getRoleRepository().save(new Role(roleAdmin));
         saveUser(roleAdmin);
 
         AdminException exception = assertThrowsExactly(AdminException.class, () -> adminService.deleteRole(roleAdmin));

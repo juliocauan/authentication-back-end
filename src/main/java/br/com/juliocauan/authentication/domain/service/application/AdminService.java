@@ -34,7 +34,7 @@ public abstract class AdminService {
         Set<Role> roles = newRoles.stream()
                 .map(getRoleService()::getByName)
                 .collect(Collectors.toSet());
-        user = User.changeRoles(user, roles);
+        user.setRoles(roles);
         getUserService().update(user);
     }
 
@@ -64,9 +64,10 @@ public abstract class AdminService {
         Role role = getRoleService().getByName(roleName);
         List<User> users = getUserService().getAllUsers(role.getName());
         users.forEach(user -> {
-            Set<? extends Role> roles = user.getRoles();
+            Set<Role> roles = user.getRoles();
             roles.remove(role);
-            getUserService().update(User.changeRoles(user, roles));
+            user.setRoles(roles);
+            getUserService().update(user);
         });
         getRoleService().delete(role);
     }

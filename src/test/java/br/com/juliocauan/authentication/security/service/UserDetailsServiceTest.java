@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
+import br.com.juliocauan.authentication.domain.model.Role;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
@@ -30,8 +30,8 @@ class UserDetailsServiceTest extends TestContext {
     private final String username = getRandomUsername();
     private final String password = getRandomPassword();
 
-    private UserEntity entity;
-    private Set<RoleEntity> roles = new HashSet<>();
+    private User entity;
+    private Set<Role> roles = new HashSet<>();
 
     public UserDetailsServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, UserDetailsServiceImpl userDetailsService) {
@@ -48,11 +48,7 @@ class UserDetailsServiceTest extends TestContext {
     @BeforeEach
     void beforeEach(){
         getUserRepository().deleteAll();
-        entity = UserEntity.builder()
-            .password(password)
-            .username(username)
-            .roles(roles)
-        .build();
+        entity = new User(username, password, roles);
     }
     
     @Test

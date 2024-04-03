@@ -14,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
@@ -36,8 +35,8 @@ class RoleServiceTest extends TestContext {
         getRoleRepository().deleteAll();
     }
 
-    private final RoleEntity saveRole(String name) {
-        return getRoleRepository().save(new RoleEntity(name));
+    private final Role saveRole(String name) {
+        return getRoleRepository().save(new Role(name));
     }
 
     @Test
@@ -77,7 +76,7 @@ class RoleServiceTest extends TestContext {
     @Test
     void register() {
         roleService.register("ROLE");
-        List<RoleEntity> roles = getRoleRepository().findAll();
+        List<Role> roles = getRoleRepository().findAll();
         assertEquals("ROLE", roles.get(0).getName());
     }
 

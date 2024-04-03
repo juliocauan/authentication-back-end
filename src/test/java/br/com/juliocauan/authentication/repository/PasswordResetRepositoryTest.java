@@ -14,7 +14,6 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -35,16 +34,12 @@ class PasswordResetRepositoryTest extends TestContext {
         getUserRepository().deleteAll();
     }
 
-    private final UserEntity saveUser() {
-        return getUserRepository().save(UserEntity
-                .builder()
-                .username(getRandomUsername())
-                .password(getRandomPassword())
-                .build());
+    private final User saveUser() {
+        return getUserRepository().save(new User(getRandomUsername(), getRandomPassword()));
     }
 
     private final PasswordResetEntity savePasswordReset() {
-        UserEntity user = saveUser();
+        User user = saveUser();
         return passwordResetRepository.save(PasswordResetEntity
                 .builder()
                 .user(user)

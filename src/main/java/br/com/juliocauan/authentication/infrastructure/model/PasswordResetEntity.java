@@ -37,9 +37,9 @@ public final class PasswordResetEntity extends PasswordReset {
     @NotBlank @Size(min = 43, max = 43)
     private String token;
 
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(nullable = false, unique = true, name = "user_id")
-    private UserEntity user;
+    private User user;
 
     @NotNull
     @Builder.Default @EqualsAndHashCode.Exclude
@@ -48,7 +48,7 @@ public final class PasswordResetEntity extends PasswordReset {
     public PasswordResetEntity(User user) {
         this();
         this.token = generateToken();
-        this.user = new UserEntity(user);
+        this.user = user;
     }
 
     private final String generateToken() {

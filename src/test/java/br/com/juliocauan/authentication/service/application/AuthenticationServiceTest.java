@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
@@ -40,21 +39,17 @@ class AuthenticationServiceTest extends TestContext {
         getUserRepository().deleteAll();
     }
 
-    private final UserEntity getUser() {
-        return UserEntity
-                .builder()
-                .username(getRandomUsername())
-                .password(getRandomPassword())
-                .build();
+    private final User getUser() {
+        return new User(getRandomUsername(), getRandomPassword());
     }
 
-    private final UserEntity saveUser() {
+    private final User saveUser() {
         return getUserRepository().save(getUser());
     }
 
     @Test
     void authenticate() {
-        UserEntity user = getUser();
+        User user = getUser();
         String rawPassword = user.getPassword();
         user.setPassword(encoder.encode(rawPassword));
         getUserRepository().save(user);

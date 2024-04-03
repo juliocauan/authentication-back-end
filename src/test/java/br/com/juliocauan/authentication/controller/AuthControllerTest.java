@@ -24,10 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -61,12 +60,8 @@ class AuthControllerTest extends TestContext {
         getUserRepository().deleteAll();
     }
 
-    private final UserEntity saveUser() {
-        return getUserRepository().save(UserEntity
-                .builder()
-                .username(getRandomUsername())
-                .password(encoder.encode(rawPassword))
-                .build());
+    private final User saveUser() {
+        return getUserRepository().save(new User(getRandomUsername(), encoder.encode(rawPassword)));
     }
 
     private final void savePasswordReset(String token) {
@@ -92,12 +87,8 @@ class AuthControllerTest extends TestContext {
 
     @Test
     void login_branch_withRoles() throws Exception {
-        RoleEntity role = getRoleRepository().save(new RoleEntity("TEST"));
-        User user = getUserRepository().save(UserEntity.builder()
-                .username(getRandomUsername())
-                .password(encoder.encode(rawPassword))
-                .roles(Collections.singleton(role))        
-        .build());
+        Role role = getRoleRepository().save(new Role("TEST"));
+        User user = getUserRepository().save(new User(getRandomUsername(), encoder.encode(rawPassword), Collections.singleton(role)));
         SigninForm signinForm = new SigninForm(user.getUsername(), rawPassword);
         getMockMvc().perform(
                 post(urlLogin)

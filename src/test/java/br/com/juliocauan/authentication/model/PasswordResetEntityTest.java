@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.model.PasswordResetEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
@@ -27,7 +27,7 @@ class PasswordResetEntityTest extends TestContext {
 
     private final PasswordResetRepositoryImpl passwordResetRepository;
 
-    private UserEntity user;
+    private User user;
 
     public PasswordResetEntityTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetRepository) {
@@ -42,15 +42,11 @@ class PasswordResetEntityTest extends TestContext {
         user = saveUser(getRandomUsername(), getRandomPassword());
     }
 
-    private final UserEntity saveUser(String username, String password) {
-        return getUserRepository().save(UserEntity
-                .builder()
-                .username(username)
-                .password(password)
-                .build());
+    private final User saveUser(String username, String password) {
+        return getUserRepository().save(new User(username, password));
     }
 
-    private final PasswordResetEntity savePasswordReset(UserEntity user, String token) {
+    private final PasswordResetEntity savePasswordReset(User user, String token) {
         return passwordResetRepository.save(PasswordResetEntity
                 .builder()
                 .token(token)

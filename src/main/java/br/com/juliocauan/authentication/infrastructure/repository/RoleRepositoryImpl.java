@@ -9,10 +9,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.specification.RoleSpecification;
 
-public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<RoleEntity, Short>, JpaSpecificationExecutor<RoleEntity> {
+public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<Role, Short>, JpaSpecificationExecutor<Role> {
 
     @Override
     default List<Role> getAll(String nameContains) {
@@ -23,7 +22,7 @@ public interface RoleRepositoryImpl extends RoleRepository, JpaRepository<RoleEn
 
     @Override
     default void register(String name) {
-        this.save(new RoleEntity(name));
+        this.save(new Role(name));
     }
 
     @Override

@@ -20,10 +20,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
@@ -35,7 +34,7 @@ class UserServiceTest extends TestContext {
     private final PasswordEncoder encoder;
 
     private final Pageable pageable = PageRequest.ofSize(5);
-    private Set<RoleEntity> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     public UserServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, UserServiceImpl userService, PasswordEncoder encoder) {
@@ -56,16 +55,11 @@ class UserServiceTest extends TestContext {
         getUserRepository().deleteAll();
     }
 
-    private final UserEntity getUser() {
-        return UserEntity
-                .builder()
-                .username(getRandomUsername(null))
-                .password(getRandomPassword())
-                .roles(roles)
-                .build();
+    private final User getUser() {
+        return new User(getRandomUsername(null), getRandomPassword(), roles);
     }
 
-    private final UserEntity saveUser() {
+    private final User saveUser() {
         return getUserRepository().save(getUser());
     }
 
@@ -195,7 +189,7 @@ class UserServiceTest extends TestContext {
 
         assertEquals(expectedUser.getUsername(), user.getUsername());
         assertEquals(expectedUser.getRoles(), user.getRoles());
-        assertTrue(encoder.matches(expectedUser.getPassword(), user.getPassword()));
+        assertEquals(expectedUser.getPassword(), user.getPassword());
     }
 
     @Test
@@ -208,7 +202,7 @@ class UserServiceTest extends TestContext {
 
     @Test
     void register_error_passwordSecurity() {
-        UserEntity user = getUser();
+        User user = getUser();
         user.setPassword("12345tyui");
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
                 () -> userService.register(user));
@@ -217,12 +211,12 @@ class UserServiceTest extends TestContext {
 
     @Test
     void update() {
-        UserEntity expectedUser = saveUser();
+        User expectedUser = saveUser();
         String newPassword = getRandomPassword();
         expectedUser.setPassword(newPassword);
 
         userService.update(expectedUser);
-        UserEntity user = getUserRepository().findAll().get(0);
+        User user = getUserRepository().findAll().get(0);
         assertEquals(expectedUser, user);
     }
 

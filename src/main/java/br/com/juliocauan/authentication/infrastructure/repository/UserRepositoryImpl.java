@@ -10,10 +10,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.domain.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.specification.UserSpecification;
 
-public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEntity, Integer>, JpaSpecificationExecutor<UserEntity> {
+public interface UserRepositoryImpl extends UserRepository, JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
     @Override
     default List<User> getAll(String usernameContains, String roleName, Pageable pageable) {
@@ -33,7 +32,7 @@ public interface UserRepositoryImpl extends UserRepository, JpaRepository<UserEn
 
     @Override
     default void register(User user) {
-        this.save(new UserEntity(user));
+        this.save(user);
     }
 
     @Override

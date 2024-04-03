@@ -26,8 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.model.RoleEntity;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
+import br.com.juliocauan.authentication.domain.model.Role;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
@@ -56,22 +56,17 @@ class AdminControllerTest extends TestContext {
     void beforeEach(){
         getUserRepository().deleteAll();
         getRoleRepository().deleteAll();
-        getRoleRepository().save(new RoleEntity("ADMIN"));
+        getRoleRepository().save(new Role("ADMIN"));
         saveUser(usernameAdmin, "ADMIN");
     }
 
     private final String saveRole() {
-        return getRoleRepository().save(new RoleEntity(getRandomString(15))).getName();
+        return getRoleRepository().save(new Role(getRandomString(15))).getName();
     }
 
     private final void saveUser(String username, String roleName) {
-        Set<RoleEntity> roles = Collections.singleton(new RoleEntity(getRoleRepository().getByName(roleName).get()));
-        getUserRepository().save(UserEntity
-            .builder()
-                .username(username)
-                .password(encoder.encode(rawPassword))
-                .roles(roles)
-            .build());
+        Set<Role> roles = Collections.singleton(getRoleRepository().getByName(roleName).get());
+        getUserRepository().save(new User(username, encoder.encode(rawPassword), roles));
     }
 
     private final String getAdminToken(){

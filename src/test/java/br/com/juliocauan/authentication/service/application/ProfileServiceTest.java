@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.ProfileServiceImpl;
@@ -58,12 +57,8 @@ class ProfileServiceTest extends TestContext {
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 
-    private final UserEntity saveUser() {
-        return getUserRepository().save(UserEntity
-                .builder()
-                .username(getRandomUsername())
-                .password(encoder.encode(rawPassword))
-                .build());
+    private final User saveUser() {
+        return getUserRepository().save(new User(getRandomUsername(), encoder.encode(rawPassword)));
     }
 
     @Test

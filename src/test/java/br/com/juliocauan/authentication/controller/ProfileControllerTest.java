@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.model.UserEntity;
+import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
@@ -47,11 +47,7 @@ class ProfileControllerTest extends TestContext {
     @BeforeEach
     void beforeEach() {
         getUserRepository().deleteAll();
-        getUserRepository().save(UserEntity
-                .builder()
-                .username(username)
-                .password(encoder.encode(rawPassword))
-                .build());
+        getUserRepository().save(new User(username, encoder.encode(rawPassword)));
     }
 
     private final String getBearerToken() {

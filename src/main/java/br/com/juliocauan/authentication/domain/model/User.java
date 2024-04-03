@@ -3,34 +3,54 @@ package br.com.juliocauan.authentication.domain.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class User {
-    public abstract Integer getId();
-    public abstract String getUsername();
-    public abstract String getPassword();
-    public abstract Set<? extends Role> getRoles();
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-    public static final User newUser(String username, String password) {
-        return getUser(null, username, password, new HashSet<>());
+@Entity @Table(name = "users", schema = "auth")
+@Data @EqualsAndHashCode
+@NoArgsConstructor
+public final class User {
+    
+	@Id @EqualsAndHashCode.Exclude
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+	@Email
+	@Column(length = 60, unique = true, nullable = false)
+	private String username;
+
+	@NotBlank
+	private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "users_roles", schema = "auth",
+        joinColumns = @JoinColumn(referencedColumnName = "id", name = "user_id"),
+        inverseJoinColumns = @JoinColumn(referencedColumnName = "id", name = "role_id"))
+	@EqualsAndHashCode.Exclude
+	private Set<Role> roles = new HashSet<>();
+
+    public User(String username, String password) {
+        this();
+        this.username = username;
+        this.password = password;
     }
 
-    public static final User changePassword(final User user, String newPassword) {
-        return getUser(user.getId(), user.getUsername(), newPassword, user.getRoles());
+    public User(String username, String password, Set<Role> roles) {
+        this(username, password);
+        this.roles = roles;
     }
-
-    public static final User changeRoles(final User user, Set<? extends Role> newRoles) {
-        return getUser(user.getId(), user.getUsername(), user.getPassword(), newRoles);
-    }
-
-    private static final User getUser(Integer id, String username, String password, Set<? extends Role> roles) {
-        return new User() {
-            @Override
-            public Integer getId() { return id; }
-            @Override
-            public String getUsername() { return username; }
-            @Override
-            public String getPassword() { return password; }
-            @Override
-            public Set<? extends Role> getRoles() { return roles; } 
-        };
-    }
+    
 }

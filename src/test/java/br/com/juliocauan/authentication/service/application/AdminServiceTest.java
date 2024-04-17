@@ -33,7 +33,7 @@ import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
 import br.com.juliocauan.authentication.util.UserMapper;
 
@@ -46,7 +46,7 @@ class AdminServiceTest extends TestContext {
     private final Pageable pageable = PageRequest.ofSize(5);
     private final String rawPassword = getRandomPassword();
 
-    public AdminServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public AdminServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AdminServiceImpl adminService,
             AuthenticationManager authenticationManager, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
@@ -181,7 +181,7 @@ class AdminServiceTest extends TestContext {
         String newRole = saveRole();
         User user = saveUser(oldRole);
         adminService.updateUserRoles(user.getUsername(), getRoleSet(newRole));
-        User userAfter = getUserRepository().getByUsername(user.getUsername()).get();
+        User userAfter = getUserRepository().findByUsername(user.getUsername());
 
         assertEquals(user.getUsername(), userAfter.getUsername());
         assertNotEquals(user.getRoles().stream().findFirst().get(), userAfter.getRoles().stream().findFirst().get());
@@ -194,7 +194,7 @@ class AdminServiceTest extends TestContext {
         String oldRole = saveRole();
         User user = saveUser(oldRole);
         adminService.updateUserRoles(user.getUsername(), new HashSet<>());
-        User userAfter = getUserRepository().getByUsername(user.getUsername()).get();
+        User userAfter = getUserRepository().findByUsername(user.getUsername());
 
         assertEquals(user.getUsername(), userAfter.getUsername());
         assertTrue(userAfter.getRoles().isEmpty());

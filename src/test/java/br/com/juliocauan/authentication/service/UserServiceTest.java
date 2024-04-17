@@ -11,6 +11,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,9 +25,8 @@ import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
-import jakarta.persistence.EntityExistsException;
 
 class UserServiceTest extends TestContext {
 
@@ -36,7 +36,7 @@ class UserServiceTest extends TestContext {
     private final Pageable pageable = PageRequest.ofSize(5);
     private Set<Role> roles = new HashSet<>();
 
-    public UserServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public UserServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, UserServiceImpl userService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.userService = userService;
@@ -195,7 +195,7 @@ class UserServiceTest extends TestContext {
     @Test
     void register_error_entityExists() {
         User user = saveUser();
-        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
                 () -> userService.register(user));
         assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
     }

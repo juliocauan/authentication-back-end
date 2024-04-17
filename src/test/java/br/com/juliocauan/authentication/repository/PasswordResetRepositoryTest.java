@@ -15,13 +15,13 @@ import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
 class PasswordResetRepositoryTest extends TestContext {
 
     private final PasswordResetRepositoryImpl passwordResetRepository;
 
-    public PasswordResetRepositoryTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public PasswordResetRepositoryTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetRepository = passwordResetRepository;

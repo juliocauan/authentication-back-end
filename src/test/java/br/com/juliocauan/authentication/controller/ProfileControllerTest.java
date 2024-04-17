@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 
 class ProfileControllerTest extends TestContext {
@@ -36,7 +36,7 @@ class ProfileControllerTest extends TestContext {
     private final String errorInvalidPassword = "Passwords don't match!";
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
-    public ProfileControllerTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public ProfileControllerTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
             PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);

@@ -20,7 +20,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 
 class UserDetailsServiceTest extends TestContext {
@@ -33,7 +33,7 @@ class UserDetailsServiceTest extends TestContext {
     private User entity;
     private Set<Role> roles = new HashSet<>();
 
-    public UserDetailsServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public UserDetailsServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, UserDetailsServiceImpl userDetailsService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.userDetailsService = userDetailsService;

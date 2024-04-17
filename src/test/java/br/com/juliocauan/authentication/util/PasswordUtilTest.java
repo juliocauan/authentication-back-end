@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
 class PasswordUtilTest extends TestContext {
 
@@ -25,7 +25,7 @@ class PasswordUtilTest extends TestContext {
     private final String errorInvalidPassword = "Passwords don't match!";
     private final String errorWeakPassword = "Password is not strong!";
 
-    public PasswordUtilTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public PasswordUtilTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;

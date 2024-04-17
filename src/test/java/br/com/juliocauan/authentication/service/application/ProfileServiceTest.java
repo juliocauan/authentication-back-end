@@ -20,7 +20,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.application.ProfileServiceImpl;
 
 class ProfileServiceTest extends TestContext {
@@ -30,7 +30,7 @@ class ProfileServiceTest extends TestContext {
     private final PasswordEncoder encoder;
     private final String rawPassword = getRandomPassword();
 
-    public ProfileServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public ProfileServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, ProfileServiceImpl profileService,
             AuthenticationManager authenticationManager, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);

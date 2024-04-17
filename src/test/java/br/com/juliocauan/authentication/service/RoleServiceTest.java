@@ -17,14 +17,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.RoleServiceImpl;
 
 class RoleServiceTest extends TestContext {
 
     private final RoleServiceImpl roleService;
 
-    public RoleServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public RoleServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, RoleServiceImpl roleService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.roleService = roleService;

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserData;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,16 +18,15 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
-import jakarta.persistence.EntityExistsException;
 
 class AuthenticationServiceTest extends TestContext {
 
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public AuthenticationServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
             PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
@@ -79,7 +79,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerUser_error_entityExists() {
         User user = saveUser();
 
-        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
                 () -> authenticationService.registerUser(user.getUsername(), user.getPassword()));
         assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
     }
@@ -109,7 +109,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerAdmin_error_entityExists() {
         User user = saveUser();
 
-        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
                 () -> authenticationService.registerAdmin(user.getUsername(), user.getPassword()));
         assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
     }

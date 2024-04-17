@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @SpringBootTest
@@ -25,7 +25,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TestContext {
 
-    private final UserRepositoryImpl userRepository;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
@@ -47,7 +47,7 @@ public class TestContext {
         return objectMapper.writeValueAsString(value);
     }
 
-    public UserRepositoryImpl getUserRepository() {
+    public UserRepository getUserRepository() {
         return userRepository;
     }
 

@@ -29,7 +29,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 
 class AdminControllerTest extends TestContext {
@@ -45,7 +45,7 @@ class AdminControllerTest extends TestContext {
     private final String rawPassword = getRandomPassword();
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
-    public AdminControllerTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public AdminControllerTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;

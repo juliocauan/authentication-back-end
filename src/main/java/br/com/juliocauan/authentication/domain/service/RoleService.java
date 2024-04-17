@@ -14,7 +14,7 @@ public abstract class RoleService {
         }
 
         public final List<Role> getAll(String nameContains) {
-                return getRepository().findAllWithFilters(nameContains);
+                return getRepository().findAllByFilters(nameContains);
         }
 
         public final void register(String role) {

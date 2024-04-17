@@ -11,11 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
 class RoleTest extends TestContext {
 
-    public RoleTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public RoleTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }

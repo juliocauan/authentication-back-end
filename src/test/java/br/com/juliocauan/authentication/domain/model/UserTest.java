@@ -13,12 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 
 class UserTest extends TestContext {
 
-    public UserTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public UserTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }

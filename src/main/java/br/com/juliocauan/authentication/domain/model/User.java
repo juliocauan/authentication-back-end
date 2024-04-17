@@ -48,6 +48,7 @@ public final class User {
         this.password = password;
     }
 
+    // TODO remover
     public User(String username, String password, Set<Role> roles) {
         this(username, password);
         this.roles = roles;

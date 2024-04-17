@@ -15,7 +15,14 @@ public interface UserSpecification {
         };
     }
 
-    static Specification<User> role(String role){
+    static Specification<User> usernameEquals(String usernameEquals){
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            if(usernameEquals == null) return null;
+            return criteriaBuilder.like(root.get("username"), usernameEquals);
+        };
+    }
+
+    static Specification<User> hasRole(String role){
         return (root, criteriaQuery, criteriaBuilder) -> {
             if(role == null) return null;
             Join<Role, User> roles = root.join("roles");

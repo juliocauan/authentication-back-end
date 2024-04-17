@@ -18,11 +18,11 @@ public interface RoleRepository extends JpaRepository<Role, Short>, JpaSpecifica
 
     default Role findByName(String name) {
         Role role = this.findOne(Specification.where(nameEquals(name)))
-            .orElseThrow(() -> new EntityNotFoundException(String.format("Role [%s] not found!", name)));
+            .orElseThrow(() -> new EntityNotFoundException("Role [%s] not found!".formatted(name)));
         return role;
     }
 
-    default List<Role> findAllWithFilters(String nameContains) {
+    default List<Role> findAllByFilters(String nameContains) {
         return this.findAll(Specification.where(nameContains(nameContains)))
             .stream().collect(Collectors.toList());
     }
@@ -30,7 +30,7 @@ public interface RoleRepository extends JpaRepository<Role, Short>, JpaSpecifica
     default void register(String name) {
         boolean roleExists = this.exists(Specification.where(nameEquals(name)));
         if(roleExists)
-            throw new EntityExistsException(String.format("Role [%s] already exists!", name));
+            throw new EntityExistsException("Role [%s] already exists!".formatted(name));
         this.save(new Role(name));
     }
 

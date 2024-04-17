@@ -17,7 +17,7 @@ import br.com.juliocauan.authentication.domain.model.Role;
 
 class RoleRepositoryTest extends TestContext {
 
-    public RoleRepositoryTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
+    public RoleRepositoryTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }
@@ -32,13 +32,13 @@ class RoleRepositoryTest extends TestContext {
     }
 
     @Test
-    void findByName_givenPresentName_thenIsPresent() {
+    void findByName() {
         Role expectedEntity = saveRole("ROLE");
         assertEquals(expectedEntity, getRoleRepository().findByName("ROLE"));
     }
 
     @Test
-    void findByName_givenNotPresentName_thenException() {
+    void findByName_error_notPresentName() {
         saveRole("ROLE");
         JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
             () -> getRoleRepository().findByName("NOT_A_ROLE"));
@@ -46,24 +46,24 @@ class RoleRepositoryTest extends TestContext {
     }
 
     @Test
-    void findAllWithFilters_givenPresentNameContains_thenNotEmptyList() {
+    void findAllByFilters() {
         Role role = saveRole("ROLE");
-        List<Role> roles = getRoleRepository().findAllWithFilters("ROLE");
+        List<Role> roles = getRoleRepository().findAllByFilters("ROLE");
         assertEquals(1, roles.size());
         assertEquals(role, roles.get(0));
     }
 
     @Test
-    void findAllWithFilters_givenNullNameContains_thenNotEmptyList() {
+    void findAllByFilters_branch_nullNameContains() {
         saveRole("ROLE");
-        List<Role> roles = getRoleRepository().findAllWithFilters(null);
+        List<Role> roles = getRoleRepository().findAllByFilters(null);
         assertEquals(1, roles.size());
     }
 
     @Test
-    void findAllWithFilters_givenNotPresentNameContains_thenEmptyList() {
+    void findAllByFilters_branch_notPresentNameContains() {
         saveRole("ROLE");
-        List<Role> roles = getRoleRepository().findAllWithFilters("AAA");
+        List<Role> roles = getRoleRepository().findAllByFilters("AAA");
         assertTrue(roles.isEmpty());
     }
 
@@ -75,7 +75,7 @@ class RoleRepositoryTest extends TestContext {
     }
 
     @Test
-    void register_givenExistingRoleName_thenException() {
+    void register_error_roleAlreadyExists() {
         getRoleRepository().register("ROLE");
         DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
             () -> getRoleRepository().register("ROLE"));

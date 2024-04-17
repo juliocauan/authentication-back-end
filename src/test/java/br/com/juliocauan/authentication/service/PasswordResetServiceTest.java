@@ -21,7 +21,7 @@ import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,7 +32,7 @@ class PasswordResetServiceTest extends TestContext {
     private final PasswordResetRepositoryImpl passwordResetRepository;
     private final PasswordEncoder encoder;
 
-    public PasswordResetServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public PasswordResetServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetServiceImpl passwordResetService,
             PasswordResetRepositoryImpl passwordResetRepository, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);

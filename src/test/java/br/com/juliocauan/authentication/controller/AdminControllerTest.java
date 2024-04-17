@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 
@@ -45,7 +45,7 @@ class AdminControllerTest extends TestContext {
     private final String rawPassword = getRandomPassword();
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
-    public AdminControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public AdminControllerTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;
@@ -65,7 +65,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final void saveUser(String username, String roleName) {
-        Set<Role> roles = Collections.singleton(getRoleRepository().getByName(roleName).get());
+        Set<Role> roles = Collections.singleton(getRoleRepository().findByName(roleName));
         getUserRepository().save(new User(username, encoder.encode(rawPassword), roles));
     }
 

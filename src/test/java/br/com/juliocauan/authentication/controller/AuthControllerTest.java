@@ -28,7 +28,7 @@ import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.util.EmailUtil;
 
@@ -46,7 +46,7 @@ class AuthControllerTest extends TestContext {
     private final String rawPassword = getRandomPassword();
     private final String adminKey = "@Admin123";
 
-    public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public AuthControllerTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordEncoder encoder,
             PasswordResetRepositoryImpl passwordResetRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);

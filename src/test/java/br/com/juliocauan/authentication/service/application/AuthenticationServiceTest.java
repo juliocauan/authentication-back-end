@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 import jakarta.persistence.EntityExistsException;
@@ -26,7 +26,7 @@ class AuthenticationServiceTest extends TestContext {
     private final AuthenticationServiceImpl authenticationService;
     private final PasswordEncoder encoder;
 
-    public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public AuthenticationServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
             PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);

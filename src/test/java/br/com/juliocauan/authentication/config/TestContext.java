@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.domain.model.Role;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import lombok.AllArgsConstructor;
 
@@ -26,7 +26,7 @@ import lombok.AllArgsConstructor;
 public class TestContext {
 
     private final UserRepositoryImpl userRepository;
-    private final RoleRepositoryImpl roleRepository;
+    private final RoleRepository roleRepository;
     private final ObjectMapper objectMapper;
     private final MockMvc mockMvc;
     private final String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -51,7 +51,7 @@ public class TestContext {
         return userRepository;
     }
 
-    public RoleRepositoryImpl getRoleRepository() {
+    public RoleRepository getRoleRepository() {
         return roleRepository;
     }
 

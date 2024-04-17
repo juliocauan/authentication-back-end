@@ -10,12 +10,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
 class RoleTest extends TestContext {
 
-    public RoleTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public RoleTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }

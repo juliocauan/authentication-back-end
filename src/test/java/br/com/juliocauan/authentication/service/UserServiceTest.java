@@ -23,7 +23,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
 import jakarta.persistence.EntityExistsException;
@@ -36,7 +36,7 @@ class UserServiceTest extends TestContext {
     private final Pageable pageable = PageRequest.ofSize(5);
     private Set<Role> roles = new HashSet<>();
 
-    public UserServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public UserServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, UserServiceImpl userService, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.userService = userService;

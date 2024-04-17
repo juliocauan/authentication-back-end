@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
 class PasswordResetTest extends TestContext {
@@ -26,7 +26,7 @@ class PasswordResetTest extends TestContext {
 
     private User user;
 
-    public PasswordResetTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public PasswordResetTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetRepository = passwordResetRepository;

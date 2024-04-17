@@ -14,8 +14,10 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserInfo;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,12 +32,10 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
 import br.com.juliocauan.authentication.util.UserMapper;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 
 class AdminServiceTest extends TestContext {
 
@@ -46,7 +46,7 @@ class AdminServiceTest extends TestContext {
     private final Pageable pageable = PageRequest.ofSize(5);
     private final String rawPassword = getRandomPassword();
 
-    public AdminServiceTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public AdminServiceTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AdminServiceImpl adminService,
             AuthenticationManager authenticationManager, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
@@ -77,7 +77,7 @@ class AdminServiceTest extends TestContext {
     }
 
     private final User getUser(String role) {
-        return new User(getRandomUsername(), encoder.encode(rawPassword), Collections.singleton(getRoleRepository().getByName(role).get()));
+        return new User(getRandomUsername(), encoder.encode(rawPassword), Collections.singleton(getRoleRepository().findByName(role)));
     }
 
     private final User saveUser(String role) {
@@ -225,7 +225,7 @@ class AdminServiceTest extends TestContext {
         String role = saveRole();
         User user = saveUser(role);
         String newRole = getRandomString(15);
-        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
+        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
                 () -> adminService.updateUserRoles(user.getUsername(), getRoleSet(newRole)));
         assertEquals("Role [%s] not found!".formatted(newRole), exception.getMessage());
     }
@@ -297,7 +297,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void registerRole_error_entityExists() {
         String role = saveRole();
-        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
                 () -> adminService.registerRole(role));
         assertEquals("Role [%s] already exists!".formatted(role), exception.getMessage());
     }

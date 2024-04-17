@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepositoryImpl;
 
 class UserRepositoryTest extends TestContext {
@@ -28,7 +28,7 @@ class UserRepositoryTest extends TestContext {
     private final Pageable pageable = PageRequest.ofSize(5);
     private Set<Role> roles = new HashSet<>();
     
-    public UserRepositoryTest(UserRepositoryImpl userRepository, RoleRepositoryImpl roleRepository,
+    public UserRepositoryTest(UserRepositoryImpl userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
     }

@@ -250,13 +250,6 @@ class UserRepositoryTest extends TestContext {
     }
 
     @Test
-    void delete() {
-        User user = saveUser();
-        getUserRepository().delete(user);
-        assertTrue(getUserRepository().findAll().isEmpty());
-    }
-
-    @Test
     void deleteWithUsername() {
         User user = saveUser();
         getUserRepository().delete(user.getUsername());

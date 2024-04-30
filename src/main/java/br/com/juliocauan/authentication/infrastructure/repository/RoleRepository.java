@@ -33,9 +33,5 @@ public interface RoleRepository extends JpaRepository<Role, Short>, JpaSpecifica
             throw new EntityExistsException("Role [%s] already exists!".formatted(name));
         this.save(new Role(name));
     }
-
-    default void delete(Role role) {
-        this.deleteById(role.getId());
-    }
     
 }

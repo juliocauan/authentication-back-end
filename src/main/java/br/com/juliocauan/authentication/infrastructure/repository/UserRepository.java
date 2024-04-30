@@ -57,10 +57,6 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         this.save(user);
     }
 
-    default void delete(User user) {
-        this.deleteById(user.getId());
-    }
-
     default void delete(String username) {
         User user = this.findByUsername(username);
         this.delete(user);

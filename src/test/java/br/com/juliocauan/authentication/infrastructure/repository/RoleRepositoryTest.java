@@ -82,11 +82,4 @@ class RoleRepositoryTest extends TestContext {
         assertEquals("Role [ROLE] already exists!", exception.getMessage());
     }
 
-    @Test
-    void delete() {
-        Role role = saveRole("ROLE");
-        getRoleRepository().delete(role);
-        assertTrue(getRoleRepository().findAll().isEmpty());
-    }
-
 }

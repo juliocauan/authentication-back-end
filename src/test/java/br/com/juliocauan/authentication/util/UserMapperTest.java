@@ -2,8 +2,6 @@ package br.com.juliocauan.authentication.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.HashSet;
-
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserInfo;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +25,7 @@ class UserMapperTest extends TestContext {
     }
     
     private final User getUser(){
-        User user = new User(username, password, new HashSet<>());
+        User user = new User(username, password);
         user.setId(1);
         return user;
     }

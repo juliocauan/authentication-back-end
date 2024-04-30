@@ -48,7 +48,8 @@ class UserDetailsServiceTest extends TestContext {
     @BeforeEach
     void beforeEach(){
         getUserRepository().deleteAll();
-        entity = new User(username, password, roles);
+        entity = new User(username, password);
+        entity.setRoles(roles);
     }
     
     @Test

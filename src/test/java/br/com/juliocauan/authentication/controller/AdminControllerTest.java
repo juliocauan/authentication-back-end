@@ -66,7 +66,9 @@ class AdminControllerTest extends TestContext {
 
     private final void saveUser(String username, String roleName) {
         Set<Role> roles = Collections.singleton(getRoleRepository().findByName(roleName));
-        getUserRepository().save(new User(username, encoder.encode(rawPassword), roles));
+        User user = new User(username, encoder.encode(rawPassword));
+        user.setRoles(roles);
+        getUserRepository().save(user);
     }
 
     private final String getAdminToken(){

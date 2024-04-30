@@ -77,7 +77,9 @@ class AdminServiceTest extends TestContext {
     }
 
     private final User getUser(String role) {
-        return new User(getRandomUsername(), encoder.encode(rawPassword), Collections.singleton(getRoleRepository().findByName(role)));
+        User user = new User(getRandomUsername(), encoder.encode(rawPassword));
+        user.setRoles(Collections.singleton(getRoleRepository().findByName(role)));
+        return user;
     }
 
     private final User saveUser(String role) {

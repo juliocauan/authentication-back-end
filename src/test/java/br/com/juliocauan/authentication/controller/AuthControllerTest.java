@@ -84,7 +84,9 @@ class AuthControllerTest extends TestContext {
     @Test
     void login_branch_withRoles() throws Exception {
         Role role = getRoleRepository().save(new Role("TEST"));
-        User user = getUserRepository().save(new User(getRandomUsername(), encoder.encode(rawPassword), Collections.singleton(role)));
+        User user = new User(getRandomUsername(), encoder.encode(rawPassword));
+        user.setRoles(Collections.singleton(role));
+        getUserRepository().save(user);
         SigninForm signinForm = new SigninForm(user.getUsername(), rawPassword);
         getMockMvc().perform(
                 post(urlLogin)

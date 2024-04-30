@@ -56,7 +56,9 @@ class UserServiceTest extends TestContext {
     }
 
     private final User getUser() {
-        return new User(getRandomUsername(null), getRandomPassword(), roles);
+        User user = new User(getRandomUsername(), getRandomPassword());
+        user.setRoles(roles);
+        return user;
     }
 
     private final User saveUser() {

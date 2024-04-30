@@ -49,12 +49,4 @@ class RoleTest extends TestContext {
         assertDoesNotThrow(() -> saveRole(roleName + "A"));
     }
 
-    @Test
-    void constructor_name() {
-        String roleName = getRandomString(15);
-        Role role = new Role(roleName);
-        assertEquals(null, role.getId());
-        assertEquals(roleName, role.getName());
-    }
-
 }

@@ -45,13 +45,15 @@ class PasswordResetTest extends TestContext {
 
     @Test
     void user_notNull() {
-        assertThrowsExactly(DataIntegrityViolationException.class, () -> savePasswordReset(new PasswordReset(null)));
+        assertThrowsExactly(DataIntegrityViolationException.class,
+            () -> savePasswordReset(new PasswordReset(null)));
     }
 
     @Test
     void user_unique() {
         assertDoesNotThrow(() -> savePasswordReset(new PasswordReset(user)));
-        assertThrowsExactly(DataIntegrityViolationException.class, () -> savePasswordReset(new PasswordReset(user)));
+        assertThrowsExactly(DataIntegrityViolationException.class,
+            () -> savePasswordReset(new PasswordReset(user)));
     }
 
     @Test

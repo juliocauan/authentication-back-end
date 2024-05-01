@@ -230,14 +230,6 @@ class UserServiceTest extends TestContext {
     }
 
     @Test
-    void delete_error_usernameNotFound() {
-        String username = getRandomUsername();
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
-                () -> userService.delete(username));
-        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
-    }
-
-    @Test
     void deleteWithUser() {
         User user = saveUser();
         userService.delete(user);

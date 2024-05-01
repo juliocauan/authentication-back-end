@@ -250,19 +250,10 @@ class UserRepositoryTest extends TestContext {
     }
 
     @Test
-    void deleteWithUsername() {
+    void deleteByUsername() {
         User user = saveUser();
-        getUserRepository().delete(user.getUsername());
+        getUserRepository().deleteByUsername(user.getUsername());
         assertTrue(getUserRepository().findAll().isEmpty());
-    }
-
-    @Test
-    void deleteWithUsername_error_notPresentUsername() {
-        saveUser();
-        String username = getRandomUsername();
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class, 
-            () -> getUserRepository().delete(username));
-        assertEquals("Username [%s] not found!".formatted(username), exception.getMessage());
     }
 
 }

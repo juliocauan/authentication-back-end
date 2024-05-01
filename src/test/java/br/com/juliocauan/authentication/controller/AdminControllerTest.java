@@ -351,20 +351,6 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void deleteUser_error_usernameNotFound() throws Exception {
-        String username = getRandomUsername();
-        DeleteUserRequest deleteUserRequest = new DeleteUserRequest().username(username);
-
-        getMockMvc().perform(
-            delete(urlAdminUsers)
-                .header(authorizationHeader, getAdminToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(deleteUserRequest)))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(username)));
-    }
-
-    @Test
     void deleteUser_error_unauthorized() throws Exception {
         getMockMvc().perform(
             delete(urlAdminUsers))

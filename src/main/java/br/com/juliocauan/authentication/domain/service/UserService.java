@@ -36,7 +36,7 @@ public abstract class UserService {
 	}
 
 	public final void delete(String username) {
-		getRepository().delete(username);
+		getRepository().deleteByUsername(username);
 	}
 
 	public final void updatePassword(User user, String newPassword) {

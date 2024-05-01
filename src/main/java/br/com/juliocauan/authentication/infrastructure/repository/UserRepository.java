@@ -7,7 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.util.PasswordUtil;
@@ -57,9 +60,9 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         this.save(user);
     }
 
-    default void delete(String username) {
-        User user = this.findByUsername(username);
-        this.delete(user);
-    }
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM User u WHERE u.username = :username")
+    void deleteByUsername(String username);
 
 }

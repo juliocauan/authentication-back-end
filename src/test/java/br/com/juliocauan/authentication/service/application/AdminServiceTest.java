@@ -258,15 +258,6 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void deleteUser_error_usernameNotFound() {
-        authenticate();
-        String username = getRandomUsername();
-        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
-                () -> adminService.deleteUser(username));
-        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
-    }
-
-    @Test
     void getAllRoles() {
         String role = saveRole();
         List<String> roles = adminService.getAllRoles(role.substring(role.length() / 2));

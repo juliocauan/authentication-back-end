@@ -26,6 +26,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         return user;
     }
 
+    //TODO refactor this PAGEABLE
     default List<User> findAllByFilters(String usernameContains, String roleName, Pageable pageable) {
         return this.findAll(Specification
                 .where(usernameContains(usernameContains)

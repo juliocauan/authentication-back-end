@@ -16,18 +16,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
 class PasswordResetTest extends TestContext {
 
-    private final PasswordResetRepositoryImpl passwordResetRepository;
+    private final PasswordResetRepository passwordResetRepository;
 
     private User user;
 
     public PasswordResetTest(UserRepository userRepository, RoleRepository roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepositoryImpl passwordResetRepository) {
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetRepository passwordResetRepository) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetRepository = passwordResetRepository;
     }

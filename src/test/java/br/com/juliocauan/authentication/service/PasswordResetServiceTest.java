@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,21 +21,20 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
-import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepositoryImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
-import jakarta.persistence.EntityNotFoundException;
 
 class PasswordResetServiceTest extends TestContext {
 
     private final PasswordResetServiceImpl passwordResetService;
-    private final PasswordResetRepositoryImpl passwordResetRepository;
+    private final PasswordResetRepository passwordResetRepository;
     private final PasswordEncoder encoder;
 
     public PasswordResetServiceTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetServiceImpl passwordResetService,
-            PasswordResetRepositoryImpl passwordResetRepository, PasswordEncoder encoder) {
+            PasswordResetRepository passwordResetRepository, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetService = passwordResetService;
         this.passwordResetRepository = passwordResetRepository;
@@ -81,8 +81,9 @@ class PasswordResetServiceTest extends TestContext {
         passwordResetService.sendNewToken(passwordResetBefore.getUser().getUsername());
 
         PasswordReset passwordResetAfter = passwordResetRepository.findAll().get(0);
-        assertTrue(passwordResetRepository.getByToken(passwordResetAfter.getToken()).isPresent());
-        assertFalse(passwordResetRepository.getByToken(passwordResetBefore.getToken()).isPresent());
+        assertEquals(passwordResetAfter, passwordResetRepository.findByToken(passwordResetAfter.getToken()));
+        assertThrowsExactly(JpaObjectRetrievalFailureException.class,
+            () -> passwordResetRepository.findByToken(passwordResetBefore.getToken()));
     }
 
     @Test
@@ -100,7 +101,7 @@ class PasswordResetServiceTest extends TestContext {
     @Test
     void resetPassword_error_getByToken() {
         String token = getRandomToken();
-        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
+        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
                 () -> passwordResetService.resetPassword(getRandomPassword(), token));
         assertEquals(getErrorPasswordResetNotFound(token), exception.getMessage());
     }

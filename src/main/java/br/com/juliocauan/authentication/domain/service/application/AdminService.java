@@ -30,12 +30,10 @@ public abstract class AdminService {
 
     public final void updateUserRoles(String username, Set<String> newRoles) {
         validateSelf(username);
-        User user = getUserService().getByUsername(username);
         Set<Role> roles = newRoles.stream()
                 .map(getRoleService()::getByName)
                 .collect(Collectors.toSet());
-        user.setRoles(roles);
-        getUserService().update(user);
+        getUserService().update(username, roles);
     }
 
     private final void validateSelf(String username) {
@@ -66,8 +64,7 @@ public abstract class AdminService {
         users.forEach(user -> {
             Set<Role> roles = user.getRoles();
             roles.remove(role);
-            user.setRoles(roles);
-            getUserService().update(user);
+            getUserService().update(user.getUsername(), roles);
         });
         getRoleService().delete(role);
     }

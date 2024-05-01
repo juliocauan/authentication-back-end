@@ -1,9 +1,11 @@
 package br.com.juliocauan.authentication.domain.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
@@ -27,8 +29,8 @@ public abstract class UserService {
 		getRepository().register(user);
 	}
 
-	public final void update(User user) {
-		getRepository().updateRole(user);
+	public final void update(String username, Set<Role> newRoles) {
+		getRepository().updateUserRoles(username, newRoles);
 	}
 
 	public final void delete(User user) {

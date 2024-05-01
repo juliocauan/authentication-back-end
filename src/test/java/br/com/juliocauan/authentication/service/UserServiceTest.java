@@ -217,7 +217,7 @@ class UserServiceTest extends TestContext {
         String newPassword = getRandomPassword();
         expectedUser.setPassword(newPassword);
 
-        userService.update(expectedUser);
+        userService.updatePassword(expectedUser, newPassword);
         User user = getUserRepository().findAll().get(0);
         assertEquals(expectedUser, user);
     }

@@ -1,6 +1,7 @@
 package br.com.juliocauan.authentication.infrastructure.repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityExistsException;
@@ -34,6 +36,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
             .stream().collect(Collectors.toList());
     }
 
+    //TODO refactor
     default List<User> findAllByRole(String roleName) {
         return this.findAll(Specification
                 .where(hasRole(roleName)))
@@ -49,11 +52,13 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         this.save(user);
     }
 
-    //TODO refatorar
-    default void updateRole(User user) {
+    default void updateUserRoles(String username, Set<Role> newRoles) {
+        User user = this.findByUsername(username);
+        user.setRoles(newRoles);
         this.save(user);
     }
 
+    //TODO refactor
     default void updatePassword(User user, String newPassword) {
         PasswordUtil.validateSecurity(newPassword);
         user.setPassword(PasswordUtil.encode(newPassword));

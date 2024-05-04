@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.Specification;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 
 public interface UserSpecification {
 
@@ -25,7 +26,7 @@ public interface UserSpecification {
     static Specification<User> hasRole(String role){
         return (root, criteriaQuery, criteriaBuilder) -> {
             if(role == null) return null;
-            Join<Role, User> roles = root.join("roles");
+            Join<Role, User> roles = root.join("roles", JoinType.INNER);
             return criteriaBuilder.equal(roles.get("name"), role);
         };
     }

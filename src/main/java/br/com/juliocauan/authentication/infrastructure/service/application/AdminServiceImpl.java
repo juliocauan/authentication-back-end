@@ -3,22 +3,21 @@ package br.com.juliocauan.authentication.infrastructure.service.application;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.domain.service.application.AdminService;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.service.UserServiceImpl;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
 public final class AdminServiceImpl extends AdminService {
 
-    private final UserServiceImpl userService;
+    private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
     @Override
-    protected final UserService getUserService() {
-        return userService;
+    protected final UserRepository getUserRepository() {
+        return userRepository;
     }
 
     @Override

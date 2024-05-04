@@ -9,21 +9,21 @@ import org.springframework.data.domain.Pageable;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.util.UserMapper;
 
 public abstract class AdminService {
 
-    protected abstract UserService getUserService();
+    protected abstract UserRepository getUserRepository();
 
     protected abstract RoleRepository getRoleRepository();
 
     protected abstract String getLoggedUsername();
 
     public final List<UserInfo> getUserInfos(String usernameContains, String role, Pageable pageable) {
-        return getUserService().getUsers(usernameContains, role, pageable).stream()
+        return getUserRepository().findAllByFilters(usernameContains, role, pageable).stream()
                 .map(UserMapper::domainToUserInfo)
                 .collect(Collectors.toList());
     }
@@ -33,7 +33,7 @@ public abstract class AdminService {
         Set<Role> roles = newRoles.stream()
                 .map(getRoleRepository()::findByName)
                 .collect(Collectors.toSet());
-        getUserService().update(username, roles);
+        getUserRepository().updateUserRoles(username, roles);
     }
 
     private final void validateSelf(String username) {
@@ -43,7 +43,7 @@ public abstract class AdminService {
 
     public final void deleteUser(String username) {
         validateSelf(username);
-        getUserService().delete(username);
+        getUserRepository().deleteByUsername(username);
     }
 
     public final List<String> getAllRoles(String nameContains) {
@@ -60,11 +60,11 @@ public abstract class AdminService {
         if (roleName.equals("ADMIN"))
             throw new AdminException("Role [ADMIN] can not be deleted!");
         Role role = getRoleRepository().findByName(roleName);
-        List<User> users = getUserService().getAllUsers(role.getName());
+        List<User> users = getUserRepository().findAllByRole(role.getName());
         users.forEach(user -> {
             Set<Role> roles = user.getRoles();
             roles.remove(role);
-            getUserService().update(user.getUsername(), roles);
+            getUserRepository().updateUserRoles(user.getUsername(), roles);
         });
         getRoleRepository().delete(role);
     }

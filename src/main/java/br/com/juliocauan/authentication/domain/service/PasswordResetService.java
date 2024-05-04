@@ -3,16 +3,17 @@ package br.com.juliocauan.authentication.domain.service;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.util.EmailUtil;
 
 public abstract class PasswordResetService {
 
     protected abstract PasswordResetRepository getRepository();
 
-    protected abstract UserService getUserService();
+    protected abstract UserRepository getUserRepository();
 
     public final void sendNewToken(String username) {
-        User user = getUserService().getByUsername(username);
+        User user = getUserRepository().findByUsername(username);
         String token = getRepository().register(user).getToken();
         EmailUtil.sendEmail(
                 username,
@@ -27,7 +28,7 @@ public abstract class PasswordResetService {
 
     public final void resetPassword(String newPassword, String token) {
         PasswordReset passwordReset = getRepository().findByToken(token);
-        getUserService().updatePassword(passwordReset.getUser(), newPassword);
+        getUserRepository().updatePassword(passwordReset.getUser(), newPassword);
         getRepository().delete(passwordReset);
     }
 

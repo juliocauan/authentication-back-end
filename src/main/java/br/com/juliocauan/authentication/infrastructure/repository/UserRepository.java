@@ -64,6 +64,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         this.save(user);
     }
 
+    //TODO REFACTOR remove ByUsername
     @Transactional
     void deleteByUsername(String username);
 

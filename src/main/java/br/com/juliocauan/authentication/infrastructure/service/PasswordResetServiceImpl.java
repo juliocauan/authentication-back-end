@@ -3,8 +3,8 @@ package br.com.juliocauan.authentication.infrastructure.service;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.service.PasswordResetService;
-import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 public final class PasswordResetServiceImpl extends PasswordResetService {
 
     private final PasswordResetRepository passwordResetRepository;
-    private final UserServiceImpl userService;
+    private final UserRepository userRepository;
 
     @Override
     protected final PasswordResetRepository getRepository() {
@@ -20,8 +20,8 @@ public final class PasswordResetServiceImpl extends PasswordResetService {
     }
 
     @Override
-    protected final UserService getUserService() {
-        return userService;
+    protected final UserRepository getUserRepository() {
+        return userRepository;
     }
     
 }

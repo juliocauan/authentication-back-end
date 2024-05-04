@@ -7,14 +7,14 @@ import org.openapitools.model.UserData;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.domain.service.RoleService;
 import br.com.juliocauan.authentication.domain.service.UserService;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 
 public abstract class AuthenticationService {
 
     protected abstract UserService getUserService();
 
-    protected abstract RoleService getRoleService();
+    protected abstract RoleRepository getRoleRepository();
 
     public abstract UserData authenticate(String username, String password);
 
@@ -29,6 +29,6 @@ public abstract class AuthenticationService {
     }
 
     private final Set<Role> adminSet() {
-        return Collections.singleton(getRoleService().getByName("ADMIN"));
+        return Collections.singleton(getRoleRepository().findByName("ADMIN"));
     }
 }

@@ -9,16 +9,16 @@ import org.springframework.data.domain.Pageable;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.domain.service.RoleService;
 import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.util.UserMapper;
 
 public abstract class AdminService {
 
     protected abstract UserService getUserService();
 
-    protected abstract RoleService getRoleService();
+    protected abstract RoleRepository getRoleRepository();
 
     protected abstract String getLoggedUsername();
 
@@ -31,7 +31,7 @@ public abstract class AdminService {
     public final void updateUserRoles(String username, Set<String> newRoles) {
         validateSelf(username);
         Set<Role> roles = newRoles.stream()
-                .map(getRoleService()::getByName)
+                .map(getRoleRepository()::findByName)
                 .collect(Collectors.toSet());
         getUserService().update(username, roles);
     }
@@ -47,26 +47,26 @@ public abstract class AdminService {
     }
 
     public final List<String> getAllRoles(String nameContains) {
-        return getRoleService().getAll(nameContains).stream()
+        return getRoleRepository().findAllByFilters(nameContains).stream()
                 .map(Role::getName)
                 .collect(Collectors.toList());
     }
 
     public final void registerRole(String role) {
-        getRoleService().register(role);
+        getRoleRepository().register(role);
     }
 
     public final void deleteRole(String roleName) {
         if (roleName.equals("ADMIN"))
             throw new AdminException("Role [ADMIN] can not be deleted!");
-        Role role = getRoleService().getByName(roleName);
+        Role role = getRoleRepository().findByName(roleName);
         List<User> users = getUserService().getAllUsers(role.getName());
         users.forEach(user -> {
             Set<Role> roles = user.getRoles();
             roles.remove(role);
             getUserService().update(user.getUsername(), roles);
         });
-        getRoleService().delete(role);
+        getRoleRepository().delete(role);
     }
 
 }

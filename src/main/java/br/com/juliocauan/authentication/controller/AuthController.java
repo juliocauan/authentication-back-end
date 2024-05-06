@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.juliocauan.authentication.application.service.AuthenticationService;
 import br.com.juliocauan.authentication.domain.service.PasswordResetService;
-import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthController implements AuthApi {
 
-  private final AuthenticationServiceImpl authenticationService;
+  private final AuthenticationService authenticationService;
   private final PasswordResetService passwordResetService;
 
   @Override
@@ -51,9 +51,8 @@ public class AuthController implements AuthApi {
     String adminKey = signupFormAdmin.getAdminKey();
 
     PasswordUtil.validatePasswordConfirmation(signupFormAdmin.getMatch());
-    PasswordUtil.validateAdminKey(adminKey);
 
-    authenticationService.registerAdmin(username, password);
+    authenticationService.registerAdmin(username, password, adminKey);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(new OkResponse().message("Admin [%s] registered successfully!".formatted(username)));
   }

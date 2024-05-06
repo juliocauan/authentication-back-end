@@ -17,15 +17,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.juliocauan.authentication.application.service.AuthenticationService;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 
 class ProfileControllerTest extends TestContext {
 
-    private final AuthenticationServiceImpl authenticationService;
+    private final AuthenticationService authenticationService;
     private final PasswordEncoder encoder;
 
     private final String url = "/profile";
@@ -37,7 +37,7 @@ class ProfileControllerTest extends TestContext {
     private final String errorNotAuthorized = "Full authentication is required to access this resource";
 
     public ProfileControllerTest(UserRepository userRepository, RoleRepository roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationService authenticationService,
             PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;

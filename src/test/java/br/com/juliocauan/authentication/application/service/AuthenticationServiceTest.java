@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.service.application;
+package br.com.juliocauan.authentication.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -19,15 +19,15 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.service.application.AuthenticationServiceImpl;
 
 class AuthenticationServiceTest extends TestContext {
 
-    private final AuthenticationServiceImpl authenticationService;
+    private final AuthenticationService authenticationService;
     private final PasswordEncoder encoder;
+    private final String adminKey = "@Admin123";
 
     public AuthenticationServiceTest(UserRepository userRepository, RoleRepository roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationServiceImpl authenticationService,
+            ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationService authenticationService,
             PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;
@@ -97,7 +97,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerAdmin() {
         String username = getRandomUsername();
         String password = getRandomPassword();
-        authenticationService.registerAdmin(username, password);
+        authenticationService.registerAdmin(username, password, adminKey);
 
         User user = getUserRepository().findAll().get(0);
         assertEquals(username, user.getUsername());
@@ -106,11 +106,18 @@ class AuthenticationServiceTest extends TestContext {
     }
 
     @Test
+    void registerAdmin_error_adminKey() {
+        String adminKey = "1234567itsq";
+        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+                () -> authenticationService.registerAdmin(getRandomUsername(), getRandomPassword(), adminKey));
+        assertEquals("Admin Key is incorrect!", exception.getMessage());
+    }
+
+    @Test
     void registerAdmin_error_entityExists() {
         User user = saveUser();
-
         DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
-                () -> authenticationService.registerAdmin(user.getUsername(), user.getPassword()));
+                () -> authenticationService.registerAdmin(user.getUsername(), user.getPassword(), adminKey));
         assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
     }
 
@@ -119,7 +126,7 @@ class AuthenticationServiceTest extends TestContext {
         String password = "1234567itsq";
 
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-                () -> authenticationService.registerAdmin(getRandomUsername(), password));
+                () -> authenticationService.registerAdmin(getRandomUsername(), password, adminKey));
         assertEquals("Password is not strong!", exception.getMessage());
     }
 

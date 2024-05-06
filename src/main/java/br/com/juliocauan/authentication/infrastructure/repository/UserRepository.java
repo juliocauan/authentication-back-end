@@ -57,14 +57,12 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         this.save(user);
     }
 
-    //TODO REFACTOR
-    default void updatePassword(User user, String newPassword) {
-        PasswordUtil.validateSecurity(newPassword);
-        user.setPassword(PasswordUtil.encode(newPassword));
+    default void updatePassword(User user, String newRawPassword) {
+        PasswordUtil.validateSecurity(newRawPassword);
+        user.setPassword(PasswordUtil.encode(newRawPassword));
         this.save(user);
     }
 
-    //TODO REFACTOR remove ByUsername
     @Transactional
     void deleteByUsername(String username);
 

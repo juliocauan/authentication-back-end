@@ -1,20 +1,24 @@
 package br.com.juliocauan.authentication.domain.service;
 
+import org.springframework.stereotype.Service;
+
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.util.EmailUtil;
+import lombok.AllArgsConstructor;
 
-public abstract class PasswordResetService {
+@Service
+@AllArgsConstructor
+public final class PasswordResetService {
 
-    protected abstract PasswordResetRepository getRepository();
-
-    protected abstract UserRepository getUserRepository();
+    private final PasswordResetRepository passwordResetRepository;
+    private final UserRepository userRepository;
 
     public final void sendNewToken(String username) {
-        User user = getUserRepository().findByUsername(username);
-        String token = getRepository().register(user).getToken();
+        User user = userRepository.findByUsername(username);
+        String token = passwordResetRepository.register(user).getToken();
         EmailUtil.sendEmail(
                 username,
                 "Reset your password!",
@@ -27,9 +31,9 @@ public abstract class PasswordResetService {
     }
 
     public final void resetPassword(String newPassword, String token) {
-        PasswordReset passwordReset = getRepository().findByToken(token);
-        getUserRepository().updatePassword(passwordReset.getUser(), newPassword);
-        getRepository().delete(passwordReset);
+        PasswordReset passwordReset = passwordResetRepository.findByToken(token);
+        userRepository.updatePassword(passwordReset.getUser(), newPassword);
+        passwordResetRepository.delete(passwordReset);
     }
 
 }

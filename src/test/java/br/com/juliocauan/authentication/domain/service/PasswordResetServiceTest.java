@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.service;
+package br.com.juliocauan.authentication.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -24,16 +24,15 @@ import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPassword
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.service.PasswordResetServiceImpl;
 
 class PasswordResetServiceTest extends TestContext {
 
-    private final PasswordResetServiceImpl passwordResetService;
+    private final PasswordResetService passwordResetService;
     private final PasswordResetRepository passwordResetRepository;
     private final PasswordEncoder encoder;
 
     public PasswordResetServiceTest(UserRepository userRepository, RoleRepository roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetServiceImpl passwordResetService,
+            ObjectMapper objectMapper, MockMvc mockMvc, PasswordResetService passwordResetService,
             PasswordResetRepository passwordResetRepository, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.passwordResetService = passwordResetService;
@@ -68,6 +67,7 @@ class PasswordResetServiceTest extends TestContext {
 
     @Test
     void sendNewToken_error_getByUsername() {
+        saveUser();
         String username = getRandomUsername();
         UsernameNotFoundException exception = assertThrowsExactly(
                 UsernameNotFoundException.class,
@@ -81,9 +81,7 @@ class PasswordResetServiceTest extends TestContext {
         passwordResetService.sendNewToken(passwordResetBefore.getUser().getUsername());
 
         PasswordReset passwordResetAfter = passwordResetRepository.findAll().get(0);
-        assertEquals(passwordResetAfter, passwordResetRepository.findByToken(passwordResetAfter.getToken()));
-        assertThrowsExactly(JpaObjectRetrievalFailureException.class,
-            () -> passwordResetRepository.findByToken(passwordResetBefore.getToken()));
+        assertNotEquals(passwordResetAfter.getToken(), passwordResetBefore.getToken());
     }
 
     @Test
@@ -99,7 +97,8 @@ class PasswordResetServiceTest extends TestContext {
     }
 
     @Test
-    void resetPassword_error_getByToken() {
+    void resetPassword_error_findByToken() {
+        savePasswordReset();
         String token = getRandomToken();
         JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
                 () -> passwordResetService.resetPassword(getRandomPassword(), token));

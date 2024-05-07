@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.domain.service.application;
+package br.com.juliocauan.authentication.application.service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

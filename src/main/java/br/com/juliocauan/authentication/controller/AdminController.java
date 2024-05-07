@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
+import br.com.juliocauan.authentication.application.service.AdminService;
 import br.com.juliocauan.authentication.util.EmailUtil;
 import lombok.AllArgsConstructor;
 
@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController implements AdminApi {
 
-  private final AdminServiceImpl adminService;
+  private final AdminService adminService;
 
   @Override
   public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {

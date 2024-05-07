@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.service.application;
+package br.com.juliocauan.authentication.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -34,12 +34,11 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.AdminException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.service.application.AdminServiceImpl;
 import br.com.juliocauan.authentication.util.UserMapper;
 
 class AdminServiceTest extends TestContext {
 
-    private final AdminServiceImpl adminService;
+    private final AdminService adminService;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder encoder;
 
@@ -47,7 +46,7 @@ class AdminServiceTest extends TestContext {
     private final String rawPassword = getRandomPassword();
 
     public AdminServiceTest(UserRepository userRepository, RoleRepository roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc, AdminServiceImpl adminService,
+            ObjectMapper objectMapper, MockMvc mockMvc, AdminService adminService,
             AuthenticationManager authenticationManager, PasswordEncoder encoder) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.adminService = adminService;

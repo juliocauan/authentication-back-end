@@ -1,29 +1,38 @@
 package br.com.juliocauan.authentication.domain.service.application;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 import br.com.juliocauan.authentication.util.PasswordUtil;
+import lombok.AllArgsConstructor;
 
-public abstract class ProfileService {
+@Service
+@AllArgsConstructor
+public final class ProfileService {
 
-    protected abstract UserRepository getUserRepository();
+    private final UserRepository userRepository;
 
-    protected abstract String getLoggedUsername();
-
-    public final void updatePassword(String currentPassword, String newPassword) {
-        User user = validate(currentPassword);
-        getUserRepository().updatePassword(user, newPassword);
+    public void updatePassword(String currentPassword, String newPassword) {
+        User user = getLoggedUser(currentPassword);
+        validateCurrentPassword(currentPassword, user);
+        userRepository.updatePassword(user, newPassword);
     }
 
-    public final void closeAccount(String currentPassword) {
-        User user = validate(currentPassword);
-        getUserRepository().delete(user);
+    public void closeAccount(String currentPassword) {
+        User user = getLoggedUser(currentPassword);
+        validateCurrentPassword(currentPassword, user);
+        userRepository.delete(user);
     }
 
-    private final User validate(String currentPassword) {
-        String username = getLoggedUsername();
-        User loggedUser = getUserRepository().findByUsername(username);
-        PasswordUtil.validateMatch(currentPassword, loggedUser.getPassword());
-        return loggedUser;
+    private User getLoggedUser(String rawCurrentPassword) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username);
     }
+
+    private void validateCurrentPassword(String rawCurrentPassword, User loggedUser) {
+        PasswordUtil.validateMatch(rawCurrentPassword, loggedUser.getPassword());
+    }
+
 }

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.juliocauan.authentication.infrastructure.service.application.ProfileServiceImpl;
+import br.com.juliocauan.authentication.domain.service.application.ProfileService;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
@@ -16,7 +16,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ProfileController implements ProfileApi {
     
-    private final ProfileServiceImpl profileService;
+    private final ProfileService profileService;
 
     @Override
     public ResponseEntity<OkResponse> _updatePassword(PasswordUpdateForm passwordUpdateForm) {

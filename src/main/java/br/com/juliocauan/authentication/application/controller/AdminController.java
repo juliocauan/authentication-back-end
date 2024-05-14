@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.controller;
+package br.com.juliocauan.authentication.application.controller;
 
 import java.util.List;
 import java.util.Set;

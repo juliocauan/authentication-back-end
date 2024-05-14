@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.application.service;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openapitools.model.UserData;
@@ -13,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
-import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
@@ -50,12 +48,8 @@ public class AuthenticationService {
     public void registerAdmin(String username, String password, String adminKey) {
         PasswordUtil.validateAdminKey(adminKey);
         User admin = new User(username, password);
-        admin.setRoles(getRoleSetWithAdmin());
+        admin.setRoles(Collections.singleton(roleRepository.findByName("ADMIN")));
         userRepository.register(admin);
-    }
-
-    private Set<Role> getRoleSetWithAdmin() {
-        return Collections.singleton(roleRepository.findByName("ADMIN"));
     }
 
     public void sendToken(String username) {

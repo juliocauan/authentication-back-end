@@ -32,18 +32,20 @@ class UserMapperTest extends TestContext {
 
     @Test
     void domainToUserPrincipal() {
-        UserPrincipal userPrincipal = UserMapper.domainToUserPrincipal(getUser());
-        assertEquals(getUser().getUsername(), userPrincipal.getUsername());
-        assertEquals(getUser().getPassword(), userPrincipal.getPassword());
-        assertEquals(getUser().getRoles().size(), userPrincipal.getAuthorities().size());
+        User user = getUser();
+        UserPrincipal userPrincipal = UserMapper.domainToUserPrincipal(user);
+        assertEquals(user.getUsername(), userPrincipal.getUsername());
+        assertEquals(user.getPassword(), userPrincipal.getPassword());
+        assertEquals(user.getRoles().size(), userPrincipal.getAuthorities().size());
     }
 
     @Test
     void domainToUserInfo() {
-        UserInfo userInfo = UserMapper.domainToUserInfo(getUser());
-        assertEquals(getUser().getId(), userInfo.getId());
-        assertEquals(getUser().getUsername(), userInfo.getUsername());
-        assertEquals(getUser().getRoles().size(), userInfo.getRoles().size());
+        User user = getUser();
+        UserInfo userInfo = UserMapper.domainToUserInfo(user);
+        assertEquals(user.getId(), userInfo.getId());
+        assertEquals(user.getUsername(), userInfo.getUsername());
+        assertEquals(user.getRoles().size(), userInfo.getRoles().size());
     }
 
 }

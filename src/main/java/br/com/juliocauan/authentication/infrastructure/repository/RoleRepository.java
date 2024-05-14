@@ -3,7 +3,7 @@ package br.com.juliocauan.authentication.infrastructure.repository;
 import static br.com.juliocauan.authentication.infrastructure.repository.specification.RoleSpecification.nameContains;
 import static br.com.juliocauan.authentication.infrastructure.repository.specification.RoleSpecification.nameEquals;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.Specification;
@@ -22,9 +22,9 @@ public interface RoleRepository extends JpaRepository<Role, Short>, JpaSpecifica
         return role;
     }
 
-    default List<Role> findAllByFilters(String nameContains) {
+    default Set<Role> findAllByFilters(String nameContains) {
         return this.findAll(Specification.where(nameContains(nameContains)))
-            .stream().collect(Collectors.toList());
+            .stream().collect(Collectors.toSet());
     }
 
     default void register(String name) {

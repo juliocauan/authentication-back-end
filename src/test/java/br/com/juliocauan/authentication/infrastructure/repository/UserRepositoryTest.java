@@ -223,7 +223,7 @@ class UserRepositoryTest extends TestContext {
         User expectedUser = saveUser();
         Set<Role> newRoles = new HashSet<>();
         expectedUser.setRoles(newRoles);
-        getUserRepository().updateUserRoles(expectedUser.getUsername(), newRoles);
+        getUserRepository().updateUserRoles(expectedUser, newRoles);
         User actualUser = getUserRepository().findAll().get(0);
         assertEquals(expectedUser, actualUser);
     }

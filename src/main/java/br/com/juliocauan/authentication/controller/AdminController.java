@@ -35,7 +35,7 @@ public class AdminController implements AdminApi {
   public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {
     Pageable pageable = PageRequest.of(page.getNumber(), page.getSize());
 
-    List<UserInfo> response = adminService.getUserInfos(usernameContains, role, pageable);
+    List<UserInfo> response = adminService.findAllUsers(usernameContains, role, pageable);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 
@@ -60,7 +60,7 @@ public class AdminController implements AdminApi {
 
   @Override
   public ResponseEntity<List<String>> _getRoles(String nameContains) {
-    List<String> response = adminService.getAllRoles(nameContains);
+    List<String> response = adminService.findAllRoles(nameContains);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }
 

@@ -75,14 +75,10 @@ class AdminServiceTest extends TestContext {
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 
-    private final User getUser(String role) {
+    private final User saveUser(String role) {
         User user = new User(getRandomUsername(), encoder.encode(rawPassword));
         user.setRoles(Collections.singleton(getRoleRepository().findByName(role)));
-        return user;
-    }
-
-    private final User saveUser(String role) {
-        return getUserRepository().save(getUser(role));
+        return getUserRepository().save(user);
     }
 
     private final String saveRole() {
@@ -94,84 +90,83 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void getUserInfos() {
+    void findAllUsers() {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
-        List<UserInfo> userInfos = adminService.getUserInfos("@", role, pageable);
+        List<UserInfo> userInfos = adminService.findAllUsers("@", role, pageable);
         assertEquals(1, userInfos.size());
         assertEquals(expectedUserInfo, userInfos.get(0));
     }
 
     @Test
-    void getUserInfos_branch_usernameContainsAndRole() {
+    void findAllUsers_branch_usernameContainsAndRole() {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
-        saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos("@", role, pageable);
+        saveUser(saveRole());
+        List<UserInfo> userInfos = adminService.findAllUsers("@", role, pageable);
+        assertEquals(1, userInfos.size());
+        assertTrue(userInfos.contains(expectedUserInfo));
+    }
+
+    @Test
+    void findAllUsers_branch_usernameContainsAndNull() {
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(saveRole()));
+        saveUser(saveRole());
+        List<UserInfo> userInfos = adminService.findAllUsers("@", null, pageable);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
     }
 
     @Test
-    void getUserInfos_branch_usernameContainsAndNull() {
+    void findAllUsers_branch_nullAndRole() {
+        String role = saveRole();
+        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        saveUser(saveRole());
+        List<UserInfo> userInfos = adminService.findAllUsers(null, role, pageable);
+        assertEquals(1, userInfos.size());
+        assertTrue(userInfos.contains(expectedUserInfo));
+    }
+
+    @Test
+    void findAllUsers_branch_nullAndNull() {
         String role = saveRole();
         UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
         saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos("@", null, pageable);
+        List<UserInfo> userInfos = adminService.findAllUsers(null, null, pageable);
         assertEquals(2, userInfos.size());
         assertTrue(userInfos.contains(expectedUserInfo));
     }
 
     @Test
-    void getUserInfos_branch_nullAndRole() {
+    void findAllUsers_branch_usernameNotContainsAndRole() {
         String role = saveRole();
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
-        saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos(null, role, pageable);
-        assertEquals(2, userInfos.size());
-        assertTrue(userInfos.contains(expectedUserInfo));
-    }
-
-    @Test
-    void getUserInfos_branch_nullAndNull() {
-        String role = saveRole();
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
-        saveUser(role);
-        List<UserInfo> userInfos = adminService.getUserInfos(null, null, pageable);
-        assertEquals(2, userInfos.size());
-        assertTrue(userInfos.contains(expectedUserInfo));
-    }
-
-    @Test
-    void getUserInfos_branch_usernameNotContainsAndRole() {
-        String role = saveRole();
-        List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", role, pageable);
+        List<UserInfo> userInfos = adminService.findAllUsers("NOT_CONTAINS", role, pageable);
         assertTrue(userInfos.isEmpty());
     }
 
     @Test
-    void getUserInfos_branch_usernameContainsAndRoleNotPresent() {
-        List<UserInfo> userInfos = adminService.getUserInfos("@", "NOT_ROLE", pageable);
+    void findAllUsers_branch_usernameContainsAndRoleNotPresent() {
+        List<UserInfo> userInfos = adminService.findAllUsers("@", "NOT_ROLE", pageable);
         assertTrue(userInfos.isEmpty());
     }
 
     @Test
-    void getUserInfos_branch_usernameNotContainsAndRoleNotPresent() {
-        List<UserInfo> userInfos = adminService.getUserInfos("NOT_CONTAINS", "NOT_ROLE", pageable);
+    void findAllUsers_branch_usernameNotContainsAndRoleNotPresent() {
+        List<UserInfo> userInfos = adminService.findAllUsers("NOT_CONTAINS", "NOT_ROLE", pageable);
         assertTrue(userInfos.isEmpty());
     }
 
     @Test
-    void getUserInfos_branch_pageable() {
+    void findAllUsers_branch_pageable() {
         Integer expectedNumberOfUsers = pageable.getPageSize();
         for(int i = 0; i <= expectedNumberOfUsers; i++)
             saveUser(saveRole());
 
-        List<UserInfo> userInfos = adminService.getUserInfos(null, null, pageable);
+        List<UserInfo> userInfos = adminService.findAllUsers(null, null, pageable);
         assertEquals(expectedNumberOfUsers, userInfos.size());
         
         Pageable secondPage = PageRequest.of(1, pageable.getPageSize());
-        userInfos = adminService.getUserInfos(null, null, secondPage);
+        userInfos = adminService.findAllUsers(null, null, secondPage);
         assertEquals(1, userInfos.size());
     }
 
@@ -202,7 +197,7 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void updateUserRoles_error_adminException() {
+    void updateUserRoles_error_updateSelfAdminException() {
         User user = authenticate();
         String role = saveRole();
         AdminException exception = assertThrowsExactly(AdminException.class,
@@ -249,7 +244,7 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void deleteUser_error_adminException() {
+    void deleteUser_error_deleteSelfAdminException() {
         User user = authenticate();
         AdminException exception = assertThrowsExactly(AdminException.class,
                 () -> adminService.deleteUser(user.getUsername()));
@@ -257,25 +252,25 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void getAllRoles() {
+    void findAllRoles() {
         String role = saveRole();
-        List<String> roles = adminService.getAllRoles(role.substring(role.length() / 2));
+        List<String> roles = adminService.findAllRoles(role.substring(role.length() / 2));
         assertEquals(1, roles.size());
         assertEquals(role, roles.get(0));
     }
 
     @Test
-    void getAllRoles_branch_nameContains() {
+    void findAllRoles_branch_nameContains() {
         String role = saveRole();
-        List<String> roles = adminService.getAllRoles(role.substring(role.length() / 2));
+        List<String> roles = adminService.findAllRoles(role.substring(role.length() / 2));
         assertEquals(1, roles.size());
         assertEquals(role, roles.get(0));
     }
 
     @Test
-    void getAllRoles_branch_nullNameContains() {
+    void findAllRoles_branch_nullNameContains() {
         String role = saveRole();
-        List<String> roles = adminService.getAllRoles(null);
+        List<String> roles = adminService.findAllRoles(null);
         assertEquals(role, roles.get(0));
     }
 
@@ -314,6 +309,15 @@ class AdminServiceTest extends TestContext {
         assertEquals("Role [ADMIN] can not be deleted!", exception.getMessage());
         assertEquals(getRoleSet(roleAdmin), getUserRepository().findAll().get(0).getRoles().stream().map(Role::getName)
                 .collect(Collectors.toSet()));
+    }
+
+    @Test
+    void deleteRole_error_roleNotFound() {
+        String role = "NOT_PRESENT_ROLE";
+
+        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
+            () -> adminService.deleteRole(role));
+        assertEquals("Role [%s] not found!".formatted(role), exception.getMessage());
     }
 
 }

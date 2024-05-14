@@ -26,7 +26,6 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         return user;
     }
 
-    //TODO refactor this PAGEABLE
     default List<User> findAllByFilters(String usernameContains, String roleName, Pageable pageable) {
         return this.findAll(Specification
                 .where(usernameContains(usernameContains)
@@ -35,7 +34,6 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
             .stream().collect(Collectors.toList());
     }
 
-    //TODO REFACTOR
     default List<User> findAllByRole(String roleName) {
         return this.findAll(Specification
                 .where(hasRole(roleName)))
@@ -51,8 +49,7 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         this.save(user);
     }
 
-    default void updateUserRoles(String username, Set<Role> newRoles) {
-        User user = this.findByUsername(username);
+    default void updateUserRoles(User user, Set<Role> newRoles) {
         user.setRoles(newRoles);
         this.save(user);
     }

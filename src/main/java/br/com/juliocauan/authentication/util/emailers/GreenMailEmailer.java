@@ -17,7 +17,7 @@ public final class GreenMailEmailer implements Emailer {
 
     @Override
     public void sendSimpleEmail(String receiver, String subject, String message) {
-        GreenMailUtil.sendTextEmail(receiver, "GreenMail", subject, message, greenMail.getSmtp().getServerSetup());
+        GreenMailUtil.sendTextEmail(receiver, "GreenMailTester", subject, message, greenMail.getSmtp().getServerSetup());
     }
 
 }

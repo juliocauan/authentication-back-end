@@ -6,24 +6,30 @@ import br.com.juliocauan.authentication.infrastructure.exception.EmailException;
 import br.com.juliocauan.authentication.util.emailers.Emailer;
 import br.com.juliocauan.authentication.util.emailers.GmailEmailer;
 import br.com.juliocauan.authentication.util.emailers.GreenMailEmailer;
+import lombok.experimental.UtilityClass;
 
-public abstract class EmailUtil {
+@UtilityClass
+public final class EmailUtil {
 
     private static Emailer currentEmailer = null;
 
-    public static final void sendEmail(String receiver, String subject, String message) {
+    public static void sendEmail(String receiver, String subject, String message) {
         if (currentEmailer == null)
             throw new EmailException("Emailer not set. ADMIN must set one.");
 
         currentEmailer.sendSimpleEmail(receiver, subject, message);
     }
 
-    public static final void setEmailer(String username, String key, EmailType emailerType) {
-        if (emailerType == EmailType.GMAIL)
-            currentEmailer = new GmailEmailer(username, key);
-        
-        if (emailerType == EmailType.GREEN_MAIL)
-            currentEmailer = new GreenMailEmailer(username, key);
+    public static void setEmailer(String username, String key, EmailType emailerType) {
+        switch (emailerType.getValue()) {
+            case "GMAIL":
+                currentEmailer = new GmailEmailer(username, key);
+                break;
+            case "GREEN_MAIL":
+            default:
+                currentEmailer = new GreenMailEmailer(username, key);
+                break;
+        }
     }
 
 }

@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public final class ProfileService {
+public class ProfileService {
 
     private final UserRepository userRepository;
 

@@ -1,9 +1,9 @@
-package br.com.juliocauan.authentication.controller;
+package br.com.juliocauan.authentication.application.controller;
 
 import org.openapitools.api.AuthApi;
-import org.openapitools.model.EmailPasswordResetRequest;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.PasswordMatch;
+import org.openapitools.model.SendResetTokenRequest;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.openapitools.model.SignupFormAdmin;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.application.service.AuthenticationService;
-import br.com.juliocauan.authentication.domain.service.PasswordResetService;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
@@ -22,7 +21,6 @@ import lombok.AllArgsConstructor;
 public class AuthController implements AuthApi {
 
   private final AuthenticationService authenticationService;
-  private final PasswordResetService passwordResetService;
 
   @Override
   public ResponseEntity<UserData> _login(SigninForm signinForm) {
@@ -58,18 +56,18 @@ public class AuthController implements AuthApi {
   }
 
   @Override
-  public ResponseEntity<OkResponse> _emailPasswordReset(EmailPasswordResetRequest requestBody) {
+  public ResponseEntity<OkResponse> _sendResetToken(SendResetTokenRequest requestBody) {
     String username = requestBody.getUsername();
-    passwordResetService.sendNewToken(username);
+    authenticationService.sendToken(username);
 
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
-        "Email sent to [%s] successfully!".formatted(username)));
+        "Email sent to [%s]!".formatted(username)));
   }
 
   @Override
-  public ResponseEntity<OkResponse> _passwordReset(PasswordMatch passwordMatch, String token) {
+  public ResponseEntity<OkResponse> _resetPassword(PasswordMatch passwordMatch, String token) {
     PasswordUtil.validatePasswordConfirmation(passwordMatch);
-    passwordResetService.resetPassword(passwordMatch.getPassword(), token);
+    authenticationService.resetPassword(passwordMatch.getPassword(), token);
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
   }
 

@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.controller;
+package br.com.juliocauan.authentication.application.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -11,7 +11,7 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EmailPasswordResetRequest;
+import org.openapitools.model.SendResetTokenRequest;
 import org.openapitools.model.EmailType;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.SigninForm;
@@ -179,6 +179,21 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
+    void signup_error_weakPassword() throws Exception {
+        String weakPassword = "12345678";
+        SignupForm signupForm = new SignupForm(getRandomUsername(),
+                new PasswordMatch(weakPassword, weakPassword));
+        getMockMvc().perform(
+                post(urlSignup)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(signupForm)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Password is not strong!"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
     void signupAdmin() throws Exception {
         String username = getRandomUsername();
         SignupFormAdmin signupFormAdmin = new SignupFormAdmin(username, new PasswordMatch(rawPassword, rawPassword),
@@ -235,6 +250,21 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
+    void signupAdmin_error_weakPassword() throws Exception {
+        String weakPassword = "12345678";
+        SignupFormAdmin signupFormAdmin = new SignupFormAdmin(getRandomUsername(),
+                new PasswordMatch(weakPassword, weakPassword), adminKey);
+        getMockMvc().perform(
+                post(urlSignupAdmin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(signupFormAdmin)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Password is not strong!"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
     void signupAdmin_error_duplicatedUsername() throws Exception {
         String username = saveUser().getUsername();
         SignupFormAdmin signupFormAdmin = new SignupFormAdmin(username, new PasswordMatch(rawPassword, rawPassword),
@@ -250,20 +280,20 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void emailPasswordReset() throws Exception {
+    void sendResetToken() throws Exception {
         String username = saveUser().getUsername();
-        EmailPasswordResetRequest requestBody = new EmailPasswordResetRequest().username(username);
+        SendResetTokenRequest requestBody = new SendResetTokenRequest().username(username);
         getMockMvc().perform(
                 post(urlForgotPassword)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(requestBody)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Email sent to [%s] successfully!".formatted(username)));
+                .andExpect(jsonPath("$.message").value("Email sent to [%s]!".formatted(username)));
     }
 
     @Test
-    void emailPasswordReset_error_invalidInput() throws Exception {
-        EmailPasswordResetRequest requestBody = new EmailPasswordResetRequest().username(getRandomString(5));
+    void sendResetToken_error_invalidInput() throws Exception {
+        SendResetTokenRequest requestBody = new SendResetTokenRequest().username(getRandomString(5));
         getMockMvc().perform(
                 post(urlForgotPassword)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -275,9 +305,9 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void emailPasswordReset_error_userNotFound() throws Exception {
+    void sendResetToken_error_userNotFound() throws Exception {
         String username = getRandomUsername();
-        EmailPasswordResetRequest requestBody = new EmailPasswordResetRequest().username(username);
+        SendResetTokenRequest requestBody = new SendResetTokenRequest().username(username);
         getMockMvc().perform(
                 post(urlForgotPassword)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -289,7 +319,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void resetUserPassword() throws Exception {
+    void resetPassword() throws Exception {
         PasswordMatch passwordMatch = new PasswordMatch(rawPassword, rawPassword);
         String token = savePasswordReset().getToken();
         getMockMvc().perform(
@@ -301,7 +331,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void resetUserPassword_error_invalidInput() throws Exception {
+    void resetPassword_error_invalidInput() throws Exception {
         String invalidInput = getRandomString(5);
         PasswordMatch passwordMatch = new PasswordMatch(invalidInput, invalidInput);
         getMockMvc().perform(
@@ -315,7 +345,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void resetUserPassword_error_passwordMatch() throws Exception {
+    void resetPassword_error_passwordMatch() throws Exception {
         PasswordMatch passwordMatch = new PasswordMatch(getRandomPassword(), getRandomPassword());
         String token = savePasswordReset().getToken();
         getMockMvc().perform(
@@ -329,7 +359,22 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void resetUserPassword_error_tokenNotFound() throws Exception {
+    void resetPassword_error_weakPassword() throws Exception {
+        String weakPassword = "12345678";
+        PasswordMatch passwordMatch = new PasswordMatch(weakPassword, weakPassword);
+        String token = savePasswordReset().getToken();
+        getMockMvc().perform(
+                patch(urlForgotPasswordWithToken, token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(passwordMatch)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Password is not strong!"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
+    void resetPassword_error_tokenNotFound() throws Exception {
         String token = getRandomToken();
         PasswordMatch passwordMatch = new PasswordMatch(rawPassword, rawPassword);
         getMockMvc().perform(
@@ -343,7 +388,7 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
-    void resetUserPassword_error_tokenExpired() throws Exception {
+    void resetPassword_error_tokenExpired() throws Exception {
         PasswordMatch passwordMatch = new PasswordMatch(rawPassword, rawPassword);
         PasswordReset passwordReset = new PasswordReset(saveUser());
         passwordReset.setExpireDate(LocalDateTime.now().minusSeconds(1));

@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.controller;
+package br.com.juliocauan.authentication.application.controller;
 
 import org.openapitools.api.ProfileApi;
 import org.openapitools.model.CloseAccountRequest;

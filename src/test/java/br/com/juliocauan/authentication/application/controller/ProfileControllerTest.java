@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.controller;
+package br.com.juliocauan.authentication.application.controller;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -124,6 +124,24 @@ class ProfileControllerTest extends TestContext {
                         .content(writeValueAsString(passwordUpdateForm)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(errorInvalidPassword));
+    }
+
+    @Test
+    void updateUserPassword_error_weakPassword() throws Exception {
+        String newPassword = "12345678";
+        PasswordUpdateForm passwordUpdateForm = new PasswordUpdateForm()
+                .currentPassword(rawPassword)
+                .match(new PasswordMatch()
+                        .password(newPassword)
+                        .passwordConfirmation(newPassword));
+
+        getMockMvc().perform(
+                patch(url)
+                        .header(authorizationHeader, getBearerToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(passwordUpdateForm)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Password is not strong!"));
     }
 
     @Test

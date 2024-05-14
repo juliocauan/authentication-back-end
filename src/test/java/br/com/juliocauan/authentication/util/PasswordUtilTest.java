@@ -56,28 +56,28 @@ class PasswordUtilTest extends TestContext {
     }
 
     @Test
-    void validatePasswordConfirmation() {
+    void validatePasswordMatch() {
         String password = getRandomPassword();
         PasswordMatch passwordMatch = new PasswordMatch();
 
         passwordMatch.password(password).passwordConfirmation(password);
-        assertDoesNotThrow(() -> PasswordUtil.validatePasswordConfirmation(passwordMatch));
+        assertDoesNotThrow(() -> PasswordUtil.validateMatch(passwordMatch));
     }
 
     @Test
-    void validatePasswordConfirmation_error_invalidPassword() {
+    void validatePasswordMatch_error_invalidPassword() {
         String password = getRandomPassword();
         String otherPassword = getRandomPassword();
         PasswordMatch passwordMatch = new PasswordMatch();
 
         passwordMatch.password(password).passwordConfirmation(otherPassword);
         InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
-                () -> PasswordUtil.validatePasswordConfirmation(passwordMatch));
+                () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(errorInvalidPassword, exception.getMessage());
 
         passwordMatch.password(otherPassword).passwordConfirmation(password);
         exception = assertThrowsExactly(InvalidPasswordException.class,
-                () -> PasswordUtil.validatePasswordConfirmation(passwordMatch));
+                () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(errorInvalidPassword, exception.getMessage());
     }
 

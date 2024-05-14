@@ -35,7 +35,7 @@ public class AuthController implements AuthApi {
     String username = signupForm.getUsername();
     String password = signupForm.getMatch().getPassword();
 
-    PasswordUtil.validatePasswordConfirmation(signupForm.getMatch());
+    PasswordUtil.validateMatch(signupForm.getMatch());
 
     authenticationService.registerUser(username, password);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,7 +48,7 @@ public class AuthController implements AuthApi {
     String password = signupFormAdmin.getMatch().getPassword();
     String adminKey = signupFormAdmin.getAdminKey();
 
-    PasswordUtil.validatePasswordConfirmation(signupFormAdmin.getMatch());
+    PasswordUtil.validateMatch(signupFormAdmin.getMatch());
 
     authenticationService.registerAdmin(username, password, adminKey);
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -66,7 +66,7 @@ public class AuthController implements AuthApi {
 
   @Override
   public ResponseEntity<OkResponse> _resetPassword(PasswordMatch passwordMatch, String token) {
-    PasswordUtil.validatePasswordConfirmation(passwordMatch);
+    PasswordUtil.validateMatch(passwordMatch);
     authenticationService.resetPassword(passwordMatch.getPassword(), token);
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message("Password updated successfully!"));
   }

@@ -36,7 +36,7 @@ public final class PasswordUtil {
             throw new InvalidPasswordException("Passwords don't match!");
     }
 
-    public static void validatePasswordConfirmation(PasswordMatch passwordMatch) {
+    public static void validateMatch(PasswordMatch passwordMatch) {
         String rawPassword = passwordMatch.getPassword();
         String encodedPassword = encode(passwordMatch.getPasswordConfirmation());
         validateMatch(rawPassword, encodedPassword);

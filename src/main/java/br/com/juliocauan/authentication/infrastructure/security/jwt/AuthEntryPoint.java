@@ -22,9 +22,8 @@ public class AuthEntryPoint implements AuthenticationEntryPoint {
 			AuthenticationException authException) throws IOException, ServletException {
 		response.setContentType("application/json");
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		ObjectMapper mapper = new ObjectMapper();
-		response.getWriter().write(mapper.writeValueAsString(new AuthenticationError()
-			.message(authException.getMessage())));
+		String message = new ObjectMapper().writeValueAsString(new AuthenticationError().message(authException.getMessage()));
+		response.getWriter().write(message);
 	}
 
 }

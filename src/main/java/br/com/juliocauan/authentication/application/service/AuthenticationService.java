@@ -1,14 +1,9 @@
 package br.com.juliocauan.authentication.application.service;
 
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 import org.openapitools.model.UserData;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
@@ -23,22 +18,16 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class AuthenticationService {
+public final class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetRepository passwordResetRepository;
 
     public UserData authenticate(String username, String password) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        Authentication auth = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        
-        return new UserData()
-            .roles(auth.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()))
-            .JWT(jwtProvider.generateToken(auth));
+        UserData userData = JwtProvider.authenticate(username, password, authenticationManager);
+        return userData;
     }
 
     public void registerUser(String username, String password) {
@@ -61,7 +50,6 @@ public class AuthenticationService {
                 getEmailTemplate(token));
     }
 
-    //TODO refactor
     private String getEmailTemplate(String token) {
         return "To reset your password, use the following token: %s %n%n This token will last %d minutes".formatted(
                 token, PasswordReset.TOKEN_EXPIRATION_MINUTES);

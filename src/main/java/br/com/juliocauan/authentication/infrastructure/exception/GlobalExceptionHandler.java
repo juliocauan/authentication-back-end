@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.mail.MailSendException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,9 +20,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -55,14 +53,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
-    // TODO remover assim que refatorar todos os repositórios e serviços
-    @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<Object> handleEntityExists(EntityExistsException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
-    }
-
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<Object> handleInvalidPassword(InvalidPasswordException ex){
+    @ExceptionHandler(PasswordException.class)
+    public ResponseEntity<Object> handlePassword(PasswordException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
@@ -71,8 +63,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
-    @ExceptionHandler(ExpiredPasswordResetException.class)
-    public ResponseEntity<Object> handleExpiredPasswordReset(ExpiredPasswordResetException ex){
+    @ExceptionHandler(ExpiredResetTokenException.class)
+    public ResponseEntity<Object> handleExpiredResetToken(ExpiredResetTokenException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(standardError(ex));
     }
 
@@ -86,19 +78,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));
     }
 
-    // TODO remover assim que refatorar todos os repositórios e serviços
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));
-    }
-
     @ExceptionHandler(JpaObjectRetrievalFailureException.class)
     public ResponseEntity<Object> handleJpaObjectRetrievalFailure(JpaObjectRetrievalFailureException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError(ex));
     }
 
-    @ExceptionHandler(EmailException.class)
-    public ResponseEntity<Object> handleEmail(EmailException ex){
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<Object> handleMailSend(MailSendException ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(standardError(ex));
     }
 

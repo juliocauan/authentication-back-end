@@ -1,8 +1,8 @@
 package br.com.juliocauan.authentication.infrastructure.exception;
 
-public class EmailException extends RuntimeException {
+public class PasswordException extends RuntimeException {
     
-    public EmailException(String message) {
+    public PasswordException(String message){
         super(message);
     }
 

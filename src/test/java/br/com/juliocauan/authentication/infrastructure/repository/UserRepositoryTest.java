@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordException;
 
 class UserRepositoryTest extends TestContext {
 
@@ -213,7 +213,7 @@ class UserRepositoryTest extends TestContext {
     void register_error_weakPassword() {
         User user = getUser();
         user.setPassword("123456789");
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
             () -> getUserRepository().register(user));
         assertEquals("Password is not strong!", exception.getMessage());
     }
@@ -245,7 +245,7 @@ class UserRepositoryTest extends TestContext {
     @Test
     void updatePassword_error_weakPassword() {
         User user = saveUser();
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
             () -> getUserRepository().updatePassword(user, "123456789"));
         assertEquals("Password is not strong!", exception.getMessage());
     }

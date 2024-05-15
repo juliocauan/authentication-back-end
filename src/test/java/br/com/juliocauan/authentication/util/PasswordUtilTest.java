@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
@@ -50,7 +50,7 @@ class PasswordUtilTest extends TestContext {
     void validateMatch_error_invalidPassword() {
         String rawPassword = getRandomPassword();
         String encodedPassword = PasswordUtil.encode(getRandomPassword());
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateMatch(rawPassword, encodedPassword));
         assertEquals(errorInvalidPassword, exception.getMessage());
     }
@@ -71,12 +71,12 @@ class PasswordUtilTest extends TestContext {
         PasswordMatch passwordMatch = new PasswordMatch();
 
         passwordMatch.password(password).passwordConfirmation(otherPassword);
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(errorInvalidPassword, exception.getMessage());
 
         passwordMatch.password(otherPassword).passwordConfirmation(password);
-        exception = assertThrowsExactly(InvalidPasswordException.class,
+        exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateMatch(passwordMatch));
         assertEquals(errorInvalidPassword, exception.getMessage());
     }
@@ -90,7 +90,7 @@ class PasswordUtilTest extends TestContext {
     @Test
     void validateSecurity_error_weakNumber() {
         String weakNumber = "@Password";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateSecurity(weakNumber));
         assertEquals(errorWeakPassword, exception.getMessage());
     }
@@ -98,7 +98,7 @@ class PasswordUtilTest extends TestContext {
     @Test
     void validateSecurity_error_weakSpecial() {
         String weakSpecial = "APass123";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateSecurity(weakSpecial));
         assertEquals(errorWeakPassword, exception.getMessage());
     }
@@ -106,7 +106,7 @@ class PasswordUtilTest extends TestContext {
     @Test
     void validateSecurity_error_weakLowerCase() {
         String weakLowerCase = "@PASS123";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateSecurity(weakLowerCase));
         assertEquals(errorWeakPassword, exception.getMessage());
     }
@@ -114,7 +114,7 @@ class PasswordUtilTest extends TestContext {
     @Test
     void validateSecurity_error_weakUpperCase() {
         String weakUpperCase = "@pass123";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateSecurity(weakUpperCase));
         assertEquals(errorWeakPassword, exception.getMessage());
     }
@@ -122,7 +122,7 @@ class PasswordUtilTest extends TestContext {
     @Test
     void validateSecurity_error_weakSize() {
         String weakSize = "@Pass12";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateSecurity(weakSize));
         assertEquals(errorWeakPassword, exception.getMessage());
     }
@@ -136,7 +136,7 @@ class PasswordUtilTest extends TestContext {
     @Test
     void validateAdminKey_error_invalidPassword() {
         String adminKey = "@AnotherPassword123";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> PasswordUtil.validateAdminKey(adminKey));
         assertEquals("Admin Key is incorrect!", exception.getMessage());
     }

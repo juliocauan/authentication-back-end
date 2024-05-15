@@ -9,7 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordException;
 
 @Component
 public final class PasswordUtil {
@@ -33,7 +33,7 @@ public final class PasswordUtil {
 
     public static void validateMatch(String rawPassword, String encodedPassword) {
         if(!matches(rawPassword, encodedPassword))
-            throw new InvalidPasswordException("Passwords don't match!");
+            throw new PasswordException("Passwords don't match!");
     }
 
     public static void validateMatch(PasswordMatch passwordMatch) {
@@ -47,12 +47,12 @@ public final class PasswordUtil {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(password);
         if(!matcher.matches())
-            throw new InvalidPasswordException("Password is not strong!");
+            throw new PasswordException("Password is not strong!");
     }
 
     public static void validateAdminKey(String adminPassword) {
         if(!matches(adminPassword, encode(env.getProperty("ADMIN_KEY"))))
-            throw new InvalidPasswordException("Admin Key is incorrect!");
+            throw new PasswordException("Admin Key is incorrect!");
     }
 
     private static boolean matches(String rawPassword, String encodedPassword) {

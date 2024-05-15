@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.ExpiredResetTokenException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
@@ -103,7 +103,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerUser_error_passwordSecurity() {
         String password = "1234567itsq";
 
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> authenticationService.registerUser(getRandomUsername(), password));
         assertEquals("Password is not strong!", exception.getMessage());
     }
@@ -123,7 +123,7 @@ class AuthenticationServiceTest extends TestContext {
     @Test
     void registerAdmin_error_adminKey() {
         String adminKey = "1234567itsq";
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> authenticationService.registerAdmin(getRandomUsername(), getRandomPassword(), adminKey));
         assertEquals("Admin Key is incorrect!", exception.getMessage());
     }
@@ -140,7 +140,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerAdmin_error_passwordSecurity() {
         String password = "1234567itsq";
 
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> authenticationService.registerAdmin(getRandomUsername(), password, adminKey));
         assertEquals("Password is not strong!", exception.getMessage());
     }
@@ -203,7 +203,7 @@ class AuthenticationServiceTest extends TestContext {
         passwordReset.setExpireDate(LocalDateTime.now().minusSeconds(1));
         passwordResetRepository.save(passwordReset);
 
-        ExpiredPasswordResetException exception = assertThrowsExactly(ExpiredPasswordResetException.class,
+        ExpiredResetTokenException exception = assertThrowsExactly(ExpiredResetTokenException.class,
                 () -> authenticationService.resetPassword(getRandomPassword(), passwordReset.getToken()));
         assertEquals("Expired Token!", exception.getMessage());
         assertTrue(passwordResetRepository.findAll().isEmpty());

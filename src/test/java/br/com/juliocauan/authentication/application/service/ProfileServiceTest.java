@@ -18,7 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.InvalidPasswordException;
+import br.com.juliocauan.authentication.infrastructure.exception.PasswordException;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
@@ -75,7 +75,7 @@ class ProfileServiceTest extends TestContext {
         String incorrectCurrentPassword = getRandomPassword();
         String newPassword = getRandomPassword();
         authenticate();
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> profileService.updatePassword(incorrectCurrentPassword, newPassword));
         assertEquals("Passwords don't match!", exception.getMessage());
     }
@@ -84,7 +84,7 @@ class ProfileServiceTest extends TestContext {
     void updatePassword_error_passwordSecurity() {
         String newPassword = "1234567yttis";
         authenticate();
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> profileService.updatePassword(rawPassword, newPassword));
         assertEquals("Password is not strong!", exception.getMessage());
     }
@@ -107,7 +107,7 @@ class ProfileServiceTest extends TestContext {
     @Test
     void closeAccount_error_invalidPassword() {
         authenticate();
-        InvalidPasswordException exception = assertThrowsExactly(InvalidPasswordException.class,
+        PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> profileService.closeAccount(getRandomPassword()));
         assertEquals("Passwords don't match!", exception.getMessage());
     }

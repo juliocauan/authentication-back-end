@@ -2,12 +2,9 @@ package br.com.juliocauan.authentication.util.emailers;
 
 import java.util.Properties;
 
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-
-import br.com.juliocauan.authentication.infrastructure.exception.EmailException;
 
 public final class GmailEmailer implements Emailer {
 
@@ -40,11 +37,7 @@ public final class GmailEmailer implements Emailer {
         email.setSubject(subject);
         email.setText(message);
         
-        try{
-            mailSender.send(email);
-        } catch (MailSendException e) {
-            throw new EmailException("The recipient address is not a valid address!");
-        }
+        mailSender.send(email);
     }
 
 }

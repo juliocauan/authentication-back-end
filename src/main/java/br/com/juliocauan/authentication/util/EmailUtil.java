@@ -1,8 +1,8 @@
 package br.com.juliocauan.authentication.util;
 
 import org.openapitools.model.EmailType;
+import org.springframework.mail.MailSendException;
 
-import br.com.juliocauan.authentication.infrastructure.exception.EmailException;
 import br.com.juliocauan.authentication.util.emailers.Emailer;
 import br.com.juliocauan.authentication.util.emailers.GmailEmailer;
 import br.com.juliocauan.authentication.util.emailers.GreenMailEmailer;
@@ -15,7 +15,7 @@ public final class EmailUtil {
 
     public static void sendEmail(String receiver, String subject, String message) {
         if (currentEmailer == null)
-            throw new EmailException("Emailer not set. ADMIN must set one.");
+            throw new MailSendException("Emailer not set. ADMIN must set one.");
 
         currentEmailer.sendSimpleEmail(receiver, subject, message);
     }

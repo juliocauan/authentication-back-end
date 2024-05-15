@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
+import br.com.juliocauan.authentication.infrastructure.exception.ExpiredResetTokenException;
 import jakarta.persistence.EntityNotFoundException;
 
 public interface PasswordResetRepository extends JpaRepository<PasswordReset, Integer>, JpaSpecificationExecutor<PasswordReset> {
@@ -21,7 +21,7 @@ public interface PasswordResetRepository extends JpaRepository<PasswordReset, In
             .orElseThrow(() -> new EntityNotFoundException("Token [%s] not found!".formatted(token)));
         if(passwordReset.isExpired()) {
             this.delete(passwordReset);
-            throw new ExpiredPasswordResetException("Expired Token!");
+            throw new ExpiredResetTokenException("Expired Token!");
         }
         return passwordReset;
     }

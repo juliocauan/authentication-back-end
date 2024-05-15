@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.exception.ExpiredPasswordResetException;
+import br.com.juliocauan.authentication.infrastructure.exception.ExpiredResetTokenException;
 
 class PasswordResetRepositoryTest extends TestContext {
 
@@ -62,7 +62,7 @@ class PasswordResetRepositoryTest extends TestContext {
         PasswordReset passwordReset = new PasswordReset(saveUser());
         passwordReset.setExpireDate(LocalDateTime.now().minusSeconds(1));
         passwordResetRepository.save(passwordReset);
-        ExpiredPasswordResetException exception = assertThrowsExactly(ExpiredPasswordResetException.class,
+        ExpiredResetTokenException exception = assertThrowsExactly(ExpiredResetTokenException.class,
             () -> passwordResetRepository.findByToken(passwordReset.getToken()));
         assertEquals("Expired Token!", exception.getMessage());
     }

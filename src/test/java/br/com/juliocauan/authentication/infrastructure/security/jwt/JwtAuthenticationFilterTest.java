@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.security.jwt;
+package br.com.juliocauan.authentication.infrastructure.security.jwt;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

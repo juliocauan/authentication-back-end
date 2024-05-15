@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.security.service;
+package br.com.juliocauan.authentication.infrastructure.security.service;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +21,6 @@ import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 
 class UserDetailsServiceTest extends TestContext {
 

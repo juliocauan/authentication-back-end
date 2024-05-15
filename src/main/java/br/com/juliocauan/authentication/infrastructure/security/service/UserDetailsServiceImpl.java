@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) {
-        return UserMapper.domainToUserPrincipal(userRepository.findByUsername(username));
+        return UserMapper.domainToUserDetails(userRepository.findByUsername(username));
     }
     
 }

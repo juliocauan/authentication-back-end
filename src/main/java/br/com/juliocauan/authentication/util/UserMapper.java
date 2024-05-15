@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
@@ -14,7 +15,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class UserMapper {
 
-    public static UserPrincipal domainToUserPrincipal(User model) {
+    public static UserDetails domainToUserDetails(User model) {
         UserPrincipal userPrincipal = new UserPrincipal();
         Set<SimpleGrantedAuthority> authorities = model.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());

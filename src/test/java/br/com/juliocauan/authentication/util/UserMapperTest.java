@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserInfo;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,7 +13,6 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 
 class UserMapperTest extends TestContext {
 
@@ -31,9 +31,9 @@ class UserMapperTest extends TestContext {
     }
 
     @Test
-    void domainToUserPrincipal() {
+    void domainToUserDetails() {
         User user = getUser();
-        UserPrincipal userPrincipal = UserMapper.domainToUserPrincipal(user);
+        UserDetails userPrincipal = UserMapper.domainToUserDetails(user);
         assertEquals(user.getUsername(), userPrincipal.getUsername());
         assertEquals(user.getPassword(), userPrincipal.getPassword());
         assertEquals(user.getRoles().size(), userPrincipal.getAuthorities().size());

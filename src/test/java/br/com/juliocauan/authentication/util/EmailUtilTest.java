@@ -3,7 +3,6 @@ package br.com.juliocauan.authentication.util;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.EmailType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +16,6 @@ class EmailUtilTest extends TestContext {
     public EmailUtilTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
-        EmailUtil.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @Test

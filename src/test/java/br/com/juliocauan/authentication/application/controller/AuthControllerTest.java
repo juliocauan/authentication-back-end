@@ -11,9 +11,8 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.SendResetTokenRequest;
-import org.openapitools.model.EmailType;
 import org.openapitools.model.PasswordMatch;
+import org.openapitools.model.SendResetTokenRequest;
 import org.openapitools.model.SigninForm;
 import org.openapitools.model.SignupForm;
 import org.openapitools.model.SignupFormAdmin;
@@ -30,7 +29,6 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
-import br.com.juliocauan.authentication.util.EmailUtil;
 
 class AuthControllerTest extends TestContext {
 
@@ -52,7 +50,6 @@ class AuthControllerTest extends TestContext {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.encoder = encoder;
         this.passwordResetRepository = passwordResetRepository;
-        EmailUtil.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     @BeforeEach

@@ -170,7 +170,7 @@ class AuthControllerTest extends TestContext {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(signupForm)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(getErrorUsernameDuplicated(username)))
+                .andExpect(jsonPath("$.message").value("Username [%s] is already taken!".formatted(username)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
@@ -271,7 +271,7 @@ class AuthControllerTest extends TestContext {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(signupFormAdmin)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(getErrorUsernameDuplicated(username)))
+                .andExpect(jsonPath("$.message").value("Username [%s] is already taken!".formatted(username)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
@@ -310,7 +310,7 @@ class AuthControllerTest extends TestContext {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(requestBody)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(username)))
+                .andExpect(jsonPath("$.message").value("Username [%s] not found!".formatted(username)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }
@@ -379,7 +379,7 @@ class AuthControllerTest extends TestContext {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(writeValueAsString(passwordMatch)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value(getErrorPasswordResetNotFound(token)))
+                .andExpect(jsonPath("$.message").value("Token [%s] not found!".formatted(token)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

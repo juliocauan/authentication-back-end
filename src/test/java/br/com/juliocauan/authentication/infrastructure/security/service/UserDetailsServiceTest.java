@@ -64,7 +64,7 @@ class UserDetailsServiceTest extends TestContext {
     void loadByUsername_error_usernameNotFound(){
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> userDetailsService.loadUserByUsername(username));
-        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+        assertEquals("Username [%s] not found!".formatted(username), exception.getMessage());
     }
 
 }

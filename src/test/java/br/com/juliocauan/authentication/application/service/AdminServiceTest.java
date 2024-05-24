@@ -212,7 +212,7 @@ class AdminServiceTest extends TestContext {
         String role = saveRole();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
                 () -> adminService.updateUserRoles(username, getRoleSet(role)));
-        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+        assertEquals("Username [%s] not found!".formatted(username), exception.getMessage());
     }
 
     @Test

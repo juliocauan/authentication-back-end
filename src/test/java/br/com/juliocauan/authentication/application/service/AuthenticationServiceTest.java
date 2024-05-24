@@ -96,7 +96,7 @@ class AuthenticationServiceTest extends TestContext {
 
         DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
                 () -> authenticationService.registerUser(user.getUsername(), user.getPassword()));
-        assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
+        assertEquals("Username [%s] is already taken!".formatted(user.getUsername()), exception.getMessage());
     }
 
     @Test
@@ -133,7 +133,7 @@ class AuthenticationServiceTest extends TestContext {
         User user = saveUser();
         DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
                 () -> authenticationService.registerAdmin(user.getUsername(), user.getPassword(), adminKey));
-        assertEquals(getErrorUsernameDuplicated(user.getUsername()), exception.getMessage());
+        assertEquals("Username [%s] is already taken!".formatted(user.getUsername()), exception.getMessage());
     }
 
     @Test
@@ -164,7 +164,7 @@ class AuthenticationServiceTest extends TestContext {
         UsernameNotFoundException exception = assertThrowsExactly(
                 UsernameNotFoundException.class,
                 () -> authenticationService.sendToken(username));
-        assertEquals(getErrorUsernameNotFound(username), exception.getMessage());
+        assertEquals("Username [%s] not found!".formatted(username), exception.getMessage());
     }
 
     @Test
@@ -194,7 +194,7 @@ class AuthenticationServiceTest extends TestContext {
         String token = getRandomToken();
         JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
                 () -> authenticationService.resetPassword(getRandomPassword(), token));
-        assertEquals(getErrorPasswordResetNotFound(token), exception.getMessage());
+        assertEquals("Token [%s] not found!".formatted(token), exception.getMessage());
     }
 
     @Test

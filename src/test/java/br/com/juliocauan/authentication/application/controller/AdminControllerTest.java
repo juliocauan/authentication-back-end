@@ -259,7 +259,7 @@ class AdminControllerTest extends TestContext {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(writeValueAsString(updateUserRolesForm)))
             .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.message").value(getErrorUsernameNotFound(username)))
+            .andExpect(jsonPath("$.message").value("Username [%s] not found!".formatted(username)))
             .andExpect(jsonPath("$.timestamp").isNotEmpty())
             .andExpect(jsonPath("$.fieldErrors").isEmpty());
     }

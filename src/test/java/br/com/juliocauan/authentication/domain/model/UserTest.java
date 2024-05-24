@@ -37,12 +37,12 @@ class UserTest extends TestContext {
     }
 
     private void saveUserWithPassword(String password) {
-        saveUser(getRandomUsername(null), password);
+        saveUser(getRandomUsername(), password);
     }
 
     @Test
     void username_email() {
-        String email = getRandomUsername(null);
+        String email = getRandomUsername();
         assertDoesNotThrow(() -> saveUserWithUsername(email));
 
         String notEmail = getRandomString(12);
@@ -58,7 +58,7 @@ class UserTest extends TestContext {
 
     @Test
     void username_unique() {
-        String username = getRandomUsername(null);
+        String username = getRandomUsername();
         assertDoesNotThrow(() -> saveUserWithUsername(username));
         assertThrows(DataIntegrityViolationException.class, () -> saveUserWithUsername(username));
     }

@@ -72,18 +72,6 @@ public class TestContext {
         return getRandomString(43);
     }
 
-    public String getErrorUsernameNotFound(String username) {
-        return String.format("Username [%s] not found!", username);
-    }
-
-    public String getErrorUsernameDuplicated(String username) {
-        return String.format("Username [%s] is already taken!", username);
-    }
-
-    public String getErrorPasswordResetNotFound(String token) {
-        return String.format("Token [%s] not found!", token);
-    }
-
     public String getRandomString(Integer length) {
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

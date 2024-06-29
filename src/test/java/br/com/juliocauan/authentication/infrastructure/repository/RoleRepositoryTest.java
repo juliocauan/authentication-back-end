@@ -48,6 +48,14 @@ class RoleRepositoryTest extends TestContext {
     }
 
     @Test
+    void findByName_error_nullName() {
+        saveRole("null");
+        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
+            () -> getRoleRepository().findByName(null));
+        assertEquals("Role [null] not found!", exception.getMessage());
+    }
+
+    @Test
     void findAllByFilters() {
         Role role = saveRole("ROLE");
         Set<Role> roles = getRoleRepository().findAllByFilters("ROLE");
@@ -82,6 +90,11 @@ class RoleRepositoryTest extends TestContext {
         DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
             () -> getRoleRepository().register("ROLE"));
         assertEquals("Role [ROLE] already exists!", exception.getMessage());
+    }
+
+    @Test
+    void register_error_nullName() {
+        assertThrowsExactly(DataIntegrityViolationException.class, () -> getRoleRepository().register(null));
     }
 
 }

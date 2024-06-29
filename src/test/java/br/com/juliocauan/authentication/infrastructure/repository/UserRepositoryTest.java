@@ -68,11 +68,17 @@ class UserRepositoryTest extends TestContext {
 
     @Test
     void findByUsername_error_notPresentUsername(){
-        getUserRepository().deleteAll();
         String username = getRandomUsername();
         UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
             () -> getUserRepository().findByUsername(username));
         assertEquals("Username [%s] not found!".formatted(username), exception.getMessage());
+    }
+
+    @Test
+    void findByUsername_error_nullUsername(){
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+            () -> getUserRepository().findByUsername(null));
+        assertEquals("Username [null] not found!", exception.getMessage());
     }
 
     @Test

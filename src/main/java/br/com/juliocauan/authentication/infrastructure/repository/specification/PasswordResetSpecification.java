@@ -11,14 +11,12 @@ public interface PasswordResetSpecification {
 
     static Specification<PasswordReset> tokenEquals(String token){
         return (root, criteriaQuery, criteriaBuilder) -> {
-            if(token == null) return null;
-            return criteriaBuilder.like(root.get("token"), token);
+            return criteriaBuilder.like(root.get("token"), token == null ? "" : token);
         };
     }
 
     static Specification<PasswordReset> userEquals(User user){
         return (root, criteriaQuery, criteriaBuilder) -> {
-            if(user == null) return null;
             Join<User, PasswordReset> userJoin = root.join("user", JoinType.INNER);
             return criteriaBuilder.equal(userJoin.get("username"), user.getUsername());
         };

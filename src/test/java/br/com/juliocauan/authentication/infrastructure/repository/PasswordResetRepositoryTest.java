@@ -58,6 +58,13 @@ class PasswordResetRepositoryTest extends TestContext {
     }
 
     @Test
+    void findByToken_error_nullToken() {
+        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
+            () -> passwordResetRepository.findByToken(null));
+        assertEquals(exception.getMessage(), "Token [null] not found!");
+    }
+
+    @Test
     void findByToken_error_expiredToken() {
         PasswordReset passwordReset = new PasswordReset(saveUser());
         passwordReset.setExpireDate(LocalDateTime.now().minusSeconds(1));

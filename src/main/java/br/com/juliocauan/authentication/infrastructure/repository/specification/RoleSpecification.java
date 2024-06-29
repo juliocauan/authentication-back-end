@@ -15,8 +15,7 @@ public interface RoleSpecification {
 
     static Specification<Role> nameEquals(String nameEquals){
         return (root, criteriaQuery, criteriaBuilder) -> {
-            if(nameEquals == null) return null;
-            return criteriaBuilder.like(root.get("name"), nameEquals);
+            return criteriaBuilder.like(root.get("name"), nameEquals == null ? "" : nameEquals);
         };
     }
 

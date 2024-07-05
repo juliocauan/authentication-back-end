@@ -2,9 +2,11 @@ package br.com.juliocauan.authentication.config;
 
 import java.util.random.RandomGenerator;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.openapitools.model.EmailType;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestConstructor;
@@ -16,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import br.com.juliocauan.authentication.util.EmailUtil;
 import lombok.AllArgsConstructor;
 
 @SpringBootTest
@@ -37,6 +40,11 @@ public class TestContext {
         userRepository.deleteAll();
         roleRepository.deleteAll();
         roleRepository.save(new Role("ADMIN"));
+    }
+
+    @AfterEach
+    public void afterEach() {
+        EmailUtil.setEmailer("admin@authentication.test", "admin", EmailType.GREEN_MAIL);
     }
 
     public MockMvc getMockMvc() {

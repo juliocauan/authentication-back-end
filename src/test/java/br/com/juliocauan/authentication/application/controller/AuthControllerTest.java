@@ -29,6 +29,7 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import br.com.juliocauan.authentication.util.EmailUtil;
 
 class AuthControllerTest extends TestContext {
 
@@ -313,6 +314,19 @@ class AuthControllerTest extends TestContext {
                 .andExpect(jsonPath("$.message").value("Username [%s] not found!".formatted(username)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
                 .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
+    void sendResetToken_error_emailerNotSet() throws Exception {
+        EmailUtil.setEmailer(getRandomUsername(), getRandomPassword(), null);
+        String username = saveUser().getUsername();
+        SendResetTokenRequest requestBody = new SendResetTokenRequest().username(username);
+        getMockMvc().perform(
+                post(urlForgotPassword)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(requestBody)))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message").value("Emailer not set. ADMIN must set one."));
     }
 
     @Test

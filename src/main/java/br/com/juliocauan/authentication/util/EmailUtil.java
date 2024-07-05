@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class EmailUtil {
 
-    private static Emailer currentEmailer = null;
+    protected static Emailer currentEmailer = null;
 
     public static void sendEmail(String receiver, String subject, String message) {
         if (currentEmailer == null)
@@ -21,15 +21,12 @@ public final class EmailUtil {
     }
 
     public static void setEmailer(String username, String key, EmailType emailerType) {
-        switch (emailerType.getValue()) {
-            case "GMAIL":
-                currentEmailer = new GmailEmailer(username, key);
-                break;
-            case "GREEN_MAIL":
-            default:
-                currentEmailer = new GreenMailEmailer(username, key);
-                break;
+        if(emailerType == null) {
+            currentEmailer = null;
+            return;
         }
+        else if(emailerType.getValue().equals("GMAIL")) currentEmailer = new GmailEmailer(username, key);
+        else currentEmailer = new GreenMailEmailer(username, key);
     }
 
 }

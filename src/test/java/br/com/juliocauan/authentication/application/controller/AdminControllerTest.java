@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -17,6 +18,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.DeleteRoleRequest;
 import org.openapitools.model.DeleteUserRequest;
+import org.openapitools.model.EmailAccess;
+import org.openapitools.model.EmailType;
 import org.openapitools.model.RegisterRoleRequest;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.springframework.http.MediaType;
@@ -39,6 +42,7 @@ class AdminControllerTest extends TestContext {
 
     private final String urlAdminUsers = "/admin/users";
     private final String urlAdminRoles = "/admin/roles";
+    private final String urlAdminEmail = "/admin/email";
     private final String authorizationHeader = "Authorization";
 
     private final String usernameAdmin = getRandomUsername();
@@ -556,6 +560,45 @@ class AdminControllerTest extends TestContext {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(writeValueAsString(deleteRoleRequest)))
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void setEmailer() throws Exception {
+        EmailAccess emailAccess =  new EmailAccess().username(getRandomUsername()).key(getRandomPassword());
+        String emailerType = EmailType.GREEN_MAIL.getValue();
+        getMockMvc().perform(
+            put(urlAdminEmail)
+                .header(authorizationHeader, getAdminToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(emailAccess))
+                .queryParam("emailerType", emailerType))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.message").value("[%s] set successfully!".formatted(emailerType)));
+    }
+
+    @Test
+    void setEmailer_error_unauthenticated() throws Exception {
+        getMockMvc().perform(
+            put(urlAdminEmail)
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andExpect(jsonPath("$.message").value(errorNotAuthorized));   
+    }
+
+    @Test
+    void setEmailer_error_forbidden() throws Exception {
+        EmailAccess emailAccess =  new EmailAccess().username(getRandomUsername()).key(getRandomPassword());
+        String emailerType = EmailType.GREEN_MAIL.getValue();
+        String username = getRandomUsername();
+        String role = saveRole();
+        saveUser(username, role);
+        getMockMvc().perform(
+            put(urlAdminEmail)
+                .header(authorizationHeader, getToken(username))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(writeValueAsString(emailAccess))
+                .queryParam("emailerType", emailerType))
+            .andExpect(status().isForbidden());        
     }
     
 }

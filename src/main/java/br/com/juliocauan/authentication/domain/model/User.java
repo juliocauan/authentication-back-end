@@ -35,6 +35,12 @@ public final class User {
 	@NotBlank
 	private String password;
 
+	@Column(name = "islocked", nullable = false)
+	private boolean isLocked;
+
+	@Column(name = "isdisabled", nullable = false)
+	private boolean isDisabled;
+
     @ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "users_roles", schema = "auth",
         joinColumns = @JoinColumn(referencedColumnName = "id", name = "user_id"),
@@ -46,6 +52,8 @@ public final class User {
         this();
         this.username = username;
         this.password = password;
+		this.isLocked = false;
+		this.isDisabled = false;
     }
     
 }

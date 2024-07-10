@@ -50,9 +50,11 @@ public class AdminService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public void deleteUser(String username) {
+    public void disableUser(String username) {
         validateSelf(username);
-        userRepository.deleteByUsername(username);
+        User user = userRepository.findByUsername(username);
+        user.setDisabled(true);
+        userRepository.save(user);
     }
 
     public List<String> findAllRoles(String nameContains) {

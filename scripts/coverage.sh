@@ -1,5 +1,2 @@
-if [ ! -e target/site/jacoco/index.html ]
-then
-    bash scripts/test.sh
-fi
+bash scripts/test.sh
 firefox target/site/jacoco/index.html &

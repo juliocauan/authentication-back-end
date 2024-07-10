@@ -13,6 +13,8 @@ public class UserPrincipal implements UserDetails {
     private static final long serialVersionUID = 1L;
     private String username;
     private String password;
+	private boolean isLocked;
+	private boolean isDisabled;
     private Collection<? extends GrantedAuthority> authorities;
 
     @Override
@@ -33,7 +35,7 @@ public class UserPrincipal implements UserDetails {
     }
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isLocked;
     }
     @Override
     public boolean isCredentialsNonExpired() {
@@ -41,7 +43,7 @@ public class UserPrincipal implements UserDetails {
     }
     @Override
     public boolean isEnabled() {
-        return true;
+        return !isDisabled;
     }
     
 }

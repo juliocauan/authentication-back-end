@@ -256,11 +256,4 @@ class UserRepositoryTest extends TestContext {
         assertEquals("Password is not strong!", exception.getMessage());
     }
 
-    @Test
-    void deleteByUsername() {
-        User user = saveUser();
-        getUserRepository().deleteByUsername(user.getUsername());
-        assertTrue(getUserRepository().findAll().isEmpty());
-    }
-
 }

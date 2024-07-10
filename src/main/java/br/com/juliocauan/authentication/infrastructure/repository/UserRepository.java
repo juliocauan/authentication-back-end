@@ -1,5 +1,9 @@
 package br.com.juliocauan.authentication.infrastructure.repository;
 
+import static br.com.juliocauan.authentication.infrastructure.repository.specification.UserSpecification.hasRole;
+import static br.com.juliocauan.authentication.infrastructure.repository.specification.UserSpecification.usernameContains;
+import static br.com.juliocauan.authentication.infrastructure.repository.specification.UserSpecification.usernameEquals;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,14 +13,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.transaction.annotation.Transactional;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityExistsException;
-
-import static br.com.juliocauan.authentication.infrastructure.repository.specification.UserSpecification.*;
 
 public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
@@ -59,8 +60,5 @@ public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecifi
         user.setPassword(PasswordUtil.encode(newRawPassword));
         this.save(user);
     }
-
-    @Transactional
-    void deleteByUsername(String username);
-
+    
 }

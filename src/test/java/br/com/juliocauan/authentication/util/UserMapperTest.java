@@ -37,6 +37,8 @@ class UserMapperTest extends TestContext {
         assertEquals(user.getUsername(), userPrincipal.getUsername());
         assertEquals(user.getPassword(), userPrincipal.getPassword());
         assertEquals(user.getRoles().size(), userPrincipal.getAuthorities().size());
+        assertEquals(user.isDisabled(), !userPrincipal.isEnabled());
+        assertEquals(user.isLocked(), !userPrincipal.isAccountNonLocked());
     }
 
     @Test

@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.openapitools.api.AdminApi;
 import org.openapitools.model.DeleteRoleRequest;
-import org.openapitools.model.DeleteUserRequest;
+import org.openapitools.model.DisableUserRequest;
 import org.openapitools.model.EmailAccess;
 import org.openapitools.model.EmailType;
 import org.openapitools.model.OkResponse;
@@ -50,12 +50,12 @@ public class AdminController implements AdminApi {
   }
 
   @Override
-  public ResponseEntity<OkResponse> _deleteUser(DeleteUserRequest deleteUserRequest) {
-    String username = deleteUserRequest.getUsername();
+  public ResponseEntity<OkResponse> _disableUser(DisableUserRequest disableUserRequest) {
+    String username = disableUserRequest.getUsername();
 
-    adminService.deleteUser(username);
+    adminService.disableUser(username);
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
-        String.format("User [%s] deleted successfully!", username)));
+        String.format("User [%s] disabled successfully!", username)));
   }
 
   @Override

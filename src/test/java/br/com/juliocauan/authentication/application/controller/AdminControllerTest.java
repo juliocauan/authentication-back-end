@@ -17,7 +17,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.DeleteRoleRequest;
-import org.openapitools.model.DeleteUserRequest;
+import org.openapitools.model.DisableUserRequest;
 import org.openapitools.model.EmailAccess;
 import org.openapitools.model.EmailType;
 import org.openapitools.model.RegisterRoleRequest;
@@ -313,49 +313,49 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void deleteUser() throws Exception {
+    void disableUser() throws Exception {
         String username = getRandomUsername();
         saveUser(username, saveRole());
-        DeleteUserRequest deleteUserRequest = new DeleteUserRequest().username(username);
+        DisableUserRequest disableUserRequest = new DisableUserRequest().username(username);
 
         getMockMvc().perform(
             delete(urlAdminUsers)
                 .header(authorizationHeader, getAdminToken())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(deleteUserRequest)))
+                .content(writeValueAsString(disableUserRequest)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.message").value("User [%s] deleted successfully!".formatted(username)));
+            .andExpect(jsonPath("$.message").value("User [%s] disabled successfully!".formatted(username)));
     }
 
     @Test
-    void deleteUser_error_invalidInput() throws Exception {
-        DeleteUserRequest deleteUserRequest = new DeleteUserRequest().username(getRandomString(5));
+    void disableUser_error_invalidInput() throws Exception {
+        DisableUserRequest disableUserRequest = new DisableUserRequest().username(getRandomString(5));
 
         getMockMvc().perform(
             delete(urlAdminUsers)
                 .header(authorizationHeader, getAdminToken())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(deleteUserRequest)))
+                .content(writeValueAsString(disableUserRequest)))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("Input validation error!"))
             .andExpect(jsonPath("$.fieldErrors", hasSize(1)));
     }
 
     @Test
-    void deleteUser_error_adminException() throws Exception {
-        DeleteUserRequest deleteUserRequest = new DeleteUserRequest().username(usernameAdmin);
+    void disableUser_error_adminException() throws Exception {
+        DisableUserRequest disableUserRequest = new DisableUserRequest().username(usernameAdmin);
 
         getMockMvc().perform(
             delete(urlAdminUsers)
                 .header(authorizationHeader, getAdminToken())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(deleteUserRequest)))
+                .content(writeValueAsString(disableUserRequest)))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message").value("You can not update/delete your own account here!"));
     }
 
     @Test
-    void deleteUser_error_unauthorized() throws Exception {
+    void disableUser_error_unauthorized() throws Exception {
         getMockMvc().perform(
             delete(urlAdminUsers))
             .andExpect(status().isUnauthorized())
@@ -363,16 +363,16 @@ class AdminControllerTest extends TestContext {
     }
 
     @Test
-    void deleteUser_error_forbidden() throws Exception {
+    void disableUser_error_forbidden() throws Exception {
         String username = getRandomUsername();
         saveUser(username, saveRole());
-        DeleteUserRequest deleteUserRequest = new DeleteUserRequest().username(username);
+        DisableUserRequest disableUserRequest = new DisableUserRequest().username(username);
         
         getMockMvc().perform(
             delete(urlAdminUsers)
                 .header(authorizationHeader, getToken(username))
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(writeValueAsString(deleteUserRequest)))
+                .content(writeValueAsString(disableUserRequest)))
             .andExpect(status().isForbidden());
     }
 

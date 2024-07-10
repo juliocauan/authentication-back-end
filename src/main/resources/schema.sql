@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS auth.users
 (
     id SERIAL PRIMARY KEY,
     username VARCHAR(60) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    isLocked BOOLEAN NOT NULL,
+    isDisabled BOOLEAN NOT NULL
 );
 CREATE TABLE IF NOT EXISTS auth.roles
 (

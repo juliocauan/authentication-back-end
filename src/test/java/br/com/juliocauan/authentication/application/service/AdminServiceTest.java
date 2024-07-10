@@ -1,5 +1,6 @@
 package br.com.juliocauan.authentication.application.service;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -227,27 +228,28 @@ class AdminServiceTest extends TestContext {
     }
 
     @Test
-    void deleteUser() {
+    void disableUser() {
         authenticate();
         String role = saveRole();
         User user = saveUser(role);
-        assertEquals(2, getUserRepository().findAll().size());
-        adminService.deleteUser(user.getUsername());
-        assertEquals(1, getUserRepository().findAll().size());
+        assertFalse(user.isDisabled());
+        adminService.disableUser(user.getUsername());
+        user = getUserRepository().findById(user.getId()).get();
+        assertTrue(user.isDisabled());
     }
 
     @Test
-    void deleteUser_error_notAuthenticated() {
+    void disableUser_error_notAuthenticated() {
         deauthenticate();
         assertThrowsExactly(NullPointerException.class,
-                () -> adminService.deleteUser(getRandomUsername()));
+                () -> adminService.disableUser(getRandomUsername()));
     }
 
     @Test
-    void deleteUser_error_deleteSelfAdminException() {
+    void disableUser_error_disableSelfAdminException() {
         User user = authenticate();
         AdminException exception = assertThrowsExactly(AdminException.class,
-                () -> adminService.deleteUser(user.getUsername()));
+                () -> adminService.disableUser(user.getUsername()));
         assertEquals("You can not update/delete your own account here!", exception.getMessage());
     }
 

@@ -21,6 +21,8 @@ public final class UserMapper {
             .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
         userPrincipal.setUsername(model.getUsername());
         userPrincipal.setPassword(model.getPassword());
+        userPrincipal.setLocked(model.isLocked());
+        userPrincipal.setDisabled(model.isDisabled());
         userPrincipal.setAuthorities(authorities);
         return userPrincipal;
     }

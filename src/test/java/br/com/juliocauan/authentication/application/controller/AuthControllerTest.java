@@ -123,6 +123,38 @@ class AuthControllerTest extends TestContext {
     }
 
     @Test
+    void login_error_disabled() throws Exception {
+        User user = new User(getRandomUsername(), encoder.encode(rawPassword));
+        user.setDisabled(true);
+        getUserRepository().save(user);
+        SigninForm signinForm = new SigninForm(user.getUsername(), rawPassword);
+        getMockMvc().perform(
+                post(urlLogin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(signinForm)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("User is disabled"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
+    void login_error_locked() throws Exception {
+        User user = new User(getRandomUsername(), encoder.encode(rawPassword));
+        user.setLocked(true);
+        getUserRepository().save(user);
+        SigninForm signinForm = new SigninForm(user.getUsername(), rawPassword);
+        getMockMvc().perform(
+                post(urlLogin)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(writeValueAsString(signinForm)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("User account is locked"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.fieldErrors").isEmpty());
+    }
+
+    @Test
     void signup() throws Exception {
         String username = getRandomUsername();
         SignupForm signupForm = new SignupForm(username, new PasswordMatch(rawPassword, rawPassword));

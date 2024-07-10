@@ -14,6 +14,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.mail.MailSendException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -86,6 +88,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MailSendException.class)
     public ResponseEntity<Object> handleMailSend(MailSendException ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(standardError(ex));
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Object> handleDisabledAccount(DisabledException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(standardError(ex));
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<Object> handleLockedAccount(LockedException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(standardError(ex));
     }
 
 }

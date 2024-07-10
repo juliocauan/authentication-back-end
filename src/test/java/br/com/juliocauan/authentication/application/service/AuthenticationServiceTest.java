@@ -14,6 +14,8 @@ import org.openapitools.model.UserData;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -78,6 +80,26 @@ class AuthenticationServiceTest extends TestContext {
         BadCredentialsException exception = assertThrowsExactly(BadCredentialsException.class,
                 () -> authenticationService.authenticate(getRandomPassword(), getRandomPassword()));
         assertEquals("Bad credentials", exception.getMessage());
+    }
+
+    @Test
+    void authenticate_error_disabled() {
+        User user = getUser();
+        user.setDisabled(true);
+        getUserRepository().save(user);
+        DisabledException exception = assertThrowsExactly(DisabledException.class,
+                () -> authenticationService.authenticate(user.getUsername(), user.getPassword()));
+        assertEquals("User is disabled", exception.getMessage());
+    }
+
+    @Test
+    void authenticate_error_locked() {
+        User user = getUser();
+        user.setLocked(true);
+        getUserRepository().save(user);
+        LockedException exception = assertThrowsExactly(LockedException.class,
+                () -> authenticationService.authenticate(user.getUsername(), user.getPassword()));
+        assertEquals("User account is locked", exception.getMessage());
     }
 
     @Test

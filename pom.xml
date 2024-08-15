@@ -21,6 +21,7 @@
 		<greenmail.version>2.0.1</greenmail.version>
 		<jacoco.version>0.8.12</jacoco.version>
 		<openapi.version>7.7.0</openapi.version>
+		<xmlunit.version>2.10.0</xmlunit.version>
 	</properties>
 	<dependencies>
 		<!-- SPRING BOOT -->
@@ -80,6 +81,11 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>${snakeyaml.version}</version>
+		  </dependency>
+		  <dependency>
+			  <groupId>org.xmlunit</groupId>
+			  <artifactId>xmlunit-core</artifactId>
+			  <version>${xmlunit.version}</version>
 		  </dependency>
 		  <!-- DATA_FORMAT -->
 

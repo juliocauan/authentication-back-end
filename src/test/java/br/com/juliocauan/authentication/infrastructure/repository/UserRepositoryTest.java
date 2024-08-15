@@ -218,7 +218,7 @@ class UserRepositoryTest extends TestContext {
     @Test
     void register_error_weakPassword() {
         User user = getUser();
-        user.setPassword("123456789");
+        user.setPassword(getRandomString(9));
         PasswordException exception = assertThrowsExactly(PasswordException.class,
             () -> getUserRepository().register(user));
         assertEquals("Password is not strong!", exception.getMessage());

@@ -79,7 +79,7 @@ public class WebSecurityConfig {
         http.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());
-        http.cors(withDefaults()).csrf(csrf -> csrf.disable());
+        http.cors(withDefaults());
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST,
                         URI_SIGNUP,

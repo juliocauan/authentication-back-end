@@ -77,7 +77,7 @@ class UserTest extends TestContext {
         String passwordNull = null;
         assertThrows(ConstraintViolationException.class, () -> saveUserWithPassword(passwordNull));
 
-        String passwordBlank = "      ";
+        String passwordBlank = getRandomString(6).replaceAll(".", " ");
         assertThrows(ConstraintViolationException.class, () -> saveUserWithPassword(passwordBlank));
     }
 

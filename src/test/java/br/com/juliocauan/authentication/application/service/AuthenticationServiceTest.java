@@ -123,7 +123,7 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void registerUser_error_passwordSecurity() {
-        String password = "1234567itsq";
+        String password = getRandomString(11);
 
         PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> authenticationService.registerUser(getRandomUsername(), password));
@@ -144,7 +144,7 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void registerAdmin_error_adminKey() {
-        String adminKey = "1234567itsq";
+        String adminKey = getRandomString(11);
         PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> authenticationService.registerAdmin(getRandomUsername(), getRandomPassword(), adminKey));
         assertEquals("Admin Key is incorrect!", exception.getMessage());
@@ -160,7 +160,7 @@ class AuthenticationServiceTest extends TestContext {
 
     @Test
     void registerAdmin_error_passwordSecurity() {
-        String password = "1234567itsq";
+        String password = getRandomString(11);
 
         PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> authenticationService.registerAdmin(getRandomUsername(), password, adminKey));

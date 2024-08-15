@@ -14,6 +14,7 @@ import br.com.juliocauan.authentication.domain.model.Role;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
+//TODO REFACTOR
 public interface RoleRepository extends JpaRepository<Role, Short>, JpaSpecificationExecutor<Role> {
 
     default Role findByName(String name) {

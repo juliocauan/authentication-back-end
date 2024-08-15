@@ -14,6 +14,7 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.exception.ExpiredResetTokenException;
 import jakarta.persistence.EntityNotFoundException;
 
+//TODO REFACTOR
 public interface PasswordResetRepository extends JpaRepository<PasswordReset, Integer>, JpaSpecificationExecutor<PasswordReset> {
 
     default PasswordReset findByToken(String token) {

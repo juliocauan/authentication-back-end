@@ -19,6 +19,7 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import jakarta.persistence.EntityExistsException;
 
+//TODO REFACTOR
 public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
 
     default User findByUsername(String username) {

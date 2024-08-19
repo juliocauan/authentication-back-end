@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - postgres
+      - db
     env_file:
       - .env
     ports:
@@ -14,7 +14,7 @@ services:
     networks:
       - server
   
-  postgres:
+  db:
     image: postgres:alpine
     env_file:
       - .env
@@ -27,7 +27,7 @@ services:
   adminer:
     image: adminer:standalone
     depends_on:
-      - postgres
+      - db
     ports:
       - 8001:8080
     networks:

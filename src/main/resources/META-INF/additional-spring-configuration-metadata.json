@@ -3,5 +3,10 @@
     "name": "ADMIN_KEY",
     "type": "java.lang.String",
     "description": "Password used to register new ADMIN"
+  },
+  {
+    "name": "ALLOWED_ORIGIN_PATTERN",
+    "type": "java.lang.String",
+    "description": "Regular expression pattern to specify allowed origins for cross-origin resource sharing (CORS)."
   }
 ]}

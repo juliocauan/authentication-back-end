@@ -17,3 +17,4 @@ spring:
                         enable: true
 
 ADMIN_KEY: "@Password123"
+ALLOWED_ORIGIN_PATTERN: "*"

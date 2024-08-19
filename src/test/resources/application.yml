@@ -28,3 +28,4 @@ spring:
                         enable: true
 
 ADMIN_KEY: "@Admin123"
+ALLOWED_ORIGIN_PATTERN: "*"

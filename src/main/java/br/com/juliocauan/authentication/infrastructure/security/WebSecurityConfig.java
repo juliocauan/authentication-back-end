@@ -7,6 +7,7 @@ import java.util.Collections;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -33,11 +34,12 @@ import lombok.AllArgsConstructor;
 @EnableMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
 public class WebSecurityConfig {
-    
+
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
-    
+    private final Environment env;
+
     private static final String URI_SIGNUP = "/signup";
     private static final String URI_SIGNUP_ADMIN = "/signup/admin";
     private static final String URI_LOGIN = "/login";
@@ -50,45 +52,52 @@ public class WebSecurityConfig {
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-    
+
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
+
     @Bean
     CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
+        final String allowedOriginPattern = env.getProperty("ALLOWED_ORIGIN_PATTERN", String.class);
         config.setAllowCredentials(true);
-        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+        config.setAllowedOriginPatterns(Collections.singletonList(allowedOriginPattern));
         config.setAllowedHeaders(Arrays.asList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
-    
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.authenticationProvider(authenticationProvider());
-        http.cors(withDefaults());
+        //TODO implement CSRF filter
+        // http.csrf(csrf -> csrf
+        //         .ignoringRequestMatchers(URI_LOGIN, URI_SIGNUP, URI_SIGNUP_ADMIN, URI_FORGOT_PASSWORD, URI_FORGOT_PASSWORD + "/{token}")
+        //         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
+        http.cors(withDefaults()).csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST,
                         URI_SIGNUP,
                         URI_SIGNUP_ADMIN,
                         URI_LOGIN,
                         URI_FORGOT_PASSWORD)
-                    .permitAll()
-                .requestMatchers(HttpMethod.PATCH, URI_FORGOT_PASSWORD + "/{token}").permitAll()
-            .anyRequest().authenticated());
+                .permitAll()
+                .requestMatchers(HttpMethod.PATCH,
+                        URI_FORGOT_PASSWORD + "/{token}")
+                .permitAll()
+                .anyRequest().authenticated());
         return http.build();
     }
 }

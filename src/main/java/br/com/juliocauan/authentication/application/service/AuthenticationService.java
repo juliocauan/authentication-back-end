@@ -5,25 +5,28 @@ import java.util.Collections;
 import org.openapitools.model.UserData;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.juliocauan.authentication.domain.model.PasswordReset;
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import br.com.juliocauan.authentication.domain.service.PasswordResetService;
+import br.com.juliocauan.authentication.domain.service.RoleService;
+import br.com.juliocauan.authentication.domain.service.UserService;
+import br.com.juliocauan.authentication.infrastructure.exception.ExpiredResetTokenException;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtProvider;
 import br.com.juliocauan.authentication.util.EmailUtil;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
 @Service
+@Transactional
 @AllArgsConstructor
-public final class AuthenticationService {
+public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordResetRepository passwordResetRepository;
+    private final UserService userService;
+    private final RoleService roleService;
+    private final PasswordResetService passwordResetService;
 
     public UserData authenticate(String username, String password) {
         UserData userData = JwtProvider.authenticate(username, password, authenticationManager);
@@ -31,19 +34,19 @@ public final class AuthenticationService {
     }
 
     public void registerUser(String username, String password) {
-        userRepository.register(new User(username, password));
+        userService.register(new User(username, password));
     }
 
     public void registerAdmin(String username, String password, String adminKey) {
         PasswordUtil.validateAdminKey(adminKey);
         User admin = new User(username, password);
-        admin.setRoles(Collections.singleton(roleRepository.findByName("ADMIN")));
-        userRepository.register(admin);
+        admin.setRoles(Collections.singleton(roleService.findByName("ADMIN")));
+        userService.register(admin);
     }
 
     public void sendToken(String username) {
-        User user = userRepository.findByUsername(username);
-        String token = passwordResetRepository.register(user).getToken();
+        User user = userService.findByUsername(username);
+        String token = passwordResetService.register(user).getToken();
         EmailUtil.sendEmail(
                 username,
                 "Reset your password!",
@@ -55,9 +58,10 @@ public final class AuthenticationService {
                 token, PasswordReset.TOKEN_EXPIRATION_MINUTES);
     }
 
+    @Transactional(noRollbackFor = ExpiredResetTokenException.class)
     public void resetPassword(String newPassword, String token) {
-        PasswordReset passwordReset = passwordResetRepository.findByToken(token);
-        userRepository.updatePassword(passwordReset.getUser(), newPassword);
-        passwordResetRepository.delete(passwordReset);
+        PasswordReset passwordReset = passwordResetService.findByToken(token);
+        userService.updatePassword(passwordReset.getUser(), newPassword);
+        passwordResetService.delete(passwordReset);
     }
 }

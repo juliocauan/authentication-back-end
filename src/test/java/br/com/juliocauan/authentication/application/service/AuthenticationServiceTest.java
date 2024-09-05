@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.model.UserData;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -30,6 +28,8 @@ import br.com.juliocauan.authentication.infrastructure.exception.PasswordExcepti
 import br.com.juliocauan.authentication.infrastructure.repository.PasswordResetRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 
 class AuthenticationServiceTest extends TestContext {
 
@@ -116,7 +116,7 @@ class AuthenticationServiceTest extends TestContext {
     void registerUser_error_entityExists() {
         User user = saveUser();
 
-        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
                 () -> authenticationService.registerUser(user.getUsername(), user.getPassword()));
         assertEquals("Username [%s] is already taken!".formatted(user.getUsername()), exception.getMessage());
     }
@@ -153,7 +153,7 @@ class AuthenticationServiceTest extends TestContext {
     @Test
     void registerAdmin_error_entityExists() {
         User user = saveUser();
-        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
                 () -> authenticationService.registerAdmin(user.getUsername(), user.getPassword(), adminKey));
         assertEquals("Username [%s] is already taken!".formatted(user.getUsername()), exception.getMessage());
     }
@@ -214,7 +214,7 @@ class AuthenticationServiceTest extends TestContext {
     void resetPassword_error_findByToken() {
         savePasswordReset();
         String token = getRandomToken();
-        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
+        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
                 () -> authenticationService.resetPassword(getRandomPassword(), token));
         assertEquals("Token [%s] not found!".formatted(token), exception.getMessage());
     }

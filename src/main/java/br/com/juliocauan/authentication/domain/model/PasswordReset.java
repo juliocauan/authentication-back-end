@@ -49,6 +49,11 @@ public final class PasswordReset {
         this.user = user;
     }
 
+    public void update() {
+        this.expireDate = LocalDateTime.now().plusMinutes(TOKEN_EXPIRATION_MINUTES);
+        this.token = generateToken();
+    }
+
     private String generateToken() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] rawToken = new byte[TOKEN_LENGTH];

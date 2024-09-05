@@ -33,12 +33,14 @@ import br.com.juliocauan.authentication.application.service.AuthenticationServic
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
+import br.com.juliocauan.authentication.domain.service.RoleService;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
 
 class AdminControllerTest extends TestContext {
 
     private final AuthenticationService authenticationService;
+    private final RoleService roleService;
     private final PasswordEncoder encoder;
 
     private final String urlAdminUsers = "/admin/users";
@@ -52,9 +54,10 @@ class AdminControllerTest extends TestContext {
 
     public AdminControllerTest(UserRepository userRepository, RoleRepository roleRepository,
             ObjectMapper objectMapper, MockMvc mockMvc, AuthenticationService authenticationService,
-            PasswordEncoder encoder) {
+            PasswordEncoder encoder, RoleService roleService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
         this.authenticationService = authenticationService;
+        this.roleService = roleService;
         this.encoder = encoder;
     }
 
@@ -71,7 +74,7 @@ class AdminControllerTest extends TestContext {
     }
 
     private final void saveUser(String username, String roleName) {
-        Set<Role> roles = Collections.singleton(getRoleRepository().findByName(roleName));
+        Set<Role> roles = Collections.singleton(roleService.findByName(roleName));
         User user = new User(username, encoder.encode(rawPassword));
         user.setRoles(roles);
         getUserRepository().save(user);

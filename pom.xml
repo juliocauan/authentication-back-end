@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.2</version>
+		<version>3.3.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.juliocauan</groupId>
 	<artifactId>authentication</artifactId>
-	<version>1.4.1</version>
+	<version>1.4.2</version>
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>

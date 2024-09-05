@@ -2,33 +2,35 @@ package br.com.juliocauan.authentication.application.service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.juliocauan.authentication.domain.model.User;
-import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import br.com.juliocauan.authentication.domain.service.UserService;
 import br.com.juliocauan.authentication.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ProfileService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public void updatePassword(String currentPassword, String newPassword) {
-        User user = getLoggedUser(currentPassword);
+        User user = getLoggedUser();
         validateCurrentPassword(currentPassword, user);
-        userRepository.updatePassword(user, newPassword);
+        userService.updatePassword(user, newPassword);
     }
 
     public void closeAccount(String currentPassword) {
-        User user = getLoggedUser(currentPassword);
+        User user = getLoggedUser();
         validateCurrentPassword(currentPassword, user);
-        userRepository.delete(user);
+        userService.delete(user);
     }
 
-    private User getLoggedUser(String rawCurrentPassword) {
+    private User getLoggedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username);
+        return userService.findByUsername(username);
     }
 
     private void validateCurrentPassword(String rawCurrentPassword, User loggedUser) {

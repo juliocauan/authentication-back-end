@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.infrastructure.repository;
+package br.com.juliocauan.authentication.domain.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
@@ -9,19 +9,25 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.Role;
+import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
+import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 
-class RoleRepositoryTest extends TestContext {
+class RoleServiceTest extends TestContext {
 
-    public RoleRepositoryTest(UserRepository userRepository, RoleRepository roleRepository,
-            ObjectMapper objectMapper, MockMvc mockMvc) {
+    private final RoleService roleService;
+
+    public RoleServiceTest(UserRepository userRepository, RoleRepository roleRepository, ObjectMapper objectMapper,
+            MockMvc mockMvc, RoleService roleService) {
         super(userRepository, roleRepository, objectMapper, mockMvc);
+        this.roleService = roleService;
     }
 
     @BeforeEach
@@ -36,29 +42,29 @@ class RoleRepositoryTest extends TestContext {
     @Test
     void findByName() {
         Role expectedEntity = saveRole("ROLE");
-        assertEquals(expectedEntity, getRoleRepository().findByName("ROLE"));
+        assertEquals(expectedEntity, roleService.findByName("ROLE"));
     }
 
     @Test
     void findByName_error_notPresentName() {
         saveRole("ROLE");
-        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
-            () -> getRoleRepository().findByName("NOT_A_ROLE"));
+        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
+                () -> roleService.findByName("NOT_A_ROLE"));
         assertEquals("Role [NOT_A_ROLE] not found!", exception.getMessage());
     }
 
     @Test
     void findByName_error_nullName() {
         saveRole("null");
-        JpaObjectRetrievalFailureException exception = assertThrowsExactly(JpaObjectRetrievalFailureException.class,
-            () -> getRoleRepository().findByName(null));
+        EntityNotFoundException exception = assertThrowsExactly(EntityNotFoundException.class,
+                () -> roleService.findByName(null));
         assertEquals("Role [null] not found!", exception.getMessage());
     }
 
     @Test
     void findAllByFilters() {
         Role role = saveRole("ROLE");
-        Set<Role> roles = getRoleRepository().findAllByFilters("ROLE");
+        Set<Role> roles = roleService.findAllByFilters("ROLE");
         assertEquals(1, roles.size());
         assertTrue(roles.contains(role));
     }
@@ -66,35 +72,35 @@ class RoleRepositoryTest extends TestContext {
     @Test
     void findAllByFilters_branch_nullNameContains() {
         saveRole("ROLE");
-        Set<Role> roles = getRoleRepository().findAllByFilters(null);
+        Set<Role> roles = roleService.findAllByFilters(null);
         assertEquals(1, roles.size());
     }
 
     @Test
     void findAllByFilters_branch_notPresentNameContains() {
         saveRole("ROLE");
-        Set<Role> roles = getRoleRepository().findAllByFilters("AAA");
+        Set<Role> roles = roleService.findAllByFilters("AAA");
         assertTrue(roles.isEmpty());
     }
 
     @Test
     void register() {
-        getRoleRepository().register("ROLE");
+        roleService.register("ROLE");
         Role role = getRoleRepository().findAll().get(0);
         assertEquals("ROLE", role.getName());
     }
 
     @Test
     void register_error_roleAlreadyExists() {
-        getRoleRepository().register("ROLE");
-        DataIntegrityViolationException exception = assertThrowsExactly(DataIntegrityViolationException.class,
-            () -> getRoleRepository().register("ROLE"));
+        roleService.register("ROLE");
+        EntityExistsException exception = assertThrowsExactly(EntityExistsException.class,
+                () -> roleService.register("ROLE"));
         assertEquals("Role [ROLE] already exists!", exception.getMessage());
     }
 
     @Test
     void register_error_nullName() {
-        assertThrowsExactly(DataIntegrityViolationException.class, () -> getRoleRepository().register(null));
+        assertThrowsExactly(DataIntegrityViolationException.class, () -> roleService.register(null));
     }
 
 }

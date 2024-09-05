@@ -25,8 +25,15 @@ public final class EmailUtil {
             currentEmailer = null;
             return;
         }
-        else if(emailerType.getValue().equals("GMAIL")) currentEmailer = new GmailEmailer(username, key);
-        else currentEmailer = new GreenMailEmailer(username, key);
+        
+        switch (emailerType) {
+            case GMAIL:
+                currentEmailer = new GmailEmailer(username, key);
+                break;
+            case GREEN_MAIL:
+                currentEmailer = new GreenMailEmailer(username, key);
+                break;
+        }
     }
 
 }

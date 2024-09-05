@@ -1,4 +1,4 @@
-package br.com.juliocauan.authentication.util;
+package br.com.juliocauan.authentication.util.mapper;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,6 +12,7 @@ import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
 import lombok.experimental.UtilityClass;
 
+//TODO refactor to mapstruct
 @UtilityClass
 public final class UserMapper {
 

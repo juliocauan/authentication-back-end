@@ -13,6 +13,7 @@ import br.com.juliocauan.authentication.config.TestContext;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.repository.RoleRepository;
 import br.com.juliocauan.authentication.infrastructure.repository.UserRepository;
+import br.com.juliocauan.authentication.util.mapper.UserMapper;
 
 class UserMapperTest extends TestContext {
 

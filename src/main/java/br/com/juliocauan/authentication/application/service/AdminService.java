@@ -56,7 +56,6 @@ public class AdminService {
         userService.disable(username);
     }
 
-    //TODO CACHE
     @Transactional(readOnly = true)
     public List<String> findAllRoles(String nameContains) {
         return roleService.findAllByFilters(nameContains).stream()

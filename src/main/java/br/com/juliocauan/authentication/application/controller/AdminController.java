@@ -9,11 +9,9 @@ import org.openapitools.model.DisableUserRequest;
 import org.openapitools.model.EmailAccess;
 import org.openapitools.model.EmailType;
 import org.openapitools.model.OkResponse;
-import org.openapitools.model.Page;
 import org.openapitools.model.RegisterRoleRequest;
 import org.openapitools.model.UpdateUserRolesForm;
 import org.openapitools.model.UserInfo;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +30,7 @@ public class AdminController implements AdminApi {
   private final AdminService adminService;
 
   @Override
-  public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Page page) {
-    Pageable pageable = PageRequest.of(page.getNumber(), page.getSize());
-
+  public ResponseEntity<List<UserInfo>> _getUsers(String usernameContains, String role, Pageable pageable) {
     List<UserInfo> response = adminService.findAllUsers(usernameContains, role, pageable);
     return ResponseEntity.status(HttpStatus.OK).body(response);
   }

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.juliocauan</groupId>
 	<artifactId>authentication</artifactId>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 	<name>authentication</name>
 	<description>Token Authentication API</description>
 	<properties>
@@ -22,6 +22,10 @@
 		<jacoco.version>0.8.12</jacoco.version>
 		<openapi.version>7.7.0</openapi.version>
 		<xmlunit.version>2.10.0</xmlunit.version>
+		<maven.compiler.version>3.13.0</maven.compiler.version>
+		<mapstruct.version>1.6.0</mapstruct.version>
+		<lombok.version>1.18.34</lombok.version>
+		<lombok.mapstruct.version>0.2.0</lombok.mapstruct.version>
 	</properties>
 	<dependencies>
 		<!-- SPRING BOOT -->
@@ -61,6 +65,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -86,6 +91,16 @@
 			  <groupId>org.xmlunit</groupId>
 			  <artifactId>xmlunit-core</artifactId>
 			  <version>${xmlunit.version}</version>
+		  </dependency>
+		  <dependency>
+			  <groupId>org.mapstruct</groupId>
+			  <artifactId>mapstruct</artifactId>
+			  <version>${mapstruct.version}</version>
+		  </dependency>
+		  <dependency>
+			  <groupId>org.mapstruct</groupId>
+			  <artifactId>mapstruct-processor</artifactId>
+			  <version>${mapstruct.version}</version>
 		  </dependency>
 		  <!-- DATA_FORMAT -->
 
@@ -174,6 +189,41 @@
 				</executions>
 			</plugin>
 			<!--OPENAPI GENERATOR MAVEN-->
+
+			<!-- MAPSTRUCT PROCESSOR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok-mapstruct-binding</artifactId>
+							<version>${lombok.mapstruct.version}</version>
+						</path>
+					</annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
+						<arg>-Amapstruct.suppressGeneratorVersionInfoComment=true</arg>
+                        <arg>-Amapstruct.defaultComponentModel=spring</arg>
+						<arg>-Amapstruct.unmappedTargetPolicy=ERROR</arg>
+                    </compilerArgs>
+				</configuration>
+			</plugin>
+			<!-- MAPSTRUCT PROCESSOR -->
 		</plugins>
 	</build>
 

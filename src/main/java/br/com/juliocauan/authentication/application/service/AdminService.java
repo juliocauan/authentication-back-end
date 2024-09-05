@@ -29,7 +29,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     public List<UserInfo> findAllUsers(String usernameContains, String role, Pageable pageable) {
         return userService.findAllByFilters(usernameContains, role, pageable).stream()
-                .map(UserMapper::domainToUserInfo)
+                .map(UserMapper.INSTANCE::toUserInfo)
                 .toList();
     }
 

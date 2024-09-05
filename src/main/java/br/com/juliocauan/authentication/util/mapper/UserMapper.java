@@ -1,38 +1,28 @@
 package br.com.juliocauan.authentication.util.mapper;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import org.openapitools.model.UserInfo;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import br.com.juliocauan.authentication.domain.model.Role;
 import br.com.juliocauan.authentication.domain.model.User;
 import br.com.juliocauan.authentication.infrastructure.security.model.UserPrincipal;
-import lombok.experimental.UtilityClass;
 
-//TODO refactor to mapstruct
-@UtilityClass
-public final class UserMapper {
+@Mapper(imports = { Role.class, Collectors.class, SimpleGrantedAuthority.class })
+public interface UserMapper {
 
-    public static UserDetails domainToUserDetails(User model) {
-        UserPrincipal userPrincipal = new UserPrincipal();
-        Set<SimpleGrantedAuthority> authorities = model.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toSet());
-        userPrincipal.setUsername(model.getUsername());
-        userPrincipal.setPassword(model.getPassword());
-        userPrincipal.setLocked(model.isLocked());
-        userPrincipal.setDisabled(model.isDisabled());
-        userPrincipal.setAuthorities(authorities);
-        return userPrincipal;
-    }
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    public static UserInfo domainToUserInfo(User model){
-        return new UserInfo()
-            .id(model.getId())
-            .username(model.getUsername())
-            .roles(model.getRoles().stream().map(Role::getName).collect(Collectors.toSet()));
-    }
-    
+    @Mapping(target = "authorities",
+            expression = "java(user.getRoles().stream().map(Role::getName).map(SimpleGrantedAuthority::new).collect(Collectors.toSet()))")
+    UserPrincipal toUserDetails(User user);
+
+    @Mapping(target = "roles",
+            expression = "java(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))")
+    UserInfo toUserInfo(User user);
+
 }

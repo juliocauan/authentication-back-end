@@ -99,7 +99,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void findAllUsers() {
         String role = saveRole();
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        UserInfo expectedUserInfo = UserMapper.INSTANCE.toUserInfo(saveUser(role));
         List<UserInfo> userInfos = adminService.findAllUsers("@", role, pageable);
         assertEquals(1, userInfos.size());
         assertEquals(expectedUserInfo, userInfos.get(0));
@@ -108,7 +108,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void findAllUsers_branch_usernameContainsAndRole() {
         String role = saveRole();
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        UserInfo expectedUserInfo = UserMapper.INSTANCE.toUserInfo(saveUser(role));
         saveUser(saveRole());
         List<UserInfo> userInfos = adminService.findAllUsers("@", role, pageable);
         assertEquals(1, userInfos.size());
@@ -117,7 +117,7 @@ class AdminServiceTest extends TestContext {
 
     @Test
     void findAllUsers_branch_usernameContainsAndNull() {
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(saveRole()));
+        UserInfo expectedUserInfo = UserMapper.INSTANCE.toUserInfo(saveUser(saveRole()));
         saveUser(saveRole());
         List<UserInfo> userInfos = adminService.findAllUsers("@", null, pageable);
         assertEquals(2, userInfos.size());
@@ -127,7 +127,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void findAllUsers_branch_nullAndRole() {
         String role = saveRole();
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        UserInfo expectedUserInfo = UserMapper.INSTANCE.toUserInfo(saveUser(role));
         saveUser(saveRole());
         List<UserInfo> userInfos = adminService.findAllUsers(null, role, pageable);
         assertEquals(1, userInfos.size());
@@ -137,7 +137,7 @@ class AdminServiceTest extends TestContext {
     @Test
     void findAllUsers_branch_nullAndNull() {
         String role = saveRole();
-        UserInfo expectedUserInfo = UserMapper.domainToUserInfo(saveUser(role));
+        UserInfo expectedUserInfo = UserMapper.INSTANCE.toUserInfo(saveUser(role));
         saveUser(role);
         List<UserInfo> userInfos = adminService.findAllUsers(null, null, pageable);
         assertEquals(2, userInfos.size());

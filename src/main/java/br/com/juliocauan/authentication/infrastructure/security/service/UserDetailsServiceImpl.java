@@ -18,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return UserMapper.domainToUserDetails(userService.findByUsername(username));
+        return UserMapper.INSTANCE.toUserDetails(userService.findByUsername(username));
     }
     
 }

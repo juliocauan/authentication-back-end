@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.openapitools.api.AdminApi;
-import org.openapitools.model.DeleteRoleRequest;
-import org.openapitools.model.DisableUserRequest;
 import org.openapitools.model.EmailAccess;
-import org.openapitools.model.EmailType;
 import org.openapitools.model.OkResponse;
 import org.openapitools.model.RegisterRoleRequest;
 import org.openapitools.model.UpdateUserRolesForm;
@@ -20,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.juliocauan.authentication.application.service.AdminService;
 import br.com.juliocauan.authentication.util.EmailUtil;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -46,9 +44,7 @@ public class AdminController implements AdminApi {
   }
 
   @Override
-  public ResponseEntity<OkResponse> _disableUser(DisableUserRequest disableUserRequest) {
-    String username = disableUserRequest.getUsername();
-
+  public ResponseEntity<OkResponse> _disableUser(String username) {
     adminService.disableUser(username);
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
         String.format("User [%s] disabled successfully!", username)));
@@ -70,19 +66,17 @@ public class AdminController implements AdminApi {
   }
 
   @Override
-  public ResponseEntity<OkResponse> _deleteRole(DeleteRoleRequest deleteRoleRequest) {
-    String roleName = deleteRoleRequest.getRole();
-
-    adminService.deleteRole(roleName);
+  public ResponseEntity<OkResponse> _deleteRole(String role) {
+    adminService.deleteRole(role);
     return ResponseEntity.status(HttpStatus.OK).body(new OkResponse().message(
-        String.format("Role [%s] deleted successfully!", roleName)));
+        String.format("Role [%s] deleted successfully!", role)));
   }
 
   @Override
-  public ResponseEntity<OkResponse> _setEmailer(EmailAccess emailAccess, EmailType emailerType) {
-    EmailUtil.setEmailer(emailAccess.getUsername(), emailAccess.getKey(), emailerType);
+  public ResponseEntity<OkResponse> _setEmailer(@Valid EmailAccess emailAccess) {
+    EmailUtil.setEmailer(emailAccess.getUsername(), emailAccess.getKey(), emailAccess.getEmailType());
     return ResponseEntity.status(HttpStatus.OK)
-        .body(new OkResponse().message("[%s] set successfully!".formatted(emailerType.getValue())));
+        .body(new OkResponse().message("[%s] set successfully!".formatted(emailAccess.getEmailType().getValue())));
   }
 
 }

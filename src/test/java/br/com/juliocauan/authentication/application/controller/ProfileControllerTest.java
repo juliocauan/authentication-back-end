@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.application.controller;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -9,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openapitools.model.CloseAccountRequest;
 import org.openapitools.model.PasswordMatch;
 import org.openapitools.model.PasswordUpdateForm;
 import org.springframework.http.MediaType;
@@ -68,8 +66,7 @@ class ProfileControllerTest extends TestContext {
                                 patch(url)
                                                 .header(authorizationHeader, getBearerToken())
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordUpdateForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordUpdateForm)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.message").value("Password updated successfully!"));
         }
@@ -87,8 +84,7 @@ class ProfileControllerTest extends TestContext {
                                 patch(url)
                                                 .header(authorizationHeader, getBearerToken())
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordUpdateForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordUpdateForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Input validation error!"))
                                 .andExpect(jsonPath("$.fieldErrors", hasSize(3)));
@@ -106,8 +102,7 @@ class ProfileControllerTest extends TestContext {
                                 patch(url)
                                                 .header(authorizationHeader, getBearerToken())
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordUpdateForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordUpdateForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value(errorInvalidPassword));
         }
@@ -125,8 +120,7 @@ class ProfileControllerTest extends TestContext {
                                 patch(url)
                                                 .header(authorizationHeader, getBearerToken())
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordUpdateForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordUpdateForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value(errorInvalidPassword));
         }
@@ -144,8 +138,7 @@ class ProfileControllerTest extends TestContext {
                                 patch(url)
                                                 .header(authorizationHeader, getBearerToken())
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordUpdateForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordUpdateForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Password is not strong!"));
         }
@@ -153,34 +146,27 @@ class ProfileControllerTest extends TestContext {
         @Test
         void updateUserPassword_error_unauthorized() throws Exception {
                 getMockMvc().perform(
-                                patch(url)
-                                                .with(csrf().asHeader()))
+                                patch(url))
                                 .andExpect(status().isUnauthorized())
                                 .andExpect(jsonPath("$.message").value(errorNotAuthorized));
         }
 
         @Test
         void closeAccount() throws Exception {
-                CloseAccountRequest closeAccountRequest = new CloseAccountRequest().password(rawPassword);
                 getMockMvc().perform(
                                 delete(url)
                                                 .header(authorizationHeader, getBearerToken())
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(closeAccountRequest))
-                                                .with(csrf().asHeader()))
+                                                .queryParam("password", rawPassword))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.message").value("Closed account successfully!"));
         }
 
         @Test
         void closeAccount_error_incorrectPassword() throws Exception {
-                CloseAccountRequest closeAccountRequest = new CloseAccountRequest().password(getRandomPassword());
                 getMockMvc().perform(
                                 delete(url)
                                                 .header(authorizationHeader, getBearerToken())
-                                                .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(closeAccountRequest))
-                                                .with(csrf().asHeader()))
+                                                .queryParam("password", getRandomPassword()))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value(errorInvalidPassword));
         }
@@ -188,8 +174,7 @@ class ProfileControllerTest extends TestContext {
         @Test
         void closeAccount_error_unauthorized() throws Exception {
                 getMockMvc().perform(
-                                delete(url)
-                                                .with(csrf().asHeader()))
+                                delete(url))
                                 .andExpect(status().isUnauthorized())
                                 .andExpect(jsonPath("$.message").value(errorNotAuthorized));
         }

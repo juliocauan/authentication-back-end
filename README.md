@@ -4,8 +4,6 @@
 
 ## 📖  Descrição
 
-Este projeto foi desenvolvido em ambiente Linux, utilizando Ubuntu 22.04 e as tecnologias citadas abaixo. Se você utilizar outro sistema operacional, a configuração inicial do projeto poderá ser um pouco diferente.
-
 Estas instruções ajudarão você a configurar e executar o projeto localmente.
 
 Cheque também a [documentação](https://github.com/juliocauan/authentication-docs) para ver mais detalhes sobre API e suas funcionalidades.
@@ -23,6 +21,7 @@ Cheque também a [documentação](https://github.com/juliocauan/authentication-d
 ## 🛠️ Pré-requisitos
 
 - Certifique-se de ter as seguintes ferramentas instaladas:
+  - [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
   - [Docker](https://www.docker.com/get-started)
   - [Docker Compose](https://docs.docker.com/compose/install/)
 
@@ -49,7 +48,7 @@ Cheque também a [documentação](https://github.com/juliocauan/authentication-d
 
 ## 🚀 Acessando a API
 
-- Com o projeto em execução, acesse a [página Swagger(OpenAPI)](https://app.swaggerhub.com/apis/juliocauan/authentication/1.2.x):
+- Com o projeto em execução, acesse a [página Swagger(OpenAPI)](https://app.swaggerhub.com/apis/juliocauan/authentication/1.5.x-oas3):
 
 - Role para baixo na guia direita desta página:
 
@@ -71,7 +70,7 @@ Cheque também a [documentação](https://github.com/juliocauan/authentication-d
 
 - Para verificar o banco de dados, acesse [localhost:8001](http://localhost:8001) e preencha os seguintes campos assim:
   - System: PostgreSQL
-  - Server: postgres
+  - Server: db
   - Username: admin
   - Password: admin
   - Database: authentication

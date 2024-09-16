@@ -2,9 +2,7 @@ version: '3.9'
 name: authentication
 services:
   server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: juliocauan/authentication:latest
     depends_on:
       - db
     env_file:
@@ -35,7 +33,7 @@ services:
    
 volumes:
   data:
-    name: authentication-prod
+    name: authentication
     
 networks:
   server:

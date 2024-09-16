@@ -21,7 +21,6 @@ Cheque também a [documentação](https://github.com/juliocauan/authentication-d
 ## 🛠️ Pré-requisitos
 
 - Certifique-se de ter as seguintes ferramentas instaladas:
-  - [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
   - [Docker](https://www.docker.com/get-started)
   - [Docker Compose](https://docs.docker.com/compose/install/)
 
@@ -41,7 +40,7 @@ Cheque também a [documentação](https://github.com/juliocauan/authentication-d
 - Inicie a API junto ao PostgreSQL usando:
 
     ```bash
-    docker compose -f "docker-compose-prod.yml" up -d --build
+    docker compose -f "docker-compose.yml" up -d --build
     ```
 
 - Aguarde até que o contêiner esteja rodando.

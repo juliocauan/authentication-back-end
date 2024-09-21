@@ -1,7 +1,6 @@
 package br.com.juliocauan.authentication.application.controller;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -74,8 +73,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlLogin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signinForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signinForm)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.roles").isEmpty())
                                 .andExpect(jsonPath("$.JWT").isNotEmpty());
@@ -91,8 +89,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlLogin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signinForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signinForm)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.roles[0]").value("TEST"))
                                 .andExpect(jsonPath("$.JWT").isNotEmpty());
@@ -105,8 +102,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlLogin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signinForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signinForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Input validation error!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -119,8 +115,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlLogin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signinForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signinForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Bad credentials"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -136,8 +131,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlLogin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signinForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signinForm)))
                                 .andExpect(status().isUnauthorized())
                                 .andExpect(jsonPath("$.message").value("User is disabled"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -153,8 +147,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlLogin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signinForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signinForm)))
                                 .andExpect(status().isUnauthorized())
                                 .andExpect(jsonPath("$.message").value("User account is locked"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -168,8 +161,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignup)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupForm)))
                                 .andExpect(status().isCreated())
                                 .andExpect(jsonPath("$.message")
                                                 .value("User [%s] registered successfully!".formatted(username)));
@@ -182,8 +174,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignup)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Input validation error!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -197,8 +188,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignup)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Passwords don't match!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -212,8 +202,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignup)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message")
                                                 .value("Username [%s] is already taken!".formatted(username)))
@@ -229,8 +218,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignup)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupForm))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupForm)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Password is not strong!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -246,8 +234,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignupAdmin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupFormAdmin))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupFormAdmin)))
                                 .andExpect(status().isCreated())
                                 .andExpect(jsonPath("$.message")
                                                 .value("Admin [%s] registered successfully!".formatted(username)));
@@ -261,8 +248,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignupAdmin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupFormAdmin))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupFormAdmin)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Input validation error!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -276,8 +262,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignupAdmin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupFormAdmin))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupFormAdmin)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Passwords don't match!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -291,8 +276,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignupAdmin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupFormAdmin))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupFormAdmin)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Admin Key is incorrect!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -307,8 +291,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignupAdmin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupFormAdmin))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupFormAdmin)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Password is not strong!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -324,8 +307,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlSignupAdmin)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(signupFormAdmin))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(signupFormAdmin)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message")
                                                 .value("Username [%s] is already taken!".formatted(username)))
@@ -340,8 +322,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlForgotPassword)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(requestBody))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(requestBody)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.message").value("Email sent to [%s]!".formatted(username)));
         }
@@ -352,8 +333,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlForgotPassword)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(requestBody))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(requestBody)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Input validation error!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -367,8 +347,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlForgotPassword)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(requestBody))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(requestBody)))
                                 .andExpect(status().isNotFound())
                                 .andExpect(jsonPath("$.message").value("Username [%s] not found!".formatted(username)))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -383,8 +362,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 post(urlForgotPassword)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(requestBody))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(requestBody)))
                                 .andExpect(status().isInternalServerError())
                                 .andExpect(jsonPath("$.message").value("Emailer not set. ADMIN must set one."));
         }
@@ -396,8 +374,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 patch(urlForgotPasswordWithToken, token)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordMatch))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordMatch)))
                                 .andExpect(status().isOk())
                                 .andExpect(jsonPath("$.message").value("Password updated successfully!"));
         }
@@ -409,8 +386,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 patch(urlForgotPasswordWithToken, invalidInput)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordMatch))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordMatch)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Input validation error!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -424,8 +400,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 patch(urlForgotPasswordWithToken, token)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordMatch))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordMatch)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Passwords don't match!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -440,8 +415,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 patch(urlForgotPasswordWithToken, token)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordMatch))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordMatch)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Password is not strong!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -455,8 +429,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 patch(urlForgotPasswordWithToken, token)
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordMatch))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordMatch)))
                                 .andExpect(status().isNotFound())
                                 .andExpect(jsonPath("$.message").value("Token [%s] not found!".formatted(token)))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())
@@ -472,8 +445,7 @@ class AuthControllerTest extends TestContext {
                 getMockMvc().perform(
                                 patch(urlForgotPasswordWithToken, passwordReset.getToken())
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .content(writeValueAsString(passwordMatch))
-                                                .with(csrf().asHeader()))
+                                                .content(writeValueAsString(passwordMatch)))
                                 .andExpect(status().isBadRequest())
                                 .andExpect(jsonPath("$.message").value("Expired Token!"))
                                 .andExpect(jsonPath("$.timestamp").isNotEmpty())

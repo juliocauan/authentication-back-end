@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,7 +25,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import br.com.juliocauan.authentication.infrastructure.security.jwt.AuthEntryPoint;
 import br.com.juliocauan.authentication.infrastructure.security.jwt.JwtAuthenticationFilter;
-import br.com.juliocauan.authentication.infrastructure.security.service.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 
 @Configuration
@@ -35,7 +33,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class WebSecurityConfig {
 
-    private final UserDetailsServiceImpl userDetailsService;
     private final AuthEntryPoint unauthorizedHandler;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final Environment env;
@@ -44,14 +41,6 @@ public class WebSecurityConfig {
     private static final String URI_SIGNUP_ADMIN = "/signup/admin";
     private static final String URI_LOGIN = "/login";
     private static final String URI_FORGOT_PASSWORD = "/forgot-password";
-
-    @Bean
-    DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
 
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -81,11 +70,6 @@ public class WebSecurityConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        http.authenticationProvider(authenticationProvider());
-        //TODO implement CSRF filter
-        // http.csrf(csrf -> csrf
-        //         .ignoringRequestMatchers(URI_LOGIN, URI_SIGNUP, URI_SIGNUP_ADMIN, URI_FORGOT_PASSWORD, URI_FORGOT_PASSWORD + "/{token}")
-        //         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
         http.cors(withDefaults()).csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST,

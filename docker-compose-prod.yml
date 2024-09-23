@@ -35,7 +35,7 @@ services:
    
 volumes:
   data:
-    name: authentication-prod
+    name: authentication
     
 networks:
   server:

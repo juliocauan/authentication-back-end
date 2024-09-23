@@ -8,7 +8,7 @@
 		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.juliocauan</groupId>
+	<groupId>br.com.juliomariano</groupId>
 	<artifactId>authentication</artifactId>
 	<version>1.5.0</version>
 	<name>authentication</name>
@@ -135,9 +135,9 @@
 				<configuration>
 					<excludes>
 						<exclude>org/openapitools/**</exclude>
-						<exclude>br/com/juliocauan/authentication/AuthenticationApplication.class</exclude>
-						<exclude>br/com/juliocauan/authentication/infrastructure/config/**</exclude>
-						<exclude>br/com/juliocauan/authentication/util/emailers/**</exclude>
+						<exclude>br/com/juliomariano/authentication/AuthenticationApplication.class</exclude>
+						<exclude>br/com/juliomariano/authentication/infrastructure/config/**</exclude>
+						<exclude>br/com/juliomariano/authentication/util/emailers/**</exclude>
 					</excludes>
 				 </configuration>
 				<executions>

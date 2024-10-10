@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.com.juliomariano.authentication.infrastructure.security.service.UserDetailsServiceImpl;
+import br.com.juliomariano.authentication.domain.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	private final UserDetailsServiceImpl userDetailsService;
+	private final UserService userService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private void authenticateUser(String token, HttpServletRequest request) {
 		String username = JwtProvider.getUsernameFromJWT(token);
-		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+		UserDetails userDetails = userService.loadUserByUsername(username);
 		JwtProvider.authenticate(userDetails, request);
     }
 

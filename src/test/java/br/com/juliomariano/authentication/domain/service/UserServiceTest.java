@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -259,6 +260,23 @@ class UserServiceTest extends TestContext {
         PasswordException exception = assertThrowsExactly(PasswordException.class,
                 () -> userService.updatePassword(user, "123456789"));
         assertEquals("Password is not strong!", exception.getMessage());
+    }
+    
+    @Test
+    void loadByUsername(){
+        User user = saveUser();
+        UserDetails userDetails = userService.loadUserByUsername(user.getUsername());
+        assertEquals(user.getUsername(), userDetails.getUsername());
+        assertEquals(user.getPassword(), userDetails.getPassword());
+        assertEquals(roles.size(), userDetails.getAuthorities().size());
+    }
+    
+    @Test
+    void loadByUsername_error_usernameNotFound(){
+        String username = getRandomUsername();
+        UsernameNotFoundException exception = assertThrowsExactly(UsernameNotFoundException.class,
+            () -> userService.loadUserByUsername(username));
+        assertEquals("Username [%s] not found!".formatted(username), exception.getMessage());
     }
 
 }

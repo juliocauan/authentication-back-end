@@ -1,7 +1,11 @@
 package br.com.juliomariano.authentication.domain.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Entity @Table(name = "users", schema = "auth")
 @Data @EqualsAndHashCode
 @NoArgsConstructor
-public final class User {
+public final class User implements UserDetails {
     
 	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +58,31 @@ public final class User {
         this.password = password;
 		this.isLocked = false;
 		this.isDisabled = false;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+	
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !isLocked;
+    }
+    
+	@Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    
+	@Override
+    public boolean isEnabled() {
+        return !isDisabled;
     }
     
 }

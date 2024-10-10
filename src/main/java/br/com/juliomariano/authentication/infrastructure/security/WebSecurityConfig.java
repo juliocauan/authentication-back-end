@@ -1,7 +1,5 @@
 package br.com.juliomariano.authentication.infrastructure.security;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -70,7 +68,8 @@ public class WebSecurityConfig {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        http.cors(withDefaults()).csrf(csrf -> csrf.disable());
+        //TODO remover cors withDefaults()
+        http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.POST,
                         URI_SIGNUP,

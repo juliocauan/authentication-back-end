@@ -15,7 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
-import br.com.juliomariano.authentication.infrastructure.security.model.UserPrincipal;
+import br.com.juliomariano.authentication.domain.model.User;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
@@ -39,7 +39,7 @@ public final class JwtProvider {
 	}
 
 	private static String generateJWT(Authentication authentication) {
-		UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+		User userPrincipal = (User) authentication.getPrincipal();
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + EXPIRATION);
 		return Jwts.builder()

@@ -1,5 +1,7 @@
 package br.com.juliomariano.authentication.domain.model;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity @Table(name = "roles", schema = "auth")
 @Getter @EqualsAndHashCode
 @NoArgsConstructor
-public final class Role {
+public final class Role implements GrantedAuthority {
     
 	@Id @EqualsAndHashCode.Exclude
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +27,11 @@ public final class Role {
 	public Role(String name) {
 		this();
 		this.name = name;
+	}
+
+	@Override
+	public String getAuthority() {
+		return name;
 	}
 }
     

@@ -231,5 +231,4 @@ class AuthenticationServiceTest extends TestContext {
         assertTrue(passwordResetRepository.findAll().isEmpty());
     }
 
-
 }

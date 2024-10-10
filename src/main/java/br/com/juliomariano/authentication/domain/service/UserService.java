@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,7 @@ import lombok.AllArgsConstructor;
 @Service
 @Transactional
 @AllArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
     
     private final UserRepository userRepository;
 
@@ -75,6 +77,11 @@ public class UserService {
 
     public void delete(User user) {
         userRepository.deleteById(user.getId());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return findByUsername(username);
     }
 
 }
